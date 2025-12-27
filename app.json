@@ -1,0 +1,58 @@
+{
+  "expo": {
+    "name": "SecureApp",
+    "slug": "MySecureApp",
+    "version": "2.1.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/ios/icon.png",
+    "scheme": "secureapp",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "ios": {
+      "bundleIdentifier": "",
+      "supportsTablet": false,
+      "infoPlist": {
+        "NSFaceIDUsageDescription": "Authenticate with Face ID to access your passwords",
+        "NSCameraUsageDescription": "Camera is used to scan QR codes",
+        "NSPhotoLibraryUsageDescription": "Photo library is used to select custom icons",
+        "ITSAppUsesNonExemptEncryption": false
+      },
+      "icon": "./assets/images/ios/icon.png"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/android/icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "edgeToEdgeEnabled": true,
+      "package": ""
+    },
+    "splash": {
+      "image": "./assets/images/SplashScreen.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#1F94DC"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/images/SplashScreen.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#1F94DC"
+        }
+      ],
+      "expo-secure-store"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": ""
+      }
+    }
+  }
+}
