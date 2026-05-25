@@ -23,7 +23,10 @@
         "backgroundColor": "#FF4B5C",
         "foregroundImage": "./assets/android.png"
       },
-      "softwareKeyboardLayoutMode": "resize"
+      "softwareKeyboardLayoutMode": "resize",
+      "permissions": [
+        "com.google.android.gms.permission.AD_ID"
+      ]
     },
     "plugins": [
       "expo-router",
@@ -106,8 +109,9 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": ""
+        "projectId": "879c4399-3d85-4f0b-91b9-725bcd7c5ea6"
       }
-    }
+    },
+    "owner": "frkncmz"
   }
 }
