@@ -1,0 +1,66 @@
+{
+  "title": "Privacy Policy",
+  "lastUpdated": "2026-05-25",
+  "sections": [
+    {
+      "heading": "Introduction",
+      "content": "LoveLog (\"we\", \"our\", or \"us\") is a personal dating and flirt tracking app developed by Furkan Çömez. This Privacy Policy explains how we handle your information when you use our mobile application."
+    },
+    {
+      "heading": "Data Collection & Storage",
+      "content": "All data you enter into LoveLog is stored locally on your device using an encrypted SQLite database. We do not collect, transmit, or store your personal data on any external server. No account creation or login is required to use the App."
+    },
+    {
+      "heading": "Types of Data Stored",
+      "content": "The App may store the following types of information, all locally on your device:\n\n• Flirt profiles: name, age, physical attributes, zodiac sign, social media handles, phone number, and personal notes\n• Date records: dates, locations, and satisfaction ratings\n• Evaluation answers and sentiment ratings\n• Pros and cons trait tags\n• Profile photos (stored as local file references)\n• Date of birth (for age verification only)"
+    },
+    {
+      "heading": "Third-Party Personal Data",
+      "content": "LoveLog allows you to store personal information about other individuals (people you are dating or interested in). You are solely responsible for ensuring that you have the right or consent to store such information. We do not access, process, or transmit this data in any way."
+    },
+    {
+      "heading": "Internet & Offline Usage",
+      "content": "LoveLog works fully offline. An internet connection is only required for displaying advertisements via Google AdMob. All core features — including adding flirts, recording dates, and managing evaluations — function without internet access."
+    },
+    {
+      "heading": "Profile Photos",
+      "content": "Photos you add as profile pictures are stored locally on your device. They are not uploaded to any server. When you export a backup, profile photos are excluded from the backup file."
+    },
+    {
+      "heading": "Backup & Export",
+      "content": "LoveLog allows you to export your data as an encrypted backup file (.lovelog format). The file is encrypted using a PIN you provide. We do not have access to your PIN or your backup files. You are solely responsible for keeping your PIN and backup files safe."
+    },
+    {
+      "heading": "Advertising",
+      "content": "We use Google AdMob to display interstitial advertisements within the App. AdMob may collect and use certain device information (such as advertising identifiers and device metadata) to serve relevant ads. For more details, please refer to Google's Privacy Policy at https://policies.google.com/privacy."
+    },
+    {
+      "heading": "App Tracking Transparency (iOS)",
+      "content": "On iOS devices, we will request your permission before accessing your device's advertising identifier (IDFA) through Apple's App Tracking Transparency framework. You can choose to allow or deny tracking. If you deny tracking, you will still see ads, but they may be less relevant to you. You can change this preference at any time in your device's Settings."
+    },
+    {
+      "heading": "GDPR & Regional Compliance",
+      "content": "For users in the European Economic Area (EEA), United Kingdom, and Switzerland, we use Google's User Messaging Platform (UMP) to obtain consent for personalized advertising in compliance with GDPR. You may change your consent preferences at any time through the App's Settings."
+    },
+    {
+      "heading": "Third-Party Services",
+      "content": "LoveLog uses the following third-party services that may collect information:\n\n• Google AdMob — for displaying advertisements\n• Expo — for app development framework services\n\nEach of these services has its own privacy policy governing the use of information they collect."
+    },
+    {
+      "heading": "Children's Privacy",
+      "content": "LoveLog is not intended for use by individuals under the age of 17. We do not knowingly collect personal information from individuals under 17. The App includes an age verification step during onboarding."
+    },
+    {
+      "heading": "Data Deletion",
+      "content": "You can delete all your data at any time using the \"Clear All Data\" option in the App's Settings. This action is irreversible and permanently removes all information from your device. Alternatively, uninstalling the App will also remove all locally stored data."
+    },
+    {
+      "heading": "Changes to This Policy",
+      "content": "We may update this Privacy Policy from time to time. Any changes will be reflected in the App with an updated \"Last Updated\" date. Continued use of the App after changes constitutes acceptance of the revised policy."
+    },
+    {
+      "heading": "Contact Us",
+      "content": "If you have any questions about this Privacy Policy, please contact us at:\n\nDeveloper: Furkan Çömez\nEmail: contact@furkancomez.com"
+    }
+  ]
+}
