@@ -5,12 +5,14 @@ import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Image } from 'expo-image';
 import Animated, { FadeInDown, FadeIn } from 'react-native-reanimated';
+import { BannerAd, BannerAdSize } from 'react-native-google-mobile-ads';
 
 import { Colors, Spacing, BorderRadius, FontSize, FontWeight, Shadow, ScoreColor } from '@/constants/theme';
 import { getAllFlirts, Flirt, getTraits, Trait } from '@/database/flirts';
 import { getDatesForFlirt } from '@/database/dates';
 import { getAnswersForReference, Answer } from '@/database/questions';
 import { getInitials, getZodiacIcon } from '@/utils/helpers';
+import { BANNER_ID } from '@/services/adService';
 
 type AnswerWithQuestion = Answer & { question_text: string };
 
@@ -54,7 +56,7 @@ export default function CompareScreen() {
       pros: traits.filter(t => t.type === 'pro'),
       cons: traits.filter(t => t.type === 'con'),
       age,
-      impressionAnswers,
+      impressionAnswers: impressionAnswers || [],
     };
 
     if (slot === 'A') setFlirtA(data);
@@ -224,6 +226,11 @@ export default function CompareScreen() {
           {renderSlot(flirtB, 'B')}
         </View>
 
+        {/* Banner Ad */}
+        <View style={styles.bannerContainer}>
+          <BannerAd unitId={BANNER_ID} size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER} />
+        </View>
+
         {/* Comparison */}
         {flirtA && flirtB && (
           <Animated.View entering={FadeIn.duration(400)} style={styles.compareContainer}>
@@ -306,7 +313,7 @@ export default function CompareScreen() {
             )}
 
             {/* First Impression Answers */}
-            {(flirtA.impressionAnswers.length > 0 || flirtB.impressionAnswers.length > 0) && (
+            {((flirtA.impressionAnswers?.length ?? 0) > 0 || (flirtB.impressionAnswers?.length ?? 0) > 0) && (
               <View style={styles.impressionSection}>
                 <View style={styles.impressionHeader}>
                   <Ionicons name="sparkles" size={16} color={Colors.secondary} />
@@ -315,12 +322,12 @@ export default function CompareScreen() {
                 {(() => {
                   // Collect all unique questions in order
                   const questionMap = new Map<string, string>();
-                  flirtA.impressionAnswers.forEach(a => questionMap.set(a.question_id, a.question_text));
-                  flirtB.impressionAnswers.forEach(a => questionMap.set(a.question_id, a.question_text));
+                  flirtA.impressionAnswers?.forEach(a => questionMap.set(a.question_id, a.question_text));
+                  flirtB.impressionAnswers?.forEach(a => questionMap.set(a.question_id, a.question_text));
 
                   return Array.from(questionMap.entries()).map(([qId, qText]) => {
-                    const ansA = flirtA.impressionAnswers.find(a => a.question_id === qId);
-                    const ansB = flirtB.impressionAnswers.find(a => a.question_id === qId);
+                    const ansA = flirtA.impressionAnswers?.find(a => a.question_id === qId);
+                    const ansB = flirtB.impressionAnswers?.find(a => a.question_id === qId);
 
                     return (
                       <View key={qId} style={styles.impressionRow}>
@@ -454,4 +461,7 @@ const styles = StyleSheet.create({
   impressionOption: { fontSize: FontSize.sm, fontWeight: FontWeight.medium, color: Colors.textPrimary, textAlign: 'center' },
   impressionSkipped: { fontSize: FontSize.xs, color: Colors.textTertiary, fontStyle: 'italic' },
   sentimentMini: { paddingHorizontal: 6, paddingVertical: 2, borderRadius: BorderRadius.full },
+
+  // Banner
+  bannerContainer: { alignItems: 'center', marginBottom: Spacing.lg },
 });

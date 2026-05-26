@@ -6,10 +6,12 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Calendar } from 'react-native-calendars';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { Image } from 'expo-image';
+import { BannerAd, BannerAdSize } from 'react-native-google-mobile-ads';
 
-import { Colors, Spacing, BorderRadius, FontSize, FontWeight, Shadow } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius, FontSize, FontWeight, Shadow, ScoreColor } from '@/constants/theme';
 import { getDateMarkers, getDatesForDay, DateWithFlirt } from '@/database/dates';
 import { formatDate, getInitials } from '@/utils/helpers';
+import { BANNER_ID } from '@/services/adService';
 
 export default function CalendarScreen() {
   const router = useRouter();
@@ -41,6 +43,11 @@ export default function CalendarScreen() {
   return (
     <View style={[styles.container, { paddingTop: insets.top + Spacing.lg }]}>
       <Text style={styles.title}>Calendar</Text>
+
+      {/* Banner Ad */}
+      <View style={styles.bannerContainer}>
+        <BannerAd unitId={BANNER_ID} size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER} />
+      </View>
 
       <Calendar
         onDayPress={handleDayPress}
@@ -96,9 +103,9 @@ export default function CalendarScreen() {
                       </View>
                     )}
                   </View>
-                  {d.is_rated ? (
-                    <View style={styles.scoreBadge}>
-                      <Text style={styles.scoreText}>{d.score?.toFixed(1)}</Text>
+                  {d.is_rated && d.score != null ? (
+                    <View style={[styles.scoreBadge, { backgroundColor: ScoreColor.getColor(d.score) + '20' }]}>
+                      <Text style={[styles.scoreText, { color: ScoreColor.getColor(d.score) }]}>{d.score.toFixed(1)}</Text>
                     </View>
                   ) : (
                     <View style={styles.unratedBadge}>
@@ -145,8 +152,8 @@ const styles = StyleSheet.create({
   dateName: { fontSize: FontSize.md, fontWeight: FontWeight.semibold, color: Colors.textPrimary },
   dateLocation: { fontSize: FontSize.xs, color: Colors.textSecondary },
   locationRow: { flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 2 },
-  scoreBadge: { backgroundColor: Colors.success + '20', paddingHorizontal: Spacing.md, paddingVertical: Spacing.xs, borderRadius: BorderRadius.full },
-  scoreText: { fontSize: FontSize.sm, fontWeight: FontWeight.bold, color: Colors.success },
+  scoreBadge: { paddingHorizontal: Spacing.md, paddingVertical: Spacing.xs, borderRadius: BorderRadius.full },
+  scoreText: { fontSize: FontSize.sm, fontWeight: FontWeight.bold },
   unratedBadge: { backgroundColor: Colors.primary, paddingHorizontal: Spacing.md, paddingVertical: Spacing.xs, borderRadius: BorderRadius.full },
   unratedText: { fontSize: FontSize.xs, fontWeight: FontWeight.bold, color: Colors.white },
 
@@ -157,4 +164,7 @@ const styles = StyleSheet.create({
 
   selectDay: { alignItems: 'center', paddingTop: Spacing.xxl },
   selectDayText: { fontSize: FontSize.md, color: Colors.textTertiary, marginTop: Spacing.md },
+
+  // Banner
+  bannerContainer: { alignItems: 'center', marginHorizontal: Spacing.md, marginBottom: Spacing.sm },
 });

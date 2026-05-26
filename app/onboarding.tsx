@@ -19,31 +19,31 @@ import privacyPolicy from '@/constants/privacyPolicy.json';
 import termsOfService from '@/constants/termsOfService.json';
 
 interface SlideData {
-  icon: keyof typeof Ionicons.glyphMap;
+  image: any;
   title: string;
   description: string;
 }
 
 const slides: SlideData[] = [
   {
-    icon: 'heart-circle',
+    image: require('@/assets/onboarding/dashboard.png'),
     title: 'Welcome to LoveLog',
-    description: 'Your personal flirt tracker. Keep notes, rate dates, and never forget the details that matter.',
+    description: 'Your personal dating dashboard. Track your Love Aura score, dating insights, zodiac vibes, and more — all in one place.',
   },
   {
-    icon: 'people',
+    image: require('@/assets/onboarding/flirtsList.png'),
     title: 'Track Your Flirts',
-    description: 'Store detailed profiles with photos, social media, interests, and personal notes for each flirt.',
+    description: 'Build detailed profiles with photos, scores, and zodiac signs. Search, sort, and filter to stay organized.',
   },
   {
-    icon: 'star',
-    title: 'Rate Your Dates',
-    description: 'Answer fun questions after each date to build satisfaction scores. See who stands out at a glance.',
+    image: require('@/assets/onboarding/compareFlirts.png'),
+    title: 'Compare & Decide',
+    description: 'Put your flirts side by side. Compare scores, dates, traits, and first impressions to see who truly stands out.',
   },
   {
-    icon: 'calendar',
+    image: require('@/assets/onboarding/calendar.png'),
     title: 'Plan & Remember',
-    description: 'Log every date, track your calendar, and watch your dating life unfold over time.',
+    description: 'Log every date on your calendar, see who you met and where, and never forget a special moment.',
   },
 ];
 
@@ -154,9 +154,11 @@ export default function OnboardingScreen() {
         <View style={styles.phoneFrame}>
           <View style={styles.notch} />
           <View style={styles.phoneScreen}>
-            <View style={styles.screenshotPlaceholder}>
-              <Ionicons name={slide.icon} size={64} color={Colors.primary} />
-            </View>
+            <Image
+              source={slide.image}
+              style={styles.screenshotImage}
+              contentFit="cover"
+            />
           </View>
         </View>
         <View style={styles.phoneGlow} />
@@ -396,11 +398,10 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     backgroundColor: Colors.surface,
   },
-  screenshotPlaceholder: {
+  screenshotImage: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: Colors.surfaceAlt,
+    width: '100%',
+    height: '100%',
   },
   phoneGlow: {
     position: 'absolute',

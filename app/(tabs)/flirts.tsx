@@ -5,11 +5,13 @@ import { Ionicons } from '@expo/vector-icons';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Image } from 'expo-image';
+import { BannerAd, BannerAdSize } from 'react-native-google-mobile-ads';
 
 import { Colors, Spacing, BorderRadius, FontSize, FontWeight, Shadow, ScoreColor } from '@/constants/theme';
 import { useStore, SortOption, FilterOption } from '@/store/useStore';
 import { Flirt } from '@/database/flirts';
 import { getZodiacIcon, getInitials, formatDate } from '@/utils/helpers';
+import { BANNER_ID } from '@/services/adService';
 
 export default function FlirtsScreen() {
   const router = useRouter();
@@ -108,6 +110,11 @@ export default function FlirtsScreen() {
         )}
       </View>
 
+      {/* Banner Ad */}
+      <View style={styles.bannerContainer}>
+        <BannerAd unitId={BANNER_ID} size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER} />
+      </View>
+
       {/* Sort & Filter */}
       <View style={styles.filtersRow}>
         <View style={styles.sortRow}>
@@ -195,5 +202,6 @@ const styles = StyleSheet.create({
   emptyState: { alignItems: 'center', paddingTop: Spacing.xxxxl },
   emptyText: { fontSize: FontSize.md, color: Colors.textTertiary, marginTop: Spacing.md },
 
-
+  // Banner
+  bannerContainer: { alignItems: 'center', marginHorizontal: Spacing.xl, marginBottom: Spacing.md },
 });
