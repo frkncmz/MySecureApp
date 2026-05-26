@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Pressable } from 'react-native';
+import { View, Text, StyleSheet, Pressable, ScrollView } from 'react-native';
 import { useCallback, useEffect, useState } from 'react';
 import { useRouter, useFocusEffect } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -44,96 +44,101 @@ export default function CalendarScreen() {
     <View style={[styles.container, { paddingTop: insets.top + Spacing.lg }]}>
       <Text style={styles.title}>Calendar</Text>
 
-      {/* Banner Ad */}
-      <View style={styles.bannerContainer}>
-        <BannerAd unitId={BANNER_ID} size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER} />
-      </View>
+      <ScrollView
+        contentContainerStyle={{ paddingBottom: insets.bottom + 100 }}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Banner Ad */}
+        <View style={styles.bannerContainer}>
+          <BannerAd unitId={BANNER_ID} size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER} />
+        </View>
 
-      <Calendar
-        onDayPress={handleDayPress}
-        markedDates={{
-          ...markedDates,
-          ...(selectedDay ? { [selectedDay]: { ...markedDates[selectedDay], selected: true, selectedColor: Colors.primary } } : {}),
-        }}
-        theme={{
-          backgroundColor: Colors.background,
-          calendarBackground: Colors.background,
-          textSectionTitleColor: Colors.textSecondary,
-          selectedDayBackgroundColor: Colors.primary,
-          selectedDayTextColor: Colors.white,
-          todayTextColor: Colors.primary,
-          dayTextColor: Colors.textPrimary,
-          textDisabledColor: Colors.textTertiary,
-          dotColor: Colors.primary,
-          arrowColor: Colors.primary,
-          monthTextColor: Colors.textPrimary,
-          textDayFontWeight: '500',
-          textMonthFontWeight: '700',
-          textDayHeaderFontWeight: '600',
-          textDayFontSize: FontSize.md,
-          textMonthFontSize: FontSize.lg,
-          textDayHeaderFontSize: FontSize.xs,
-        }}
-        style={styles.calendar}
-      />
+        <Calendar
+          onDayPress={handleDayPress}
+          markedDates={{
+            ...markedDates,
+            ...(selectedDay ? { [selectedDay]: { ...markedDates[selectedDay], selected: true, selectedColor: Colors.primary } } : {}),
+          }}
+          theme={{
+            backgroundColor: Colors.background,
+            calendarBackground: Colors.background,
+            textSectionTitleColor: Colors.textSecondary,
+            selectedDayBackgroundColor: Colors.primary,
+            selectedDayTextColor: Colors.white,
+            todayTextColor: Colors.primary,
+            dayTextColor: Colors.textPrimary,
+            textDisabledColor: Colors.textTertiary,
+            dotColor: Colors.primary,
+            arrowColor: Colors.primary,
+            monthTextColor: Colors.textPrimary,
+            textDayFontWeight: '500',
+            textMonthFontWeight: '700',
+            textDayHeaderFontWeight: '600',
+            textDayFontSize: FontSize.md,
+            textMonthFontSize: FontSize.lg,
+            textDayHeaderFontSize: FontSize.xs,
+          }}
+          style={styles.calendar}
+        />
 
-      {/* Selected Day Content */}
-      <View style={styles.dayContent}>
-        {selectedDay ? (
-          dayDates.length > 0 ? (
-            dayDates.map((d, i) => (
-              <Animated.View key={d.id} entering={FadeInDown.duration(300).delay(i * 80)}>
-                <Pressable
-                  style={({ pressed }) => [styles.dateCard, pressed && { opacity: 0.8 }]}
-                  onPress={() => router.push(`/date/${d.id}`)}
-                >
-                  {d.flirt_photo ? (
-                    <Image source={{ uri: d.flirt_photo }} style={styles.dateAvatar} />
-                  ) : (
-                    <View style={[styles.dateAvatar, styles.dateAvatarPlaceholder]}>
-                      <Text style={styles.dateAvatarText}>{getInitials(d.flirt_name)}</Text>
-                    </View>
-                  )}
-                  <View style={styles.dateInfo}>
-                    <Text style={styles.dateName}>{d.flirt_name}</Text>
-                    {d.location && (
-                      <View style={styles.locationRow}>
-                        <Ionicons name="location-outline" size={12} color={Colors.textSecondary} />
-                        <Text style={styles.dateLocation}>{d.location}</Text>
+        {/* Selected Day Content */}
+        <View style={styles.dayContent}>
+          {selectedDay ? (
+            dayDates.length > 0 ? (
+              dayDates.map((d, i) => (
+                <Animated.View key={d.id} entering={FadeInDown.duration(300).delay(i * 80)}>
+                  <Pressable
+                    style={({ pressed }) => [styles.dateCard, pressed && { opacity: 0.8 }]}
+                    onPress={() => router.push(`/date/${d.id}`)}
+                  >
+                    {d.flirt_photo ? (
+                      <Image source={{ uri: d.flirt_photo }} style={styles.dateAvatar} />
+                    ) : (
+                      <View style={[styles.dateAvatar, styles.dateAvatarPlaceholder]}>
+                        <Text style={styles.dateAvatarText}>{getInitials(d.flirt_name)}</Text>
                       </View>
                     )}
-                  </View>
-                  {d.is_rated && d.score != null ? (
-                    <View style={[styles.scoreBadge, { backgroundColor: ScoreColor.getColor(d.score) + '20' }]}>
-                      <Text style={[styles.scoreText, { color: ScoreColor.getColor(d.score) }]}>{d.score.toFixed(1)}</Text>
+                    <View style={styles.dateInfo}>
+                      <Text style={styles.dateName}>{d.flirt_name}</Text>
+                      {d.location && (
+                        <View style={styles.locationRow}>
+                          <Ionicons name="location-outline" size={12} color={Colors.textSecondary} />
+                          <Text style={styles.dateLocation}>{d.location}</Text>
+                        </View>
+                      )}
                     </View>
-                  ) : (
-                    <View style={styles.unratedBadge}>
-                      <Text style={styles.unratedText}>Rate</Text>
-                    </View>
-                  )}
+                    {d.is_rated && d.score != null ? (
+                      <View style={[styles.scoreBadge, { backgroundColor: ScoreColor.getColor(d.score) + '20' }]}>
+                        <Text style={[styles.scoreText, { color: ScoreColor.getColor(d.score) }]}>{d.score.toFixed(1)}</Text>
+                      </View>
+                    ) : (
+                      <View style={styles.unratedBadge}>
+                        <Text style={styles.unratedText}>Rate</Text>
+                      </View>
+                    )}
+                  </Pressable>
+                </Animated.View>
+              ))
+            ) : (
+              <View style={styles.noDates}>
+                <Text style={styles.noDatesText}>No dates on this day</Text>
+                <Pressable
+                  style={({ pressed }) => [styles.planButton, pressed && { opacity: 0.8 }]}
+                  onPress={() => router.push({ pathname: '/date/add', params: { selectedDate: selectedDay } })}
+                >
+                  <Ionicons name="add-circle-outline" size={18} color={Colors.primary} />
+                  <Text style={styles.planButtonText}>Plan a date</Text>
                 </Pressable>
-              </Animated.View>
-            ))
+              </View>
+            )
           ) : (
-            <View style={styles.noDates}>
-              <Text style={styles.noDatesText}>No dates on this day</Text>
-              <Pressable
-                style={({ pressed }) => [styles.planButton, pressed && { opacity: 0.8 }]}
-                onPress={() => router.push({ pathname: '/date/add', params: { selectedDate: selectedDay } })}
-              >
-                <Ionicons name="add-circle-outline" size={18} color={Colors.primary} />
-                <Text style={styles.planButtonText}>Plan a date</Text>
-              </Pressable>
+            <View style={styles.selectDay}>
+              <Ionicons name="calendar-outline" size={32} color={Colors.textTertiary} />
+              <Text style={styles.selectDayText}>Tap a day to see dates</Text>
             </View>
-          )
-        ) : (
-          <View style={styles.selectDay}>
-            <Ionicons name="calendar-outline" size={32} color={Colors.textTertiary} />
-            <Text style={styles.selectDayText}>Tap a day to see dates</Text>
-          </View>
-        )}
-      </View>
+          )}
+        </View>
+      </ScrollView>
     </View>
   );
 }

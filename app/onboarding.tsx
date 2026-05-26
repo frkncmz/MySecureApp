@@ -84,7 +84,7 @@ export default function OnboardingScreen() {
     return age;
   };
 
-  const isOldEnough = birthDate ? getAge(birthDate) >= 17 : false;
+  const isOldEnough = birthDate ? getAge(birthDate) >= 18 : false;
 
   const [showAttModal, setShowAttModal] = useState(false);
   const [legalModal, setLegalModal] = useState<'none' | 'terms' | 'privacy'>('none');
@@ -183,7 +183,7 @@ export default function OnboardingScreen() {
 
         <Text style={styles.slideTitle}>Almost There!</Text>
         <Text style={styles.slideDescription}>
-          You must be at least 17 years old to use this app. Please enter your birth date to confirm.
+          You must be at least 18 years old to use this app. Please enter your birth date to confirm.
         </Text>
 
         {/* Date picker button */}
@@ -201,7 +201,7 @@ export default function OnboardingScreen() {
         </Pressable>
 
         {birthDate && !isOldEnough && (
-          <Text style={styles.ageError}>You must be at least 17 years old to use LoveLog.</Text>
+          <Text style={styles.ageError}>You must be at least 18 years old to use LoveLog.</Text>
         )}
 
         {showDatePicker && (
