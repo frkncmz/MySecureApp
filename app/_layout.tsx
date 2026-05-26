@@ -87,6 +87,13 @@ export default function RootLayout() {
           }}
         />
         <Stack.Screen
+          name="date/[id]"
+          options={{
+            title: '',
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
           name="date/add"
           options={{
             title: 'Add Date',
@@ -108,6 +115,13 @@ export default function RootLayout() {
             title: 'First Impression',
             presentation: 'modal',
             animation: 'slide_from_bottom',
+          }}
+        />
+        <Stack.Screen
+          name="compare"
+          options={{
+            title: '',
+            headerShown: false,
           }}
         />
       </Stack>

@@ -75,7 +75,20 @@ export default function FlirtsScreen() {
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.title}>Flirts</Text>
-        <Text style={styles.count}>{flirts.length}</Text>
+        <View style={styles.headerButtons}>
+          <Pressable
+            style={({ pressed }) => [styles.compareButton, pressed && { opacity: 0.7 }]}
+            onPress={() => router.push('/compare')}
+          >
+            <Ionicons name="git-compare-outline" size={20} color={Colors.primary} />
+          </Pressable>
+          <Pressable
+            style={({ pressed }) => [styles.addButton, pressed && { opacity: 0.7 }]}
+            onPress={() => router.push('/flirt/add')}
+          >
+            <Ionicons name="add" size={22} color={Colors.white} />
+          </Pressable>
+        </View>
       </View>
 
       {/* Search */}
@@ -134,13 +147,6 @@ export default function FlirtsScreen() {
         }
       />
 
-      {/* FAB */}
-      <Pressable
-        style={({ pressed }) => [styles.fab, pressed && { transform: [{ scale: 0.93 }] }]}
-        onPress={() => router.push('/flirt/add')}
-      >
-        <Ionicons name="add" size={28} color={Colors.white} />
-      </Pressable>
     </View>
   );
 }
@@ -148,8 +154,12 @@ export default function FlirtsScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.background },
   header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: Spacing.xl, marginBottom: Spacing.lg },
+  headerRight: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm },
+  headerButtons: { flexDirection: 'row', alignItems: 'center', gap: Spacing.md },
   title: { fontSize: FontSize.xxl, fontWeight: FontWeight.bold, color: Colors.textPrimary },
   count: { fontSize: FontSize.md, fontWeight: FontWeight.semibold, color: Colors.textSecondary, backgroundColor: Colors.surfaceAlt, paddingHorizontal: Spacing.md, paddingVertical: 2, borderRadius: BorderRadius.full },
+  compareButton: { width: 32, height: 32, borderRadius: 16, backgroundColor: Colors.primary + '12', alignItems: 'center', justifyContent: 'center' },
+  addButton: { width: 32, height: 32, borderRadius: 16, backgroundColor: Colors.primary, alignItems: 'center', justifyContent: 'center' },
 
   // Search
   searchContainer: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm, backgroundColor: Colors.surface, marginHorizontal: Spacing.xl, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.md, borderRadius: BorderRadius.lg, borderWidth: 1, borderColor: Colors.border, marginBottom: Spacing.md },
@@ -185,6 +195,5 @@ const styles = StyleSheet.create({
   emptyState: { alignItems: 'center', paddingTop: Spacing.xxxxl },
   emptyText: { fontSize: FontSize.md, color: Colors.textTertiary, marginTop: Spacing.md },
 
-  // FAB
-  fab: { position: 'absolute', bottom: 110, right: Spacing.xl, width: 56, height: 56, borderRadius: 28, backgroundColor: Colors.primary, alignItems: 'center', justifyContent: 'center', ...Shadow.lg },
+
 });

@@ -25,15 +25,20 @@ async function initializeDatabase(database: SQLite.SQLiteDatabase): Promise<void
       photo_uri TEXT,
       met_date TEXT,
       met_place TEXT,
-      age INTEGER,
+      birth_date TEXT,
       zodiac TEXT,
       height TEXT,
       body_type TEXT,
       hair_color TEXT,
       eye_color TEXT,
+      skin_tone TEXT,
+      hometown TEXT,
+      occupation TEXT,
+      city TEXT,
       instagram TEXT,
       tiktok TEXT,
       snapchat TEXT,
+      x_handle TEXT,
       phone TEXT,
       interests TEXT,
       status TEXT DEFAULT 'active',
@@ -92,17 +97,26 @@ async function initializeDatabase(database: SQLite.SQLiteDatabase): Promise<void
     );
   `);
 
-  // Seed preset tags if not exists
-  const tagCount = await database.getFirstAsync<{ count: number }>('SELECT COUNT(*) as count FROM preset_tags');
-  if (!tagCount || tagCount.count === 0) {
-    await seedPresetTags(database);
+  // Migrate existing databases: add new columns (safe if already exist)
+  const newColumns = [
+    'birth_date TEXT',
+    'skin_tone TEXT',
+    'hometown TEXT',
+    'occupation TEXT',
+    'city TEXT',
+    'x_handle TEXT',
+  ];
+  for (const col of newColumns) {
+    try {
+      await database.execAsync(`ALTER TABLE flirts ADD COLUMN ${col}`);
+    } catch {
+      // Column already exists, ignore
+    }
   }
 
-  // Seed questions if not exists
-  const questionCount = await database.getFirstAsync<{ count: number }>('SELECT COUNT(*) as count FROM questions');
-  if (!questionCount || questionCount.count === 0) {
-    await seedQuestions(database);
-  }
+  // Seed preset tags and questions (INSERT OR IGNORE prevents duplicates)
+  await seedPresetTags(database);
+  await seedQuestions(database);
 }
 
 async function seedPresetTags(database: SQLite.SQLiteDatabase): Promise<void> {
@@ -119,13 +133,13 @@ async function seedPresetTags(database: SQLite.SQLiteDatabase): Promise<void> {
 
   for (let i = 0; i < pros.length; i++) {
     await database.runAsync(
-      'INSERT INTO preset_tags (id, type, label) VALUES (?, ?, ?)',
+      'INSERT OR IGNORE INTO preset_tags (id, type, label) VALUES (?, ?, ?)',
       [`pro_${i}`, 'pro', pros[i]]
     );
   }
   for (let i = 0; i < cons.length; i++) {
     await database.runAsync(
-      'INSERT INTO preset_tags (id, type, label) VALUES (?, ?, ?)',
+      'INSERT OR IGNORE INTO preset_tags (id, type, label) VALUES (?, ?, ?)',
       [`con_${i}`, 'con', cons[i]]
     );
   }
@@ -156,7 +170,7 @@ async function seedQuestions(database: SQLite.SQLiteDatabase): Promise<void> {
   for (let i = 0; i < dateQuestions.length; i++) {
     const q = dateQuestions[i];
     await database.runAsync(
-      'INSERT INTO questions (id, context, question_text, options, sort_order) VALUES (?, ?, ?, ?, ?)',
+      'INSERT OR IGNORE INTO questions (id, context, question_text, options, sort_order) VALUES (?, ?, ?, ?, ?)',
       [`date_q${i}`, 'date', q.text, JSON.stringify(q.options), i]
     );
   }
@@ -164,7 +178,7 @@ async function seedQuestions(database: SQLite.SQLiteDatabase): Promise<void> {
   for (let i = 0; i < flirtQuestions.length; i++) {
     const q = flirtQuestions[i];
     await database.runAsync(
-      'INSERT INTO questions (id, context, question_text, options, sort_order) VALUES (?, ?, ?, ?, ?)',
+      'INSERT OR IGNORE INTO questions (id, context, question_text, options, sort_order) VALUES (?, ?, ?, ?, ?)',
       [`flirt_q${i}`, 'flirt_initial', q.text, JSON.stringify(q.options), i]
     );
   }
@@ -175,4 +189,18 @@ export async function closeDatabase(): Promise<void> {
     await db.closeAsync();
     db = null;
   }
+}
+
+export async function resetDatabase(): Promise<void> {
+  const database = await getDatabase();
+  await database.execAsync(`
+    DROP TABLE IF EXISTS answers;
+    DROP TABLE IF EXISTS traits;
+    DROP TABLE IF EXISTS dates;
+    DROP TABLE IF EXISTS questions;
+    DROP TABLE IF EXISTS preset_tags;
+    DROP TABLE IF EXISTS flirts;
+  `);
+  // Re-initialize empty tables
+  await initializeDatabase(database);
 }

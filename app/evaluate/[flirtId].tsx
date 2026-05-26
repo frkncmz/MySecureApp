@@ -134,7 +134,6 @@ export default function EvaluateFlirtScreen() {
               style={[
                 styles.progressDot,
                 i === currentIndex && styles.progressDotActive,
-                i < currentIndex && styles.progressDotDone,
               ]}
             />
           ))}
@@ -199,7 +198,7 @@ export default function EvaluateFlirtScreen() {
                     <Ionicons
                       name={s === 'good' ? 'thumbs-up' : s === 'bad' ? 'thumbs-down' : 'remove-circle-outline'}
                       size={28}
-                      color={s === 'good' ? Colors.success : s === 'bad' ? Colors.danger : Colors.warning}
+                      color={currentAnswer.sentiment === s ? Colors.white : (s === 'good' ? Colors.success : s === 'bad' ? Colors.danger : Colors.warning)}
                     />
                     <Text style={[styles.sentimentLabel, currentAnswer.sentiment === s && { color: Colors.white }]}>
                       {s.charAt(0).toUpperCase() + s.slice(1)}
@@ -227,7 +226,26 @@ export default function EvaluateFlirtScreen() {
           </Pressable>
         )}
         <View style={{ flex: 1 }} />
-        {isLastQuestion && currentAnswer.sentiment ? (
+
+        {/* Skip button */}
+        {!currentAnswer.sentiment && (
+          <Pressable
+            style={styles.skipButton}
+            onPress={() => {
+              if (isLastQuestion) {
+                handleSubmit();
+              } else {
+                setCurrentIndex(currentIndex + 1);
+                setPhase('option');
+              }
+            }}
+          >
+            <Text style={styles.skipText}>{isLastQuestion ? 'Skip & Submit' : 'Skip'}</Text>
+          </Pressable>
+        )}
+
+        {/* Submit - show on last question when answered */}
+        {isLastQuestion && currentAnswer.sentiment && (
           <Pressable
             style={({ pressed }) => [styles.submitButton, pressed && { opacity: 0.8 }]}
             onPress={handleSubmit}
@@ -236,16 +254,6 @@ export default function EvaluateFlirtScreen() {
             <Ionicons name="checkmark" size={20} color={Colors.white} />
             <Text style={styles.submitText}>{saving ? 'Saving...' : 'Submit'}</Text>
           </Pressable>
-        ) : (
-          !isLastQuestion && currentAnswer.sentiment && (
-            <Pressable
-              style={styles.nextButton}
-              onPress={() => { setCurrentIndex(currentIndex + 1); setPhase('option'); }}
-            >
-              <Text style={styles.nextText}>Next</Text>
-              <Ionicons name="chevron-forward" size={20} color={Colors.white} />
-            </Pressable>
-          )
         )}
       </View>
     </View>
@@ -261,7 +269,6 @@ const styles = StyleSheet.create({
   progressRow: { flexDirection: 'row', justifyContent: 'center', gap: 6, marginBottom: Spacing.xxl },
   progressDot: { width: 10, height: 10, borderRadius: 5, backgroundColor: Colors.border },
   progressDotActive: { backgroundColor: Colors.secondary, width: 24 },
-  progressDotDone: { backgroundColor: Colors.secondary, opacity: 0.4 },
 
   flirtCard: { alignItems: 'center', marginBottom: Spacing.xxl },
   flirtAvatar: { width: 72, height: 72, borderRadius: 36 },
@@ -294,6 +301,8 @@ const styles = StyleSheet.create({
   bottomBar: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: Spacing.xl, paddingTop: Spacing.lg, borderTopWidth: 1, borderTopColor: Colors.border, backgroundColor: Colors.background },
   prevButton: { flexDirection: 'row', alignItems: 'center', gap: 4 },
   prevText: { fontSize: FontSize.md, color: Colors.textSecondary },
+  skipButton: { marginRight: Spacing.md, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.md },
+  skipText: { fontSize: FontSize.md, color: Colors.textTertiary, fontWeight: FontWeight.medium },
   nextButton: { flexDirection: 'row', alignItems: 'center', gap: Spacing.xs, backgroundColor: Colors.secondary, borderRadius: BorderRadius.md, paddingHorizontal: Spacing.xxl, paddingVertical: Spacing.md },
   nextText: { fontSize: FontSize.md, fontWeight: FontWeight.semibold, color: Colors.white },
   submitButton: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm, backgroundColor: Colors.success, borderRadius: BorderRadius.md, paddingHorizontal: Spacing.xxl, paddingVertical: Spacing.md },

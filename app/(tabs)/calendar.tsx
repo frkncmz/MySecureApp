@@ -21,7 +21,10 @@ export default function CalendarScreen() {
   useFocusEffect(
     useCallback(() => {
       loadMarkers();
-    }, [])
+      if (selectedDay) {
+        getDatesForDay(selectedDay).then(setDayDates);
+      }
+    }, [selectedDay])
   );
 
   const loadMarkers = async () => {
@@ -75,11 +78,7 @@ export default function CalendarScreen() {
               <Animated.View key={d.id} entering={FadeInDown.duration(300).delay(i * 80)}>
                 <Pressable
                   style={({ pressed }) => [styles.dateCard, pressed && { opacity: 0.8 }]}
-                  onPress={() => {
-                    if (!d.is_rated) {
-                      router.push(`/date/rate/${d.id}`);
-                    }
-                  }}
+                  onPress={() => router.push(`/date/${d.id}`)}
                 >
                   {d.flirt_photo ? (
                     <Image source={{ uri: d.flirt_photo }} style={styles.dateAvatar} />
@@ -114,7 +113,7 @@ export default function CalendarScreen() {
               <Text style={styles.noDatesText}>No dates on this day</Text>
               <Pressable
                 style={({ pressed }) => [styles.planButton, pressed && { opacity: 0.8 }]}
-                onPress={() => router.push('/date/add')}
+                onPress={() => router.push({ pathname: '/date/add', params: { selectedDate: selectedDay } })}
               >
                 <Ionicons name="add-circle-outline" size={18} color={Colors.primary} />
                 <Text style={styles.planButtonText}>Plan a date</Text>

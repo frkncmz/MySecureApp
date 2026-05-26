@@ -27,14 +27,20 @@ export default function EditFlirtScreen() {
   const [metDate, setMetDate] = useState<Date | null>(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [metPlace, setMetPlace] = useState('');
-  const [age, setAge] = useState('');
+  const [birthDate, setBirthDate] = useState<Date | null>(null);
+  const [showBirthPicker, setShowBirthPicker] = useState(false);
   const [height, setHeight] = useState('');
   const [bodyType, setBodyType] = useState('');
   const [hairColor, setHairColor] = useState('');
   const [eyeColor, setEyeColor] = useState('');
+  const [skinTone, setSkinTone] = useState('');
+  const [hometown, setHometown] = useState('');
+  const [occupation, setOccupation] = useState('');
+  const [city, setCity] = useState('');
   const [instagram, setInstagram] = useState('');
   const [tiktok, setTiktok] = useState('');
   const [snapchat, setSnapchat] = useState('');
+  const [xHandle, setXHandle] = useState('');
   const [phone, setPhone] = useState('');
   const [notes, setNotes] = useState('');
   const [saving, setSaving] = useState(false);
@@ -58,14 +64,19 @@ export default function EditFlirtScreen() {
     setPhotoUri(f.photo_uri);
     if (f.met_date) setMetDate(new Date(f.met_date));
     setMetPlace(f.met_place || '');
-    setAge(f.age?.toString() || '');
+    if (f.birth_date) setBirthDate(new Date(f.birth_date));
     setHeight(f.height || '');
     setBodyType(f.body_type || '');
     setHairColor(f.hair_color || '');
     setEyeColor(f.eye_color || '');
+    setSkinTone(f.skin_tone || '');
+    setHometown(f.hometown || '');
+    setOccupation(f.occupation || '');
+    setCity(f.city || '');
     setInstagram(f.instagram || '');
     setTiktok(f.tiktok || '');
     setSnapchat(f.snapchat || '');
+    setXHandle(f.x_handle || '');
     setPhone(f.phone || '');
     setNotes(f.notes || '');
 
@@ -114,8 +125,8 @@ export default function EditFlirtScreen() {
 
     try {
       let zodiac: string | null = null;
-      if (metDate) {
-        zodiac = getZodiacSign(metDate.getMonth() + 1, metDate.getDate());
+      if (birthDate) {
+        zodiac = getZodiacSign(birthDate.getMonth() + 1, birthDate.getDate());
       }
 
       await updateFlirt(id!, {
@@ -123,15 +134,20 @@ export default function EditFlirtScreen() {
         photo_uri: photoUri,
         met_date: metDate?.toISOString() || null,
         met_place: metPlace.trim() || null,
-        age: age ? parseInt(age) : null,
+        birth_date: birthDate?.toISOString() || null,
         zodiac,
         height: height.trim() || null,
         body_type: bodyType || null,
         hair_color: hairColor || null,
         eye_color: eyeColor || null,
+        skin_tone: skinTone || null,
+        hometown: hometown.trim() || null,
+        occupation: occupation.trim() || null,
+        city: city.trim() || null,
         instagram: instagram.trim() || null,
         tiktok: tiktok.trim() || null,
         snapchat: snapchat.trim() || null,
+        x_handle: xHandle.trim() || null,
         phone: phone.trim() || null,
         notes: notes.trim() || null,
       });
@@ -179,7 +195,7 @@ export default function EditFlirtScreen() {
 
           {/* Name */}
           <Text style={styles.label}>Name *</Text>
-          <TextInput style={styles.input} value={name} onChangeText={setName} placeholder="Their name" placeholderTextColor={Colors.textTertiary} />
+          <TextInput style={styles.input} value={name} onChangeText={setName} placeholder="Their name" placeholderTextColor={Colors.textTertiary} maxLength={30} />
 
           {/* Date */}
           <Text style={styles.label}>When did you meet?</Text>
@@ -196,90 +212,92 @@ export default function EditFlirtScreen() {
           </Pressable>
 
           {showDatePicker && (
-            <DateTimePicker
-              value={metDate || new Date()}
-              mode="date"
-              display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-              onChange={(_, d) => {
-                if (Platform.OS === 'android') setShowDatePicker(false);
-                if (d) setMetDate(d);
-              }}
-              maximumDate={new Date()}
-            />
+            <View>
+              {Platform.OS === 'ios' && (
+                <Pressable style={{ alignSelf: 'flex-end', paddingVertical: Spacing.sm }} onPress={() => setShowDatePicker(false)}>
+                  <Text style={{ fontSize: FontSize.md, fontWeight: FontWeight.semibold, color: Colors.primary }}>Done</Text>
+                </Pressable>
+              )}
+              <DateTimePicker
+                value={metDate || new Date()}
+                mode="date"
+                display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                onChange={(_, d) => {
+                  if (Platform.OS === 'android') setShowDatePicker(false);
+                  if (d) setMetDate(d);
+                }}
+                maximumDate={new Date()}
+              />
+            </View>
           )}
 
           <Text style={styles.label}>Where?</Text>
-          <TextInput style={styles.input} value={metPlace} onChangeText={setMetPlace} placeholder="Coffee shop, Tinder, etc." placeholderTextColor={Colors.textTertiary} />
+          <TextInput style={styles.input} value={metPlace} onChangeText={setMetPlace} placeholder="Coffee shop, Tinder, etc." placeholderTextColor={Colors.textTertiary} maxLength={50} />
 
-          {/* Details */}
-          <View style={styles.twoCol}>
-            <View style={{ flex: 1 }}>
-              <Text style={styles.label}>Age</Text>
-              <TextInput style={styles.input} value={age} onChangeText={setAge} placeholder="25" placeholderTextColor={Colors.textTertiary} keyboardType="numeric" />
-            </View>
-            <View style={{ flex: 1 }}>
-              <Text style={styles.label}>Height</Text>
-              <TextInput style={styles.input} value={height} onChangeText={setHeight} placeholder="175cm" placeholderTextColor={Colors.textTertiary} />
-            </View>
-          </View>
-
-          {/* Traits */}
-          <Pressable style={styles.traitsHeader} onPress={() => setShowTraits(!showTraits)}>
-            <Text style={[styles.label, { marginBottom: 0 }]}>Pros & Cons</Text>
-            <Ionicons name={showTraits ? 'chevron-up' : 'chevron-down'} size={18} color={Colors.textTertiary} />
+          {/* Birth Date */}
+          <Text style={styles.label}>Birth Date</Text>
+          <Pressable
+            style={styles.input}
+            onPress={() => {
+              if (!birthDate) setBirthDate(new Date(2000, 0, 1));
+              setShowBirthPicker(true);
+            }}
+          >
+            <Text style={[{ fontSize: FontSize.md }, !birthDate ? { color: Colors.textTertiary } : { color: Colors.textPrimary }]}>
+              {birthDate
+                ? `${birthDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })} (${Math.floor((Date.now() - birthDate.getTime()) / 31557600000)} y/o)`
+                : 'Select birth date'}
+            </Text>
           </Pressable>
 
-          {showTraits && (
-            <View style={styles.traitsContainer}>
-              <View style={styles.traitGroupLabelRow}>
-                <Ionicons name="thumbs-up-outline" size={14} color={Colors.success} />
-                <Text style={styles.traitGroupLabel}>Pros</Text>
-              </View>
-              <View style={styles.traitChips}>
-                {presetTags.filter(t => t.type === 'pro').map(tag => {
-                  const isSelected = traits.some(t => t.type === 'pro' && t.label === tag.label);
-                  return (
-                    <Pressable
-                      key={tag.id}
-                      style={[styles.traitChip, isSelected && styles.traitChipProSelected]}
-                      onPress={() => handleToggleTrait('pro', tag.label)}
-                    >
-                      <Text style={[styles.traitChipText, isSelected && styles.traitChipTextSelected]}>{tag.label}</Text>
-                    </Pressable>
-                  );
-                })}
-              </View>
-
-              <View style={[styles.traitGroupLabelRow, { marginTop: Spacing.lg }]}>
-                <Ionicons name="thumbs-down-outline" size={14} color={Colors.danger} />
-                <Text style={styles.traitGroupLabel}>Cons</Text>
-              </View>
-              <View style={styles.traitChips}>
-                {presetTags.filter(t => t.type === 'con').map(tag => {
-                  const isSelected = traits.some(t => t.type === 'con' && t.label === tag.label);
-                  return (
-                    <Pressable
-                      key={tag.id}
-                      style={[styles.traitChip, isSelected && styles.traitChipConSelected]}
-                      onPress={() => handleToggleTrait('con', tag.label)}
-                    >
-                      <Text style={[styles.traitChipText, isSelected && styles.traitChipTextSelected]}>{tag.label}</Text>
-                    </Pressable>
-                  );
-                })}
-              </View>
+          {showBirthPicker && (
+            <View>
+              {Platform.OS === 'ios' && (
+                <Pressable style={{ alignSelf: 'flex-end', paddingVertical: Spacing.sm }} onPress={() => setShowBirthPicker(false)}>
+                  <Text style={{ fontSize: FontSize.md, fontWeight: FontWeight.semibold, color: Colors.primary }}>Done</Text>
+                </Pressable>
+              )}
+              <DateTimePicker
+                value={birthDate || new Date(2000, 0, 1)}
+                mode="date"
+                display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                onChange={(_, d) => {
+                  if (Platform.OS === 'android') setShowBirthPicker(false);
+                  if (d) setBirthDate(d);
+                }}
+                maximumDate={new Date()}
+                minimumDate={new Date(1950, 0, 1)}
+              />
             </View>
           )}
 
+          {/* Details */}
+          <Text style={styles.label}>Height</Text>
+          <TextInput style={styles.input} value={height} onChangeText={setHeight} placeholder="175cm" placeholderTextColor={Colors.textTertiary} maxLength={10} />
+
+          <Text style={styles.label}>Skin Tone</Text>
+          <TextInput style={styles.input} value={skinTone} onChangeText={setSkinTone} placeholder="Fair, Medium, etc." placeholderTextColor={Colors.textTertiary} maxLength={20} />
+
+          <Text style={styles.label}>Hometown</Text>
+          <TextInput style={styles.input} value={hometown} onChangeText={setHometown} placeholder="Where are they from?" placeholderTextColor={Colors.textTertiary} maxLength={40} />
+
+          <Text style={styles.label}>Lives in</Text>
+          <TextInput style={styles.input} value={city} onChangeText={setCity} placeholder="Current city" placeholderTextColor={Colors.textTertiary} maxLength={40} />
+
+          <Text style={styles.label}>Occupation</Text>
+          <TextInput style={styles.input} value={occupation} onChangeText={setOccupation} placeholder="What do they do?" placeholderTextColor={Colors.textTertiary} maxLength={40} />
+
           {/* Social */}
           <Text style={styles.label}>Instagram</Text>
-          <TextInput style={styles.input} value={instagram} onChangeText={setInstagram} placeholder="@username" placeholderTextColor={Colors.textTertiary} />
+          <TextInput style={styles.input} value={instagram} onChangeText={setInstagram} placeholder="@username" placeholderTextColor={Colors.textTertiary} maxLength={30} />
           <Text style={styles.label}>TikTok</Text>
-          <TextInput style={styles.input} value={tiktok} onChangeText={setTiktok} placeholder="@username" placeholderTextColor={Colors.textTertiary} />
+          <TextInput style={styles.input} value={tiktok} onChangeText={setTiktok} placeholder="@username" placeholderTextColor={Colors.textTertiary} maxLength={30} />
           <Text style={styles.label}>Snapchat</Text>
-          <TextInput style={styles.input} value={snapchat} onChangeText={setSnapchat} placeholder="username" placeholderTextColor={Colors.textTertiary} />
+          <TextInput style={styles.input} value={snapchat} onChangeText={setSnapchat} placeholder="username" placeholderTextColor={Colors.textTertiary} maxLength={30} />
+          <Text style={styles.label}>X</Text>
+          <TextInput style={styles.input} value={xHandle} onChangeText={setXHandle} placeholder="@username" placeholderTextColor={Colors.textTertiary} maxLength={30} />
           <Text style={styles.label}>Phone</Text>
-          <TextInput style={styles.input} value={phone} onChangeText={setPhone} placeholder="+1 234 567 8900" placeholderTextColor={Colors.textTertiary} keyboardType="phone-pad" />
+          <TextInput style={styles.input} value={phone} onChangeText={setPhone} placeholder="+1 234 567 8900" placeholderTextColor={Colors.textTertiary} keyboardType="phone-pad" maxLength={20} />
 
           {/* Notes */}
           <Text style={styles.label}>Notes</Text>
@@ -291,7 +309,9 @@ export default function EditFlirtScreen() {
             placeholderTextColor={Colors.textTertiary}
             multiline
             textAlignVertical="top"
+            maxLength={200}
           />
+          <Text style={{ fontSize: FontSize.xs, color: Colors.textTertiary, textAlign: 'right', marginTop: 4 }}>{notes.length}/200</Text>
 
           <View style={{ height: 80 }} />
         </ScrollView>

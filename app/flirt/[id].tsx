@@ -149,23 +149,34 @@ export default function FlirtDetailScreen() {
 
         {/* Details */}
         <Animated.View entering={FadeInDown.duration(400).delay(100)} style={styles.detailsGrid}>
-          {flirt.age && <DetailChip icon="person-outline" text={`${flirt.age} years old`} />}
+          {flirt.birth_date && <DetailChip icon="person-outline" text={`${Math.floor((Date.now() - new Date(flirt.birth_date).getTime()) / 31557600000)} years old`} />}
+          {flirt.zodiac && <DetailChip icon="star-outline" text={flirt.zodiac} />}
           {flirt.height && <DetailChip icon="resize-outline" text={flirt.height} />}
           {flirt.body_type && <DetailChip icon="body-outline" text={flirt.body_type} />}
           {flirt.hair_color && <DetailChip icon="color-palette-outline" text={`${flirt.hair_color} hair`} />}
           {flirt.eye_color && <DetailChip icon="eye-outline" text={`${flirt.eye_color} eyes`} />}
+          {flirt.skin_tone && <DetailChip icon="ellipse-outline" text={`${flirt.skin_tone} skin`} />}
+          {flirt.hometown && <DetailChip icon="flag-outline" text={`From ${flirt.hometown}`} />}
+          {flirt.city && <DetailChip icon="navigate-outline" text={`Lives in ${flirt.city}`} />}
+          {flirt.occupation && <DetailChip icon="briefcase-outline" text={flirt.occupation} />}
           {flirt.met_place && <DetailChip icon="location-outline" text={`Met at ${flirt.met_place}`} />}
           {flirt.met_date && <DetailChip icon="calendar-outline" text={`Met ${formatDate(flirt.met_date)}`} />}
         </Animated.View>
 
         {/* Social */}
-        {(flirt.instagram || flirt.tiktok || flirt.snapchat || flirt.phone) && (
+        {(flirt.instagram || flirt.tiktok || flirt.snapchat || flirt.x_handle || flirt.phone) && (
           <Animated.View entering={FadeInDown.duration(400).delay(200)} style={styles.socialSection}>
             <Text style={styles.sectionTitle}>Social Media</Text>
             <View style={styles.socialRow}>
               {flirt.instagram && <SocialChip icon="logo-instagram" text={flirt.instagram} />}
               {flirt.tiktok && <SocialChip icon="logo-tiktok" text={flirt.tiktok} />}
               {flirt.snapchat && <SocialChip icon="logo-snapchat" text={flirt.snapchat} />}
+              {flirt.x_handle && (
+                <View style={styles.socialChip}>
+                  <Text style={{ fontSize: 14, fontWeight: '700', color: Colors.secondary }}>X</Text>
+                  <Text style={styles.socialChipText}>{flirt.x_handle}</Text>
+                </View>
+              )}
               {flirt.phone && <SocialChip icon="call-outline" text={flirt.phone} />}
             </View>
           </Animated.View>

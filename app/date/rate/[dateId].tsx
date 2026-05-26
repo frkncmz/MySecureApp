@@ -168,10 +168,6 @@ export default function RateDateScreen() {
               style={[
                 styles.progressDot,
                 i === currentIndex && styles.progressDotActive,
-                i < currentIndex && styles.progressDotDone,
-                answers[i]?.sentiment === 'good' && i < currentIndex && { backgroundColor: Colors.success },
-                answers[i]?.sentiment === 'bad' && i < currentIndex && { backgroundColor: Colors.danger },
-                answers[i]?.sentiment === 'neutral' && i < currentIndex && { backgroundColor: Colors.warning },
               ]}
             />
           ))}
@@ -232,7 +228,7 @@ export default function RateDateScreen() {
                   ]}
                   onPress={() => handleSelectSentiment('good')}
                 >
-                  <Ionicons name="thumbs-up" size={28} color={Colors.success} />
+                  <Ionicons name="thumbs-up" size={28} color={currentAnswer.sentiment === 'good' ? Colors.white : Colors.success} />
                   <Text style={[styles.sentimentLabel, currentAnswer.sentiment === 'good' && { color: Colors.white }]}>Good</Text>
                 </Pressable>
 
@@ -245,7 +241,7 @@ export default function RateDateScreen() {
                   ]}
                   onPress={() => handleSelectSentiment('neutral')}
                 >
-                  <Ionicons name="remove-circle-outline" size={28} color={Colors.warning} />
+                  <Ionicons name="remove-circle-outline" size={28} color={currentAnswer.sentiment === 'neutral' ? Colors.white : Colors.warning} />
                   <Text style={[styles.sentimentLabel, currentAnswer.sentiment === 'neutral' && { color: Colors.white }]}>Neutral</Text>
                 </Pressable>
 
@@ -258,7 +254,7 @@ export default function RateDateScreen() {
                   ]}
                   onPress={() => handleSelectSentiment('bad')}
                 >
-                  <Ionicons name="thumbs-down" size={28} color={Colors.danger} />
+                  <Ionicons name="thumbs-down" size={28} color={currentAnswer.sentiment === 'bad' ? Colors.white : Colors.danger} />
                   <Text style={[styles.sentimentLabel, currentAnswer.sentiment === 'bad' && { color: Colors.white }]}>Bad</Text>
                 </Pressable>
               </View>
@@ -283,7 +279,24 @@ export default function RateDateScreen() {
         )}
         <View style={{ flex: 1 }} />
 
-        {isLastQuestion && currentAnswer.sentiment ? (
+        {/* Skip button */}
+        {!currentAnswer.sentiment && (
+          <Pressable
+            style={styles.skipButton}
+            onPress={() => {
+              if (isLastQuestion) {
+                handleSubmit();
+              } else {
+                setCurrentIndex(currentIndex + 1);
+                setPhase('option');
+              }
+            }}
+          >
+            <Text style={styles.skipText}>{isLastQuestion ? 'Skip & Submit' : 'Skip'}</Text>
+          </Pressable>
+        )}
+
+        {isLastQuestion && currentAnswer.sentiment && (
           <Pressable
             style={({ pressed }) => [styles.submitButton, pressed && styles.submitButtonPressed]}
             onPress={handleSubmit}
@@ -294,19 +307,6 @@ export default function RateDateScreen() {
               {saving ? 'Saving...' : 'Submit Rating'}
             </Text>
           </Pressable>
-        ) : (
-          !isLastQuestion && currentAnswer.sentiment && (
-            <Pressable
-              style={({ pressed }) => [styles.nextButton, pressed && styles.nextButtonPressed]}
-              onPress={() => {
-                setCurrentIndex(currentIndex + 1);
-                setPhase('option');
-              }}
-            >
-              <Text style={styles.nextButtonText}>Next</Text>
-              <Ionicons name="chevron-forward" size={20} color={Colors.textOnPrimary} />
-            </Pressable>
-          )
         )}
       </View>
     </View>
@@ -327,7 +327,6 @@ const styles = StyleSheet.create({
   progressRow: { flexDirection: 'row', justifyContent: 'center', gap: 6, marginBottom: Spacing.xxl },
   progressDot: { width: 10, height: 10, borderRadius: 5, backgroundColor: Colors.border },
   progressDotActive: { backgroundColor: Colors.primary, width: 24 },
-  progressDotDone: { backgroundColor: Colors.success },
 
   flirtCard: { alignItems: 'center', marginBottom: Spacing.xxl },
   flirtAvatar: { width: 72, height: 72, borderRadius: 36 },
@@ -362,6 +361,8 @@ const styles = StyleSheet.create({
   bottomBar: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: Spacing.xl, paddingTop: Spacing.lg, borderTopWidth: 1, borderTopColor: Colors.border, backgroundColor: Colors.background },
   prevButton: { flexDirection: 'row', alignItems: 'center', gap: 4 },
   prevButtonText: { fontSize: FontSize.md, color: Colors.textSecondary },
+  skipButton: { marginRight: Spacing.md, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.md },
+  skipText: { fontSize: FontSize.md, color: Colors.textTertiary, fontWeight: FontWeight.medium },
   nextButton: { flexDirection: 'row', alignItems: 'center', gap: Spacing.xs, backgroundColor: Colors.primary, borderRadius: BorderRadius.md, paddingHorizontal: Spacing.xxl, paddingVertical: Spacing.md },
   nextButtonPressed: { backgroundColor: Colors.primaryDark },
   nextButtonText: { fontSize: FontSize.md, fontWeight: FontWeight.semibold, color: Colors.textOnPrimary },

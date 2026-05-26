@@ -27,14 +27,20 @@ export default function AddFlirtScreen() {
   const [metDate, setMetDate] = useState<Date | null>(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [metPlace, setMetPlace] = useState('');
-  const [age, setAge] = useState('');
+  const [birthDate, setBirthDate] = useState<Date | null>(null);
+  const [showBirthPicker, setShowBirthPicker] = useState(false);
   const [height, setHeight] = useState('');
   const [bodyType, setBodyType] = useState('');
   const [hairColor, setHairColor] = useState('');
   const [eyeColor, setEyeColor] = useState('');
+  const [skinTone, setSkinTone] = useState('');
+  const [hometown, setHometown] = useState('');
+  const [occupation, setOccupation] = useState('');
+  const [city, setCity] = useState('');
   const [instagram, setInstagram] = useState('');
   const [tiktok, setTiktok] = useState('');
   const [snapchat, setSnapchat] = useState('');
+  const [xHandle, setXHandle] = useState('');
   const [phone, setPhone] = useState('');
   const [notes, setNotes] = useState('');
   const [saving, setSaving] = useState(false);
@@ -62,10 +68,9 @@ export default function AddFlirtScreen() {
     setSaving(true);
 
     try {
-      const parsedAge = age ? parseInt(age) : null;
       let zodiac: string | null = null;
-      if (metDate) {
-        zodiac = getZodiacSign(metDate.getMonth() + 1, metDate.getDate());
+      if (birthDate) {
+        zodiac = getZodiacSign(birthDate.getMonth() + 1, birthDate.getDate());
       }
 
       const id = await createFlirt({
@@ -73,15 +78,20 @@ export default function AddFlirtScreen() {
         photo_uri: photoUri,
         met_date: metDate?.toISOString() || null,
         met_place: metPlace.trim() || null,
-        age: parsedAge,
+        birth_date: birthDate?.toISOString() || null,
         zodiac,
         height: height.trim() || null,
         body_type: bodyType || null,
         hair_color: hairColor || null,
         eye_color: eyeColor || null,
+        skin_tone: skinTone || null,
+        hometown: hometown.trim() || null,
+        occupation: occupation.trim() || null,
+        city: city.trim() || null,
         instagram: instagram.trim() || null,
         tiktok: tiktok.trim() || null,
         snapchat: snapchat.trim() || null,
+        x_handle: xHandle.trim() || null,
         phone: phone.trim() || null,
         interests: null,
         notes: notes.trim() || null,
@@ -90,7 +100,7 @@ export default function AddFlirtScreen() {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       await refreshAll();
       await showInterstitialAd();
-      router.back();
+      router.replace(`/evaluate/${id}`);
     } catch (error) {
       Alert.alert('Error', 'Failed to save flirt.');
     } finally {
@@ -112,7 +122,7 @@ export default function AddFlirtScreen() {
             onPress={handleSave}
             disabled={saving}
           >
-            <Text style={styles.saveButtonText}>{saving ? 'Saving...' : 'Save'}</Text>
+            <Text style={styles.saveButtonText}>{saving ? 'Saving...' : 'Next'}</Text>
           </Pressable>
         </View>
 
@@ -131,7 +141,7 @@ export default function AddFlirtScreen() {
 
           {/* Name */}
           <SectionTitle title="Basics" />
-          <InputField label="Name" value={name} onChangeText={setName} placeholder="Their name" required />
+          <InputField label="Name" value={name} onChangeText={setName} placeholder="Their name" required maxLength={30} />
 
           <Pressable
             style={styles.dateField}
@@ -147,26 +157,67 @@ export default function AddFlirtScreen() {
           </Pressable>
 
           {showDatePicker && (
-            <DateTimePicker
-              value={metDate || new Date()}
-              mode="date"
-              display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-              onChange={(_, date) => {
-                if (Platform.OS === 'android') setShowDatePicker(false);
-                if (date) setMetDate(date);
-              }}
-              maximumDate={new Date()}
-            />
+            <View>
+              {Platform.OS === 'ios' && (
+                <Pressable style={{ alignSelf: 'flex-end', paddingVertical: Spacing.sm }} onPress={() => setShowDatePicker(false)}>
+                  <Text style={{ fontSize: FontSize.md, fontWeight: FontWeight.semibold, color: Colors.primary }}>Done</Text>
+                </Pressable>
+              )}
+              <DateTimePicker
+                value={metDate || new Date()}
+                mode="date"
+                display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                onChange={(_, date) => {
+                  if (Platform.OS === 'android') setShowDatePicker(false);
+                  if (date) setMetDate(date);
+                }}
+                maximumDate={new Date()}
+              />
+            </View>
           )}
 
-          <InputField label="Where did you meet?" value={metPlace} onChangeText={setMetPlace} placeholder="Coffee shop, Tinder, etc." />
+          <InputField label="Where did you meet?" value={metPlace} onChangeText={setMetPlace} placeholder="Coffee shop, Tinder, etc." maxLength={50} />
+
+          {/* Birth Date */}
+          <Pressable
+            style={styles.dateField}
+            onPress={() => {
+              if (!birthDate) setBirthDate(new Date(2000, 0, 1));
+              setShowBirthPicker(true);
+            }}
+          >
+            <Text style={styles.inputLabel}>Birth Date</Text>
+            <Text style={[styles.dateFieldText, !birthDate && { color: Colors.textTertiary }]}>
+              {birthDate
+                ? `${birthDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })} (${Math.floor((Date.now() - birthDate.getTime()) / 31557600000)} y/o)`
+                : 'Select birth date'}
+            </Text>
+          </Pressable>
+
+          {showBirthPicker && (
+            <View>
+              {Platform.OS === 'ios' && (
+                <Pressable style={{ alignSelf: 'flex-end', paddingVertical: Spacing.sm }} onPress={() => setShowBirthPicker(false)}>
+                  <Text style={{ fontSize: FontSize.md, fontWeight: FontWeight.semibold, color: Colors.primary }}>Done</Text>
+                </Pressable>
+              )}
+              <DateTimePicker
+                value={birthDate || new Date(2000, 0, 1)}
+                mode="date"
+                display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                onChange={(_, date) => {
+                  if (Platform.OS === 'android') setShowBirthPicker(false);
+                  if (date) setBirthDate(date);
+                }}
+                maximumDate={new Date()}
+                minimumDate={new Date(1950, 0, 1)}
+              />
+            </View>
+          )}
 
           {/* Details */}
           <SectionTitle title="Details" />
-          <View style={styles.twoCol}>
-            <InputField label="Age" value={age} onChangeText={setAge} placeholder="25" keyboardType="numeric" half />
-            <InputField label="Height" value={height} onChangeText={setHeight} placeholder="175cm" half />
-          </View>
+          <InputField label="Height" value={height} onChangeText={setHeight} placeholder="175cm" maxLength={10} />
 
           <ChipSelector
             label="Body Type"
@@ -186,25 +237,42 @@ export default function AddFlirtScreen() {
             selected={eyeColor}
             onSelect={setEyeColor}
           />
+          <ChipSelector
+            label="Skin Tone"
+            options={['Fair', 'Light', 'Medium', 'Olive', 'Tan', 'Brown', 'Dark']}
+            selected={skinTone}
+            onSelect={setSkinTone}
+          />
+
+          {/* Personal */}
+          <SectionTitle title="Personal" />
+          <InputField label="Hometown" value={hometown} onChangeText={setHometown} placeholder="Where are they from?" icon="location-outline" maxLength={40} />
+          <InputField label="Lives in" value={city} onChangeText={setCity} placeholder="Current city" icon="navigate-outline" maxLength={40} />
+          <InputField label="Occupation" value={occupation} onChangeText={setOccupation} placeholder="What do they do?" icon="briefcase-outline" maxLength={40} />
 
           {/* Social Media */}
           <SectionTitle title="Social Media" />
-          <InputField label="Instagram" value={instagram} onChangeText={setInstagram} placeholder="@username" icon="logo-instagram" />
-          <InputField label="TikTok" value={tiktok} onChangeText={setTiktok} placeholder="@username" icon="logo-tiktok" />
-          <InputField label="Snapchat" value={snapchat} onChangeText={setSnapchat} placeholder="username" icon="logo-snapchat" />
-          <InputField label="Phone" value={phone} onChangeText={setPhone} placeholder="+1 234 567 8900" icon="call-outline" keyboardType="phone-pad" />
+          <InputField label="Instagram" value={instagram} onChangeText={setInstagram} placeholder="@username" icon="logo-instagram" maxLength={30} />
+          <InputField label="TikTok" value={tiktok} onChangeText={setTiktok} placeholder="@username" icon="logo-tiktok" maxLength={30} />
+          <InputField label="Snapchat" value={snapchat} onChangeText={setSnapchat} placeholder="@username" icon="logo-snapchat" maxLength={30} />
+          <InputField label="X" value={xHandle} onChangeText={setXHandle} placeholder="@username" iconText="X" maxLength={30} />
+          <InputField label="Phone" value={phone} onChangeText={setPhone} placeholder="+1 234 567 8900" icon="call-outline" keyboardType="phone-pad" maxLength={20} />
 
           {/* Notes */}
           <SectionTitle title="Notes" />
-          <TextInput
-            style={styles.notesInput}
-            value={notes}
-            onChangeText={setNotes}
-            placeholder="First impressions, things to remember..."
-            placeholderTextColor={Colors.textTertiary}
-            multiline
-            textAlignVertical="top"
-          />
+          <View>
+            <TextInput
+              style={styles.notesInput}
+              value={notes}
+              onChangeText={setNotes}
+              placeholder="First impressions, things to remember..."
+              placeholderTextColor={Colors.textTertiary}
+              multiline
+              textAlignVertical="top"
+              maxLength={200}
+            />
+            <Text style={{ fontSize: FontSize.xs, color: Colors.textTertiary, textAlign: 'right', marginTop: 4 }}>{notes.length}/200</Text>
+          </View>
 
           <View style={{ height: 80 }} />
         </ScrollView>
@@ -225,10 +293,10 @@ function SectionTitle({ title }: { title: string }) {
 }
 
 function InputField({
-  label, value, onChangeText, placeholder, icon, keyboardType, required, half, multiline,
+  label, value, onChangeText, placeholder, icon, iconText, keyboardType, required, half, multiline, maxLength,
 }: {
   label: string; value: string; onChangeText: (t: string) => void; placeholder?: string;
-  icon?: keyof typeof Ionicons.glyphMap; keyboardType?: any; required?: boolean; half?: boolean; multiline?: boolean;
+  icon?: keyof typeof Ionicons.glyphMap; iconText?: string; keyboardType?: any; required?: boolean; half?: boolean; multiline?: boolean; maxLength?: number;
 }) {
   return (
     <View style={[sStyles.inputContainer, half && sStyles.halfInput]}>
@@ -237,6 +305,7 @@ function InputField({
       </Text>
       <View style={sStyles.inputWrapper}>
         {icon && <Ionicons name={icon} size={18} color={Colors.textTertiary} />}
+        {iconText && <Text style={{ fontSize: FontSize.md, fontWeight: FontWeight.bold, color: Colors.textTertiary }}>{iconText}</Text>}
         <TextInput
           style={sStyles.input}
           value={value}
@@ -245,6 +314,7 @@ function InputField({
           placeholderTextColor={Colors.textTertiary}
           keyboardType={keyboardType}
           multiline={multiline}
+          maxLength={maxLength}
         />
       </View>
     </View>

@@ -7,15 +7,20 @@ export interface Flirt {
   photo_uri: string | null;
   met_date: string | null;
   met_place: string | null;
-  age: number | null;
+  birth_date: string | null;
   zodiac: string | null;
   height: string | null;
   body_type: string | null;
   hair_color: string | null;
   eye_color: string | null;
+  skin_tone: string | null;
+  hometown: string | null;
+  occupation: string | null;
+  city: string | null;
   instagram: string | null;
   tiktok: string | null;
   snapchat: string | null;
+  x_handle: string | null;
   phone: string | null;
   interests: string | null; // JSON array
   status: string;
@@ -45,9 +50,9 @@ export async function createFlirt(data: Omit<Flirt, 'id' | 'status' | 'score' | 
   const id = Crypto.randomUUID();
 
   await db.runAsync(
-    `INSERT INTO flirts (id, name, photo_uri, met_date, met_place, age, zodiac, height, body_type, hair_color, eye_color, instagram, tiktok, snapchat, phone, interests, notes)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-    [id, data.name, data.photo_uri, data.met_date, data.met_place, data.age, data.zodiac, data.height, data.body_type, data.hair_color, data.eye_color, data.instagram, data.tiktok, data.snapchat, data.phone, data.interests, data.notes]
+    `INSERT INTO flirts (id, name, photo_uri, met_date, met_place, birth_date, zodiac, height, body_type, hair_color, eye_color, skin_tone, hometown, occupation, city, instagram, tiktok, snapchat, x_handle, phone, interests, notes)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    [id, data.name, data.photo_uri, data.met_date, data.met_place, data.birth_date, data.zodiac, data.height, data.body_type, data.hair_color, data.eye_color, data.skin_tone, data.hometown, data.occupation, data.city, data.instagram, data.tiktok, data.snapchat, data.x_handle, data.phone, data.interests, data.notes]
   );
 
   return id;

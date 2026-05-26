@@ -5,12 +5,10 @@ import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 import { Image } from 'expo-image';
-import * as SQLite from 'expo-sqlite';
 
 import { Colors, Spacing, BorderRadius, FontSize, FontWeight, Shadow } from '@/constants/theme';
 import { exportData, importData } from '@/database/backup';
-import { closeDatabase } from '@/database/db';
-import { resetOnboarding } from '@/utils/onboarding';
+import { resetDatabase } from '@/database/db';
 import LegalModal from '@/components/LegalModal';
 import privacyPolicy from '@/constants/privacyPolicy.json';
 import termsOfService from '@/constants/termsOfService.json';
@@ -68,12 +66,15 @@ export default function SettingsScreen() {
           style: 'destructive',
           onPress: async () => {
             try {
-              await closeDatabase();
-              await SQLite.deleteDatabaseAsync('lovelog.db');
-              await resetOnboarding();
+              await resetDatabase();
+
+              const AsyncStorage = require('@react-native-async-storage/async-storage').default;
+              await AsyncStorage.clear();
+
               Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
               router.replace('/onboarding');
             } catch (error) {
+              console.error('Failed to clear data:', error);
               Alert.alert('Error', 'Failed to clear data.');
             }
           },
@@ -89,13 +90,6 @@ export default function SettingsScreen() {
       contentContainerStyle={{ paddingTop: insets.top + Spacing.lg, paddingBottom: 120 }}
       showsVerticalScrollIndicator={false}
     >
-      {/* Header */}
-      <View style={styles.header}>
-        <Image source={require('@/assets/icon.png')} style={styles.logo} contentFit="contain" />
-        <Text style={styles.title}>LoveLog</Text>
-        <Text style={styles.version}>Version 1.0.0</Text>
-      </View>
-
       {/* Backup Section */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Data Management</Text>
@@ -222,6 +216,14 @@ export default function SettingsScreen() {
           <Ionicons name="chevron-forward" size={18} color={Colors.textTertiary} />
         </Pressable>
       </View>
+
+      {/* App Branding */}
+      <View style={styles.header}>
+        <Image source={require('@/assets/icon.png')} style={styles.logo} contentFit="contain" />
+        <Text style={styles.title}>LoveLog</Text>
+        <Text style={styles.version}>Version 1.0.0</Text>
+        <Text style={styles.creator}>Made by Furkan Çömez</Text>
+      </View>
     </ScrollView>
 
     {/* Legal Modals */}
@@ -245,6 +247,7 @@ const styles = StyleSheet.create({
   logo: { width: 72, height: 72, borderRadius: BorderRadius.xl, marginBottom: Spacing.md },
   title: { fontSize: FontSize.xxl, fontWeight: FontWeight.bold, color: Colors.textPrimary },
   version: { fontSize: FontSize.sm, color: Colors.textTertiary, marginTop: 2 },
+  creator: { fontSize: FontSize.sm, color: Colors.textTertiary, marginTop: 2 },
 
   section: { paddingHorizontal: Spacing.xl, marginBottom: Spacing.xxl },
   sectionTitle: { fontSize: FontSize.sm, fontWeight: FontWeight.semibold, color: Colors.textTertiary, textTransform: 'uppercase', letterSpacing: 1, marginBottom: Spacing.md },

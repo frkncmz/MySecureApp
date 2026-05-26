@@ -17,14 +17,21 @@ import { showInterstitialAd } from '@/services/adService';
 export default function AddDateScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const params = useLocalSearchParams<{ flirtId?: string; flirtName?: string }>();
+  const params = useLocalSearchParams<{ flirtId?: string; flirtName?: string; selectedDate?: string }>();
   const { refreshAll } = useStore();
 
   const [flirts, setFlirts] = useState<Flirt[]>([]);
   const [selectedFlirtId, setSelectedFlirtId] = useState<string | null>(params.flirtId || null);
   const [selectedFlirtName, setSelectedFlirtName] = useState(params.flirtName || '');
-  const [date, setDate] = useState(new Date());
+  const [date, setDate] = useState(() => {
+    if (params.selectedDate) {
+      const [y, m, d] = params.selectedDate.split('-').map(Number);
+      return new Date(y, m - 1, d);
+    }
+    return new Date();
+  });
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const hasPreselectedDate = !!params.selectedDate;
   const [location, setLocation] = useState('');
   const [notes, setNotes] = useState('');
   const [saving, setSaving] = useState(false);
@@ -47,9 +54,9 @@ export default function AddDateScreen() {
     setSaving(true);
 
     try {
-      await createDate({
+      const dateId = await createDate({
         flirt_id: selectedFlirtId,
-        date: date.toISOString(),
+        date: `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}T12:00:00.000Z`,
         location: location.trim() || undefined,
         notes: notes.trim() || undefined,
       });
@@ -57,7 +64,15 @@ export default function AddDateScreen() {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       await refreshAll();
       await showInterstitialAd();
-      router.back();
+
+      // If date is in the past or today, go to rating; otherwise just go back
+      const now = new Date();
+      const isPassedDate = date <= now;
+      if (isPassedDate) {
+        router.replace(`/date/rate/${dateId}`);
+      } else {
+        router.back();
+      }
     } catch (error) {
       Alert.alert('Error', 'Failed to save date.');
     } finally {
@@ -117,26 +132,44 @@ export default function AddDateScreen() {
 
         {/* Date Picker */}
         <Text style={styles.label}>When?</Text>
-        <Pressable
-          style={styles.dateButton}
-          onPress={() => setShowDatePicker(true)}
-        >
-          <Ionicons name="calendar-outline" size={20} color={Colors.primary} />
-          <Text style={styles.dateButtonText}>
-            {date.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
-          </Text>
-        </Pressable>
+        {hasPreselectedDate ? (
+          <View style={styles.dateButton}>
+            <Ionicons name="calendar-outline" size={20} color={Colors.primary} />
+            <Text style={styles.dateButtonText}>
+              {date.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+            </Text>
+          </View>
+        ) : (
+          <>
+            <Pressable
+              style={styles.dateButton}
+              onPress={() => setShowDatePicker(true)}
+            >
+              <Ionicons name="calendar-outline" size={20} color={Colors.primary} />
+              <Text style={styles.dateButtonText}>
+                {date.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+              </Text>
+            </Pressable>
 
-        {showDatePicker && (
-          <DateTimePicker
-            value={date}
-            mode="date"
-            display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-            onChange={(_, d) => {
-              if (Platform.OS === 'android') setShowDatePicker(false);
-              if (d) setDate(d);
-            }}
-          />
+            {showDatePicker && (
+              <View>
+                {Platform.OS === 'ios' && (
+                  <Pressable style={{ alignSelf: 'flex-end', paddingVertical: Spacing.sm }} onPress={() => setShowDatePicker(false)}>
+                    <Text style={{ fontSize: FontSize.md, fontWeight: FontWeight.semibold, color: Colors.primary }}>Done</Text>
+                  </Pressable>
+                )}
+                <DateTimePicker
+                  value={date}
+                  mode="date"
+                  display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                  onChange={(_, d) => {
+                    if (Platform.OS === 'android') setShowDatePicker(false);
+                    if (d) setDate(d);
+                  }}
+                />
+              </View>
+            )}
+          </>
         )}
 
         {/* Location */}

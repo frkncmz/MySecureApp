@@ -73,11 +73,12 @@ export default function OnboardingScreen() {
     }
   };
 
-  const getAge = (date: Date): number => {
+  const getAge = (date: Date | string): number => {
+    const d = date instanceof Date ? date : new Date(date);
     const today = new Date();
-    let age = today.getFullYear() - date.getFullYear();
-    const monthDiff = today.getMonth() - date.getMonth();
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < date.getDate())) {
+    let age = today.getFullYear() - d.getFullYear();
+    const monthDiff = today.getMonth() - d.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < d.getDate())) {
       age--;
     }
     return age;
@@ -187,7 +188,7 @@ export default function OnboardingScreen() {
         <Pressable
           style={({ pressed }) => [styles.dateButton, pressed && styles.dateButtonPressed]}
           onPress={() => {
-            if (!birthDate) setBirthDate(new Date());
+            if (!birthDate) setBirthDate(new Date(2004, 0, 1));
             setShowDatePicker(true);
           }}
         >
@@ -202,15 +203,22 @@ export default function OnboardingScreen() {
         )}
 
         {showDatePicker && (
-          <DateTimePicker
-            value={birthDate || new Date()}
-            mode="date"
-            display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-            onChange={handleDateChange}
-            maximumDate={new Date()}
-            minimumDate={new Date(1920, 0, 1)}
-            style={styles.datePicker}
-          />
+          <View>
+            {Platform.OS === 'ios' && (
+              <Pressable style={{ alignSelf: 'flex-end', paddingVertical: Spacing.sm, paddingHorizontal: Spacing.xl }} onPress={() => setShowDatePicker(false)}>
+                <Text style={{ fontSize: FontSize.md, fontWeight: FontWeight.semibold, color: Colors.primary }}>Done</Text>
+              </Pressable>
+            )}
+            <DateTimePicker
+              value={birthDate || new Date(2004, 0, 1)}
+              mode="date"
+              display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+              onChange={handleDateChange}
+              maximumDate={new Date()}
+              minimumDate={new Date(1950, 0, 1)}
+              style={styles.datePicker}
+            />
+          </View>
         )}
 
         {/* Legal text */}
