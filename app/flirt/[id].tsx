@@ -6,12 +6,13 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 import Animated, { FadeInDown, FadeIn } from 'react-native-reanimated';
 import { Image } from 'expo-image';
+import { useTranslation } from 'react-i18next';
 
 import { Colors, Spacing, BorderRadius, FontSize, FontWeight, Shadow, ScoreColor } from '@/constants/theme';
 import { Flirt, getFlirtById, archiveFlirt, unarchiveFlirt, deleteFlirt, getTraits, Trait } from '@/database/flirts';
 import { getDatesForFlirt, DateEntry } from '@/database/dates';
 import { getAnswersForReference, Answer } from '@/database/questions';
-import { formatDate, getZodiacSign, getZodiacIcon, getInitials } from '@/utils/helpers';
+import { formatDate, getInitials, isFuture, getZodiacIcon } from '@/utils/helpers';
 import { useStore } from '@/store/useStore';
 
 export default function FlirtDetailScreen() {
@@ -19,6 +20,7 @@ export default function FlirtDetailScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { refreshAll } = useStore();
+  const { t } = useTranslation();
 
   const [flirt, setFlirt] = useState<Flirt | null>(null);
   const [traits, setTraits] = useState<Trait[]>([]);
@@ -50,12 +52,14 @@ export default function FlirtDetailScreen() {
     if (!flirt) return;
     const isArchived = flirt.status === 'archived';
     Alert.alert(
-      isArchived ? 'Unarchive' : 'Archive',
-      `Are you sure you want to ${isArchived ? 'unarchive' : 'archive'} ${flirt.name}?`,
+      isArchived ? t('flirt_detail.archive_alert.title_unarchive') : t('flirt_detail.archive_alert.title_archive'),
+      isArchived
+        ? t('flirt_detail.archive_alert.msg_unarchive', { name: flirt.name })
+        : t('flirt_detail.archive_alert.msg_archive', { name: flirt.name }),
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: t('common.cancel'), style: 'cancel' },
         {
-          text: isArchived ? 'Unarchive' : 'Archive',
+          text: isArchived ? t('flirt_detail.archive_alert.title_unarchive') : t('flirt_detail.archive_alert.title_archive'),
           onPress: async () => {
             if (isArchived) await unarchiveFlirt(id!);
             else await archiveFlirt(id!);
@@ -71,12 +75,12 @@ export default function FlirtDetailScreen() {
   const handleDelete = () => {
     if (!flirt) return;
     Alert.alert(
-      'Delete Flirt',
-      `Are you sure you want to delete ${flirt.name}? This will also remove all dates and evaluations.`,
+      t('flirt_detail.delete_alert.title'),
+      t('flirt_detail.delete_alert.msg', { name: flirt.name }),
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: t('common.cancel'), style: 'cancel' },
         {
-          text: 'Delete',
+          text: t('common.delete'),
           style: 'destructive',
           onPress: async () => {
             await deleteFlirt(id!);
@@ -137,11 +141,11 @@ export default function FlirtDetailScreen() {
           <View style={styles.nameRow}>
             <Text style={styles.name}>{flirt.name}</Text>
             {flirt.zodiac && <Ionicons name={getZodiacIcon(flirt.zodiac) as any} size={16} color={Colors.textSecondary} style={{ marginRight: 4 }} />}
-            {flirt.zodiac && <Text style={styles.zodiac}>{flirt.zodiac}</Text>}
+            {flirt.zodiac && <Text style={styles.zodiac}>{t('zodiac.' + flirt.zodiac)}</Text>}
           </View>
           {flirt.total_ratings > 0 && (
             <View style={[styles.scoreBadgeLarge, { backgroundColor: ScoreColor.getColor(flirt.score) + '15' }]}>
-              <Text style={[styles.scoreLabel, { color: ScoreColor.getColor(flirt.score) }]}>{ScoreColor.getLabel(flirt.score)}</Text>
+              <Text style={[styles.scoreLabel, { color: ScoreColor.getColor(flirt.score) }]}>{ScoreColor.getLabel(flirt.score, t)}</Text>
               <Text style={[styles.scoreValue, { color: ScoreColor.getColor(flirt.score) }]}>{flirt.score.toFixed(1)}</Text>
             </View>
           )}
@@ -149,24 +153,52 @@ export default function FlirtDetailScreen() {
 
         {/* Details */}
         <Animated.View entering={FadeInDown.duration(400).delay(100)} style={styles.detailsGrid}>
-          {flirt.birth_date && <DetailChip icon="person-outline" text={`${Math.floor((Date.now() - new Date(flirt.birth_date).getTime()) / 31557600000)} years old`} />}
-          {flirt.zodiac && <DetailChip icon="star-outline" text={flirt.zodiac} />}
+          {flirt.birth_date && (
+            <DetailChip
+              icon="person-outline"
+              text={t('flirt_detail.years_old', {
+                count: Math.floor((Date.now() - new Date(flirt.birth_date).getTime()) / 31557600000),
+              })}
+            />
+          )}
+          {flirt.zodiac && <DetailChip icon="star-outline" text={t('zodiac.' + flirt.zodiac)} />}
           {flirt.height && <DetailChip icon="resize-outline" text={flirt.height} />}
-          {flirt.body_type && <DetailChip icon="body-outline" text={flirt.body_type} />}
-          {flirt.hair_color && <DetailChip icon="color-palette-outline" text={`${flirt.hair_color} hair`} />}
-          {flirt.eye_color && <DetailChip icon="eye-outline" text={`${flirt.eye_color} eyes`} />}
-          {flirt.skin_tone && <DetailChip icon="ellipse-outline" text={`${flirt.skin_tone} skin`} />}
-          {flirt.hometown && <DetailChip icon="flag-outline" text={`From ${flirt.hometown}`} />}
-          {flirt.city && <DetailChip icon="navigate-outline" text={`Lives in ${flirt.city}`} />}
+          {flirt.body_type && <DetailChip icon="body-outline" text={t('body_type.' + flirt.body_type, { defaultValue: flirt.body_type })} />}
+          {flirt.hair_color && (
+            <DetailChip
+              icon="color-palette-outline"
+              text={t('flirt_detail.hair_text', {
+                color: t('hair_color.' + flirt.hair_color, { defaultValue: flirt.hair_color }),
+              })}
+            />
+          )}
+          {flirt.eye_color && (
+            <DetailChip
+              icon="eye-outline"
+              text={t('flirt_detail.eye_text', {
+                color: t('eye_color.' + flirt.eye_color, { defaultValue: flirt.eye_color }),
+              })}
+            />
+          )}
+          {flirt.skin_tone && (
+            <DetailChip
+              icon="ellipse-outline"
+              text={t('flirt_detail.skin_text', {
+                color: t('skin_tone.' + flirt.skin_tone, { defaultValue: flirt.skin_tone }),
+              })}
+            />
+          )}
+          {flirt.hometown && <DetailChip icon="flag-outline" text={t('flirt_detail.from_text', { hometown: flirt.hometown })} />}
+          {flirt.city && <DetailChip icon="navigate-outline" text={t('flirt_detail.lives_text', { city: flirt.city })} />}
           {flirt.occupation && <DetailChip icon="briefcase-outline" text={flirt.occupation} />}
-          {flirt.met_place && <DetailChip icon="location-outline" text={`Met at ${flirt.met_place}`} />}
-          {flirt.met_date && <DetailChip icon="calendar-outline" text={`Met ${formatDate(flirt.met_date)}`} />}
+          {flirt.met_place && <DetailChip icon="location-outline" text={t('flirt_detail.met_at', { place: flirt.met_place })} />}
+          {flirt.met_date && <DetailChip icon="calendar-outline" text={t('flirt_detail.met_date', { date: formatDate(flirt.met_date) })} />}
         </Animated.View>
 
         {/* Social */}
         {(flirt.instagram || flirt.tiktok || flirt.snapchat || flirt.x_handle || flirt.phone) && (
           <Animated.View entering={FadeInDown.duration(400).delay(200)} style={styles.socialSection}>
-            <Text style={styles.sectionTitle}>Social Media</Text>
+            <Text style={styles.sectionTitle}>{t('flirt_detail.social')}</Text>
             <View style={styles.socialRow}>
               {flirt.instagram && <SocialChip icon="logo-instagram" text={flirt.instagram} />}
               {flirt.tiktok && <SocialChip icon="logo-tiktok" text={flirt.tiktok} />}
@@ -185,16 +217,20 @@ export default function FlirtDetailScreen() {
         {/* Pros & Cons */}
         {(pros.length > 0 || cons.length > 0) && (
           <Animated.View entering={FadeInDown.duration(400).delay(250)} style={styles.traitsSection}>
-            <Text style={styles.sectionTitle}>Pros & Cons</Text>
+            <Text style={styles.sectionTitle}>{t('flirt_detail.pros_cons')}</Text>
             {pros.length > 0 && (
               <View style={styles.traitGroup}>
                 <View style={styles.traitGroupTitleRow}>
                   <Ionicons name="thumbs-up-outline" size={16} color={Colors.success} />
-                  <Text style={styles.traitGroupTitle}>Pros</Text>
+                  <Text style={styles.traitGroupTitle}>{t('flirt_detail.pros')}</Text>
                 </View>
                 <View style={styles.traitChips}>
-                  {pros.map(t => (
-                    <View key={t.id} style={styles.proChip}><Text style={styles.proChipText}>{t.label}</Text></View>
+                  {pros.map(trait => (
+                    <View key={trait.id} style={styles.proChip}>
+                      <Text style={styles.proChipText}>
+                        {trait.is_custom ? trait.label : t('preset_tags.' + trait.label, { defaultValue: trait.label })}
+                      </Text>
+                    </View>
                   ))}
                 </View>
               </View>
@@ -203,11 +239,15 @@ export default function FlirtDetailScreen() {
               <View style={styles.traitGroup}>
                 <View style={styles.traitGroupTitleRow}>
                   <Ionicons name="thumbs-down-outline" size={16} color={Colors.danger} />
-                  <Text style={styles.traitGroupTitle}>Cons</Text>
+                  <Text style={styles.traitGroupTitle}>{t('flirt_detail.cons')}</Text>
                 </View>
                 <View style={styles.traitChips}>
-                  {cons.map(t => (
-                    <View key={t.id} style={styles.conChip}><Text style={styles.conChipText}>{t.label}</Text></View>
+                  {cons.map(trait => (
+                    <View key={trait.id} style={styles.conChip}>
+                      <Text style={styles.conChipText}>
+                        {trait.is_custom ? trait.label : t('preset_tags.' + trait.label, { defaultValue: trait.label })}
+                      </Text>
+                    </View>
                   ))}
                 </View>
               </View>
@@ -218,18 +258,22 @@ export default function FlirtDetailScreen() {
         {/* First Impressions */}
         {flirtAnswers.length > 0 && (
           <Animated.View entering={FadeInDown.duration(400).delay(300)} style={styles.answersSection}>
-            <Text style={styles.sectionTitle}>First Impressions</Text>
+            <Text style={styles.sectionTitle}>{t('flirt_detail.first_impressions')}</Text>
             {flirtAnswers.map(a => (
               <View key={a.id} style={styles.answerRow}>
-                <Text style={styles.answerQuestion}>{a.question_text}</Text>
+                <Text style={styles.answerQuestion}>
+                  {t('questions.' + a.question_id + '.text', { defaultValue: a.question_text })}
+                </Text>
                 <View style={styles.answerResult}>
-                  <Text style={styles.answerOption}>{a.selected_option}</Text>
+                  <Text style={styles.answerOption}>
+                    {t('questions.' + a.question_id + '.options.' + a.selected_option, { defaultValue: a.selected_option })}
+                  </Text>
                   <Text style={styles.answerSentiment}>
-                <Ionicons
-                    name={a.sentiment === 'good' ? 'thumbs-up' : a.sentiment === 'bad' ? 'thumbs-down' : 'remove-circle-outline'}
-                    size={20}
-                    color={a.sentiment === 'good' ? Colors.success : a.sentiment === 'bad' ? Colors.danger : Colors.warning}
-                  />
+                    <Ionicons
+                      name={a.sentiment === 'good' ? 'thumbs-up' : a.sentiment === 'bad' ? 'thumbs-down' : 'remove-circle-outline'}
+                      size={20}
+                      color={a.sentiment === 'good' ? Colors.success : a.sentiment === 'bad' ? Colors.danger : Colors.warning}
+                    />
                   </Text>
                 </View>
               </View>
@@ -240,7 +284,7 @@ export default function FlirtDetailScreen() {
         {/* Notes */}
         {flirt.notes && (
           <Animated.View entering={FadeInDown.duration(400).delay(350)} style={styles.notesSection}>
-            <Text style={styles.sectionTitle}>Notes</Text>
+            <Text style={styles.sectionTitle}>{t('flirt_detail.notes')}</Text>
             <Text style={styles.notesText}>{flirt.notes}</Text>
           </Animated.View>
         )}
@@ -248,13 +292,13 @@ export default function FlirtDetailScreen() {
         {/* Dates */}
         <Animated.View entering={FadeInDown.duration(400).delay(400)} style={styles.datesSection}>
           <View style={styles.datesSectionHeader}>
-            <Text style={styles.sectionTitle}>Dates ({dates.length})</Text>
+            <Text style={styles.sectionTitle}>{t('flirt_detail.dates_title', { count: dates.length })}</Text>
             <Pressable
               style={({ pressed }) => [styles.addDateButton, pressed && { opacity: 0.7 }]}
               onPress={() => router.push({ pathname: '/date/add', params: { flirtId: id, flirtName: flirt.name } })}
             >
               <Ionicons name="add" size={18} color={Colors.primary} />
-              <Text style={styles.addDateText}>Add Date</Text>
+              <Text style={styles.addDateText}>{t('flirt_detail.add_date')}</Text>
             </Pressable>
           </View>
 
@@ -264,7 +308,11 @@ export default function FlirtDetailScreen() {
                 key={d.id}
                 style={({ pressed }) => [styles.dateCard, pressed && { opacity: 0.8 }]}
                 onPress={() => {
-                  if (!d.is_rated) router.push(`/date/rate/${d.id}`);
+                  if (!d.is_rated && !isFuture(d.date)) {
+                    router.push(`/date/rate/${d.id}`);
+                  } else {
+                    router.push(`/date/${d.id}`);
+                  }
                 }}
               >
                 <View style={styles.dateInfo}>
@@ -276,17 +324,19 @@ export default function FlirtDetailScreen() {
                     </View>
                   )}
                 </View>
-                {d.is_rated ? (
-                  <View style={[styles.dateScoreBadge, { backgroundColor: ScoreColor.getColor(d.score ?? 5) + '15' }]}>
-                    <Text style={[styles.dateScoreText, { color: ScoreColor.getColor(d.score ?? 5) }]}>{d.score?.toFixed(1)}</Text>
+                {d.is_rated && d.score != null ? (
+                  <View style={[styles.dateScoreBadge, { backgroundColor: ScoreColor.getColor(d.score) + '15' }]}>
+                    <Text style={[styles.dateScoreText, { color: ScoreColor.getColor(d.score) }]}>{d.score.toFixed(1)}</Text>
                   </View>
-                ) : (
-                  <View style={styles.dateRateBadge}><Text style={styles.dateRateText}>Rate</Text></View>
-                )}
+                ) : (!isFuture(d.date) ? (
+                  <View style={styles.dateRateBadge}>
+                    <Text style={styles.dateRateText}>{t('flirt_detail.rate')}</Text>
+                  </View>
+                ) : null)}
               </Pressable>
             ))
           ) : (
-            <Text style={styles.noDatesText}>No dates yet. Plan one!</Text>
+            <Text style={styles.noDatesText}>{t('flirt_detail.no_dates')}</Text>
           )}
         </Animated.View>
 
@@ -298,7 +348,7 @@ export default function FlirtDetailScreen() {
               onPress={() => router.push(`/evaluate/${id}`)}
             >
               <Ionicons name="sparkles" size={20} color={Colors.secondary} />
-              <Text style={styles.evaluateText}>Add First Impressions</Text>
+              <Text style={styles.evaluateText}>{t('flirt_detail.add_first_impressions')}</Text>
             </Pressable>
           </Animated.View>
         )}

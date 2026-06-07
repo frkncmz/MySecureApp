@@ -2,6 +2,8 @@ import { View, Text, StyleSheet, Modal, Pressable } from 'react-native';
 import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
 import Animated, { FadeIn, SlideInDown } from 'react-native-reanimated';
+import { useTranslation } from 'react-i18next';
+
 import { Colors, Spacing, BorderRadius, FontSize, FontWeight, Shadow } from '@/constants/theme';
 
 interface ReasonItem {
@@ -30,6 +32,16 @@ export default function PermissionModal({
   reasons = DEFAULT_PHOTO_REASONS,
   onContinue,
 }: PermissionModalProps) {
+  const { t } = useTranslation();
+
+  const reasonsToUse = reasons === DEFAULT_PHOTO_REASONS
+    ? [
+        { icon: 'heart-circle-outline' as const, text: t('onboarding.photo_reason1') },
+        { icon: 'sparkles-outline' as const, text: t('onboarding.photo_reason2') },
+        { icon: 'shield-checkmark-outline' as const, text: t('onboarding.photo_reason3') },
+      ]
+    : reasons;
+
   return (
     <Modal visible={visible} transparent animationType="none" statusBarTranslucent>
       <Animated.View entering={FadeIn.duration(200)} style={styles.overlay}>
@@ -47,7 +59,7 @@ export default function PermissionModal({
 
           {/* Reasons List */}
           <View style={styles.reasonsList}>
-            {reasons.map((reason, index) => (
+            {reasonsToUse.map((reason, index) => (
               <View key={index} style={styles.reasonRow}>
                 <View style={styles.reasonIconWrap}>
                   <Ionicons name={reason.icon} size={20} color={Colors.primary} />
@@ -62,12 +74,12 @@ export default function PermissionModal({
             style={({ pressed }) => [styles.continueButton, pressed && styles.continueButtonPressed]}
             onPress={onContinue}
           >
-            <Text style={styles.continueButtonText}>Continue</Text>
+            <Text style={styles.continueButtonText}>{t('common.done')}</Text>
           </Pressable>
 
           {/* Settings hint */}
           <Text style={styles.settingsHint}>
-            You can change this option later in the Settings app.
+            {t('onboarding.settings_hint')}
           </Text>
         </Animated.View>
       </Animated.View>

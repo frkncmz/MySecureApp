@@ -107,10 +107,10 @@ export const ScoreColor = {
     if (score >= 4) return Colors.warning;
     return Colors.danger;
   },
-  getLabel: (score: number): string => {
-    if (score >= 8) return 'Amazing';
-    if (score >= 6) return 'Good';
-    if (score >= 4) return 'Average';
-    return 'Not Great';
+  getLabel: (score: number, t?: (key: string) => string): string => {
+    if (score >= 8) return t ? t('score_labels.amazing') : 'Amazing';
+    if (score >= 6) return t ? t('score_labels.good') : 'Good';
+    if (score >= 4) return t ? t('score_labels.average') : 'Average';
+    return t ? t('score_labels.not_great') : 'Not Great';
   },
 } as const;

@@ -2,10 +2,13 @@ import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { StyleSheet, View } from 'react-native';
 import { Colors, Shadow } from '@/constants/theme';
+import { useTranslation } from 'react-i18next';
 
 type IoniconsName = React.ComponentProps<typeof Ionicons>['name'];
 
 export default function TabLayout() {
+  const { t } = useTranslation();
+
   return (
     <Tabs
       screenOptions={{
@@ -20,7 +23,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Dashboard',
+          title: t('dashboard.title', { defaultValue: 'Dashboard' }),
           tabBarIcon: ({ color, focused }) => (
             <TabIcon name={focused ? 'home' : 'home-outline'} color={color as string} />
           ),
@@ -29,7 +32,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="flirts"
         options={{
-          title: 'Flirts',
+          title: t('flirts.title', { defaultValue: 'Flirts' }),
           tabBarIcon: ({ color, focused }) => (
             <TabIcon name={focused ? 'heart' : 'heart-outline'} color={color as string} />
           ),
@@ -38,7 +41,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="calendar"
         options={{
-          title: 'Calendar',
+          title: t('calendar.title', { defaultValue: 'Calendar' }),
           tabBarIcon: ({ color, focused }) => (
             <TabIcon name={focused ? 'calendar' : 'calendar-outline'} color={color as string} />
           ),
@@ -47,7 +50,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="settings"
         options={{
-          title: 'Settings',
+          title: t('settings.title', { defaultValue: 'Settings' }),
           tabBarIcon: ({ color, focused }) => (
             <TabIcon name={focused ? 'settings' : 'settings-outline'} color={color as string} />
           ),

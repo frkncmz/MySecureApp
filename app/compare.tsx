@@ -6,6 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Image } from 'expo-image';
 import Animated, { FadeInDown, FadeIn } from 'react-native-reanimated';
 import { BannerAd, BannerAdSize } from 'react-native-google-mobile-ads';
+import { useTranslation } from 'react-i18next';
 
 import { Colors, Spacing, BorderRadius, FontSize, FontWeight, Shadow, ScoreColor } from '@/constants/theme';
 import { getAllFlirts, Flirt, getTraits, Trait } from '@/database/flirts';
@@ -27,6 +28,7 @@ interface FlirtCompareData extends Flirt {
 export default function CompareScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const { t } = useTranslation();
 
   const [flirts, setFlirts] = useState<Flirt[]>([]);
   const [flirtA, setFlirtA] = useState<FlirtCompareData | null>(null);
@@ -80,7 +82,7 @@ export default function CompareScreen() {
           )}
           <Text style={styles.slotName} numberOfLines={1}>{data.name}</Text>
           <Pressable style={styles.changeButton} onPress={() => setPicking(slot)}>
-            <Text style={styles.changeText}>Change</Text>
+            <Text style={styles.changeText}>{t('common.change')}</Text>
           </Pressable>
         </>
       ) : (
@@ -88,7 +90,7 @@ export default function CompareScreen() {
           <View style={[styles.slotAvatar, styles.slotAvatarEmpty]}>
             <Ionicons name="add" size={28} color={Colors.primary} />
           </View>
-          <Text style={styles.slotEmptyText}>Select flirt</Text>
+          <Text style={styles.slotEmptyText}>{t('compare.select_flirt')}</Text>
         </>
       )}
     </Pressable>
@@ -136,7 +138,7 @@ export default function CompareScreen() {
         </View>
         <View style={styles.compareLabelContainer}>
           <Ionicons name="star" size={16} color={Colors.warning} />
-          <Text style={styles.compareLabel}>Score</Text>
+          <Text style={styles.compareLabel}>{t('common.score')}</Text>
         </View>
         <View style={styles.scoreCell}>
           {bHasScore ? (
@@ -162,10 +164,10 @@ export default function CompareScreen() {
           <Pressable onPress={() => setPicking(null)}>
             <Ionicons name="chevron-back" size={28} color={Colors.textPrimary} />
           </Pressable>
-          <Text style={styles.headerTitle}>Select Flirt</Text>
+          <Text style={styles.headerTitle}>{t('compare.select_title')}</Text>
           <View style={{ width: 28 }} />
         </View>
-
+ 
         <FlatList
           data={availableFlirts}
           keyExtractor={item => item.id}
@@ -197,7 +199,7 @@ export default function CompareScreen() {
           )}
           ListEmptyComponent={
             <View style={styles.emptyState}>
-              <Text style={styles.emptyText}>No flirts available</Text>
+              <Text style={styles.emptyText}>{t('compare.no_flirts')}</Text>
             </View>
           }
         />
@@ -212,63 +214,70 @@ export default function CompareScreen() {
         <Pressable onPress={() => router.back()}>
           <Ionicons name="chevron-back" size={28} color={Colors.textPrimary} />
         </Pressable>
-        <Text style={styles.headerTitle}>Compare</Text>
+        <Text style={styles.headerTitle}>{t('compare.title')}</Text>
         <View style={{ width: 28 }} />
       </View>
-
+ 
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         {/* Slots */}
         <View style={styles.slotsRow}>
           {renderSlot(flirtA, 'A')}
           <View style={styles.vsContainer}>
-            <Text style={styles.vsText}>VS</Text>
+            <Text style={styles.vsText}>{t('compare.vs')}</Text>
           </View>
           {renderSlot(flirtB, 'B')}
         </View>
-
+ 
         {/* Banner Ad */}
         <View style={styles.bannerContainer}>
           <BannerAd unitId={BANNER_ID} size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER} />
         </View>
-
+ 
         {/* Comparison */}
         {flirtA && flirtB && (
           <Animated.View entering={FadeIn.duration(400)} style={styles.compareContainer}>
             {renderScoreRow()}
-
+ 
             {renderCompareRow(
-              'Dates',
+              t('compare.metrics.dates'),
               'calendar-outline',
               `${flirtA.dateCount}`,
               `${flirtB.dateCount}`,
               flirtA.dateCount > flirtB.dateCount ? 'A' : flirtB.dateCount > flirtA.dateCount ? 'B' : null
             )}
-
+ 
             {renderCompareRow(
-              'Age',
+              t('compare.metrics.age'),
               'person-outline',
-              flirtA.age ? `${flirtA.age} y/o` : null,
-              flirtB.age ? `${flirtB.age} y/o` : null,
+              flirtA.age ? t('compare.age_value', { age: flirtA.age }) : null,
+              flirtB.age ? t('compare.age_value', { age: flirtB.age }) : null,
             )}
-
-            {renderCompareRow('Zodiac', 'sparkles-outline', flirtA.zodiac, flirtB.zodiac)}
-            {renderCompareRow('Height', 'resize-outline', flirtA.height, flirtB.height)}
-            {renderCompareRow('From', 'home-outline', flirtA.hometown, flirtB.hometown)}
-            {renderCompareRow('Lives in', 'location-outline', flirtA.city, flirtB.city)}
-            {renderCompareRow('Job', 'briefcase-outline', flirtA.occupation, flirtB.occupation)}
-
+ 
+            {renderCompareRow(
+              t('compare.metrics.zodiac'),
+              'sparkles-outline',
+              flirtA.zodiac ? t(`zodiac.${flirtA.zodiac}`, { defaultValue: flirtA.zodiac }) : null,
+              flirtB.zodiac ? t(`zodiac.${flirtB.zodiac}`, { defaultValue: flirtB.zodiac }) : null
+            )}
+            {renderCompareRow(t('compare.metrics.height'), 'resize-outline', flirtA.height, flirtB.height)}
+            {renderCompareRow(t('compare.metrics.from'), 'home-outline', flirtA.hometown, flirtB.hometown)}
+            {renderCompareRow(t('compare.metrics.lives_in'), 'location-outline', flirtA.city, flirtB.city)}
+            {renderCompareRow(t('compare.metrics.job'), 'briefcase-outline', flirtA.occupation, flirtB.occupation)}
+ 
             {/* Pros & Cons */}
             {(flirtA.pros.length > 0 || flirtB.pros.length > 0) && (
               <View style={styles.traitsSection}>
                 <View style={styles.traitsSectionHeader}>
                   <Ionicons name="thumbs-up" size={16} color={Colors.success} />
-                  <Text style={styles.traitsSectionTitle}>Pros</Text>
+                  <Text style={styles.traitsSectionTitle}>{t('compare.traits_pros')}</Text>
                 </View>
                 <View style={styles.traitsRow}>
                   <View style={styles.traitsList}>
                     {flirtA.pros.map(p => (
                       <View key={p.id} style={[styles.traitBadge, { backgroundColor: Colors.success + '12' }]}>
-                        <Text style={[styles.traitText, { color: Colors.success }]}>{p.label}</Text>
+                        <Text style={[styles.traitText, { color: Colors.success }]}>
+                          {t('preset_tags.' + p.label, { defaultValue: p.label })}
+                        </Text>
                       </View>
                     ))}
                     {flirtA.pros.length === 0 && <Text style={styles.noTraits}>—</Text>}
@@ -276,7 +285,9 @@ export default function CompareScreen() {
                   <View style={styles.traitsList}>
                     {flirtB.pros.map(p => (
                       <View key={p.id} style={[styles.traitBadge, { backgroundColor: Colors.success + '12' }]}>
-                        <Text style={[styles.traitText, { color: Colors.success }]}>{p.label}</Text>
+                        <Text style={[styles.traitText, { color: Colors.success }]}>
+                          {t('preset_tags.' + p.label, { defaultValue: p.label })}
+                        </Text>
                       </View>
                     ))}
                     {flirtB.pros.length === 0 && <Text style={styles.noTraits}>—</Text>}
@@ -284,18 +295,20 @@ export default function CompareScreen() {
                 </View>
               </View>
             )}
-
+ 
             {(flirtA.cons.length > 0 || flirtB.cons.length > 0) && (
               <View style={styles.traitsSection}>
                 <View style={styles.traitsSectionHeader}>
                   <Ionicons name="thumbs-down" size={16} color={Colors.danger} />
-                  <Text style={styles.traitsSectionTitle}>Cons</Text>
+                  <Text style={styles.traitsSectionTitle}>{t('compare.traits_cons')}</Text>
                 </View>
                 <View style={styles.traitsRow}>
                   <View style={styles.traitsList}>
                     {flirtA.cons.map(c => (
                       <View key={c.id} style={[styles.traitBadge, { backgroundColor: Colors.danger + '12' }]}>
-                        <Text style={[styles.traitText, { color: Colors.danger }]}>{c.label}</Text>
+                        <Text style={[styles.traitText, { color: Colors.danger }]}>
+                          {t('preset_tags.' + c.label, { defaultValue: c.label })}
+                        </Text>
                       </View>
                     ))}
                     {flirtA.cons.length === 0 && <Text style={styles.noTraits}>—</Text>}
@@ -303,7 +316,9 @@ export default function CompareScreen() {
                   <View style={styles.traitsList}>
                     {flirtB.cons.map(c => (
                       <View key={c.id} style={[styles.traitBadge, { backgroundColor: Colors.danger + '12' }]}>
-                        <Text style={[styles.traitText, { color: Colors.danger }]}>{c.label}</Text>
+                        <Text style={[styles.traitText, { color: Colors.danger }]}>
+                          {t('preset_tags.' + c.label, { defaultValue: c.label })}
+                        </Text>
                       </View>
                     ))}
                     {flirtB.cons.length === 0 && <Text style={styles.noTraits}>—</Text>}
@@ -311,33 +326,36 @@ export default function CompareScreen() {
                 </View>
               </View>
             )}
-
+ 
             {/* First Impression Answers */}
             {((flirtA.impressionAnswers?.length ?? 0) > 0 || (flirtB.impressionAnswers?.length ?? 0) > 0) && (
               <View style={styles.impressionSection}>
                 <View style={styles.impressionHeader}>
                   <Ionicons name="sparkles" size={16} color={Colors.secondary} />
-                  <Text style={styles.impressionTitle}>First Impressions</Text>
+                  <Text style={styles.impressionTitle}>{t('compare.first_impressions')}</Text>
                 </View>
                 {(() => {
-                  // Collect all unique questions in order
                   const questionMap = new Map<string, string>();
                   flirtA.impressionAnswers?.forEach(a => questionMap.set(a.question_id, a.question_text));
                   flirtB.impressionAnswers?.forEach(a => questionMap.set(a.question_id, a.question_text));
-
+ 
                   return Array.from(questionMap.entries()).map(([qId, qText]) => {
                     const ansA = flirtA.impressionAnswers?.find(a => a.question_id === qId);
                     const ansB = flirtB.impressionAnswers?.find(a => a.question_id === qId);
-
+ 
                     return (
                       <View key={qId} style={styles.impressionRow}>
-                        <Text style={styles.impressionQuestion}>{qText}</Text>
+                        <Text style={styles.impressionQuestion}>
+                          {t('questions.' + qId + '.text', { defaultValue: qText })}
+                        </Text>
                         <View style={styles.impressionAnswers}>
                           {/* Left answer */}
                           <View style={styles.impressionAnswerCell}>
                             {ansA ? (
                               <>
-                                <Text style={styles.impressionOption} numberOfLines={2}>{ansA.selected_option}</Text>
+                                <Text style={styles.impressionOption} numberOfLines={2}>
+                                  {t('questions.' + qId + '.options.' + ansA.selected_option, { defaultValue: ansA.selected_option })}
+                                </Text>
                                 <View style={[styles.sentimentMini, { backgroundColor: (ansA.sentiment === 'good' ? Colors.success : ansA.sentiment === 'bad' ? Colors.danger : Colors.warning) + '15' }]}>
                                   <Ionicons
                                     name={ansA.sentiment === 'good' ? 'thumbs-up' : ansA.sentiment === 'bad' ? 'thumbs-down' : 'remove-circle-outline'}
@@ -347,14 +365,16 @@ export default function CompareScreen() {
                                 </View>
                               </>
                             ) : (
-                              <Text style={styles.impressionSkipped}>Skipped</Text>
+                              <Text style={styles.impressionSkipped}>{t('compare.skipped')}</Text>
                             )}
                           </View>
                           {/* Right answer */}
                           <View style={styles.impressionAnswerCell}>
                             {ansB ? (
                               <>
-                                <Text style={styles.impressionOption} numberOfLines={2}>{ansB.selected_option}</Text>
+                                <Text style={styles.impressionOption} numberOfLines={2}>
+                                  {t('questions.' + qId + '.options.' + ansB.selected_option, { defaultValue: ansB.selected_option })}
+                                </Text>
                                 <View style={[styles.sentimentMini, { backgroundColor: (ansB.sentiment === 'good' ? Colors.success : ansB.sentiment === 'bad' ? Colors.danger : Colors.warning) + '15' }]}>
                                   <Ionicons
                                     name={ansB.sentiment === 'good' ? 'thumbs-up' : ansB.sentiment === 'bad' ? 'thumbs-down' : 'remove-circle-outline'}
@@ -364,7 +384,7 @@ export default function CompareScreen() {
                                 </View>
                               </>
                             ) : (
-                              <Text style={styles.impressionSkipped}>Skipped</Text>
+                              <Text style={styles.impressionSkipped}>{t('compare.skipped')}</Text>
                             )}
                           </View>
                         </View>
@@ -376,15 +396,15 @@ export default function CompareScreen() {
             )}
           </Animated.View>
         )}
-
+ 
         {/* Empty state */}
         {(!flirtA || !flirtB) && (
           <Animated.View entering={FadeIn.duration(300)} style={styles.emptyCompare}>
             <Ionicons name="git-compare-outline" size={48} color={Colors.textTertiary} />
-            <Text style={styles.emptyCompareText}>Select two flirts to compare</Text>
+            <Text style={styles.emptyCompareText}>{t('compare.empty_slots')}</Text>
           </Animated.View>
         )}
-
+ 
         <View style={{ height: 40 }} />
       </ScrollView>
     </View>

@@ -1,0 +1,571 @@
+{
+  "common": {
+    "save": "Speichern",
+    "saving": "Wird gespeichert...",
+    "cancel": "Abbrechen",
+    "delete": "Löschen",
+    "ok": "OK",
+    "error": "Fehler",
+    "success": "Erfolgreich",
+    "back": "Zurück",
+    "next": "Weiter",
+    "done": "Fertig",
+    "change": "Ändern",
+    "search": "Suchen",
+    "date": "Date",
+    "flirt": "Flirt",
+    "archived": "Archiviert",
+    "score": "Score",
+    "average": "Durchschnitt",
+    "notes": "Notizen",
+    "location": "Ort",
+    "loading": "Wird geladen...",
+    "rate": "Bewerten",
+    "edit": "Bearbeiten",
+    "add": "Hinzufügen",
+    "yes": "Ja",
+    "no": "Nein",
+    "system": "System"
+  },
+  "zodiac": {
+    "Aries": "Widder",
+    "Taurus": "Stier",
+    "Gemini": "Zwillinge",
+    "Cancer": "Krebs",
+    "Leo": "Löwe",
+    "Virgo": "Jungfrau",
+    "Libra": "Waage",
+    "Scorpio": "Skorpion",
+    "Sagittarius": "Schütze",
+    "Capricorn": "Steinbock",
+    "Aquarius": "Wassermann",
+    "Pisces": "Fische"
+  },
+  "score_labels": {
+    "amazing": "Großartig",
+    "good": "Gut",
+    "average": "Durchschnittlich",
+    "not_great": "Nicht so gut"
+  },
+  "body_type": {
+    "Slim": "Schlank",
+    "Athletic": "Sportlich",
+    "Average": "Normal",
+    "Curvy": "Kurvig",
+    "Plus Size": "Mollig"
+  },
+  "hair_color": {
+    "Black": "Schwarz",
+    "Brown": "Braun",
+    "Blonde": "Blond",
+    "Red": "Rot",
+    "Other": "Andere"
+  },
+  "eye_color": {
+    "Brown": "Braun",
+    "Blue": "Blau",
+    "Green": "Grün",
+    "Hazel": "Haselnussbraun",
+    "Other": "Andere"
+  },
+  "skin_tone": {
+    "Fair": "Sehr hell",
+    "Light": "Hell",
+    "Medium": "Mittel",
+    "Olive": "Olivfarben",
+    "Tan": "Gebräunt",
+    "Dark": "Dunkel"
+  },
+  "preset_tags": {
+    "Good listener": "Guter Zuhörer",
+    "Funny": "Witzig",
+    "Romantic": "Romantisch",
+    "Ambitious": "Ehrgeizig",
+    "Honest": "Ehrlich",
+    "Adventurous": "Abenteuerlustig",
+    "Caring": "Fürsorglich",
+    "Smart": "Schlau",
+    "Stylish": "Stilvoll",
+    "Confident": "Selbstbewusst",
+    "Kind": "Liebenswürdig",
+    "Supportive": "Unterstützend",
+    "Creative": "Kreativ",
+    "Spontaneous": "Spontan",
+    "Great cook": "Guter Koch",
+    "Late": "Unpünktlich",
+    "Jealous": "Eifersüchtig",
+    "Distant": "Distanziert",
+    "Boring": "Langweilig",
+    "Selfish": "Egoistisch",
+    "Messy": "Unordentlich",
+    "Rude": "Unhöflich",
+    "Flaky": "Unzuverlässig",
+    "Clingy": "Klammernd",
+    "Dishonest": "Unehrlich",
+    "Stubborn": "Stur",
+    "Immature": "Unreif",
+    "Lazy": "Faul",
+    "Arrogant": "Arrogant",
+    "Bad texter": "Schreibt ungern"
+  },
+  "questions": {
+    "date_q0": {
+      "text": "Wer hat die Rechnung bezahlt?",
+      "options": {
+        "They paid": "Der/Die Andere",
+        "I paid": "Ich habe bezahlt",
+        "We split": "Wir haben geteilt",
+        "No bill": "Keine Rechnung"
+      }
+    },
+    "date_q1": {
+      "text": "Kam er/sie pünktlich?",
+      "options": {
+        "Early": "Zu früh",
+        "On time": "Pünktlich",
+        "A little late": "Etwas zu spät",
+        "Very late": "Sehr spät"
+      }
+    },
+    "date_q2": {
+      "text": "Wie oft hat er/sie aufs Handy geschaut?",
+      "options": {
+        "Never": "Nie",
+        "A few times": "Ein paar Mal",
+        "A lot": "Oft",
+        "Constantly": "Ständig"
+      }
+    },
+    "date_q3": {
+      "text": "Wie lief das Gespräch?",
+      "options": {
+        "Amazing": "Großartig",
+        "Good": "Gut",
+        "Okay": "Ok",
+        "Awkward": "Krampfhaft"
+      }
+    },
+    "date_q4": {
+      "text": "Gab es Blickkontakt?",
+      "options": {
+        "Yes, a lot": "Ja, sehr viel",
+        "Normal": "Normal",
+        "Not really": "Nicht wirklich",
+        "Avoided it": "Ausgewichen"
+      }
+    },
+    "date_q5": {
+      "text": "Wie war die Körpersprache?",
+      "options": {
+        "Very open & warm": "Sehr offen & warm",
+        "Normal": "Normal",
+        "Distant": "Distanziert",
+        "Closed off": "Abweisend"
+      }
+    },
+    "date_q6": {
+      "text": "Hat er/sie Fragen über dich gestellt?",
+      "options": {
+        "Very interested": "Sehr interessiert",
+        "Some questions": "Einige Fragen",
+        "Not much": "Nicht viel",
+        "All about them": "Nur über sich selbst"
+      }
+    },
+    "date_q7": {
+      "text": "Wie endete das Date?",
+      "options": {
+        "Kiss": "Kuss",
+        "Hug": "Umarmung",
+        "Handshake": "Händeschütteln",
+        "Just goodbye": "Nur Abschied"
+      }
+    },
+    "date_q8": {
+      "text": "Wurde ein weiteres Treffen erwähnt?",
+      "options": {
+        "Yes, eagerly": "Ja, begeistert",
+        "Casually": "Beiläufig",
+        "Vaguely": "Vage",
+        "Not at all": "Garnicht"
+      }
+    },
+    "date_q9": {
+      "text": "Würdest du dich noch mal treffen?",
+      "options": {
+        "Definitely": "Auf jeden Fall",
+        "Probably": "Wahrscheinlich",
+        "Maybe": "Vielleicht",
+        "No way": "Niemals"
+      }
+    },
+    "flirt_q0": {
+      "text": "Wo habt ihr euch kennengelernt?",
+      "options": {
+        "Dating app": "Dating-App",
+        "Social media": "Social Media",
+        "Through friends": "Durch Freunde",
+        "School/Work": "Schule / Arbeit",
+        "Bar/Club": "Bar / Club",
+        "Random": "Zufällig"
+      }
+    },
+    "flirt_q1": {
+      "text": "Wer hat das Gespräch begonnen?",
+      "options": {
+        "I did": "Ich",
+        "They did": "Er/Sie",
+        "Mutual": "Gleichzeitig"
+      }
+    },
+    "flirt_q2": {
+      "text": "Erster Eindruck?",
+      "options": {
+        "Love at first sight": "Liebe auf den ersten Blick",
+        "Very attractive": "Sehr attraktiv",
+        "Nice": "Nett",
+        "Average": "Normal",
+        "Not my type": "Nicht mein Typ"
+      }
+    },
+    "flirt_q3": {
+      "text": "Wie schnell antwortet er/sie auf Nachrichten?",
+      "options": {
+        "Instantly": "Sofort",
+        "Fast": "Schnell",
+        "Normal": "Normal",
+        "Slow": "Langsam",
+        "Very slow": "Sehr langsam"
+      }
+    },
+    "flirt_q4": {
+      "text": "Wie unterhaltsam ist das Gespräch?",
+      "options": {
+        "Super engaging": "Sehr fesselnd",
+        "Good": "Gut",
+        "Average": "Mittelmäßig",
+        "Boring": "Langweilig",
+        "Dry": "Sehr trocken"
+      }
+    }
+  },
+  "onboarding": {
+    "slide1_title": "Willkommen bei LoveLog",
+    "slide1_desc": "Dein persönliches Dating-Dashboard. Behalte deinen Love Aura Score, Dating-Insights, astrologische Übereinstimmungen und mehr an einem Ort im Blick.",
+    "slide2_title": "Erfasse deine Flirts",
+    "slide2_desc": "Erstelle detaillierte Profile mit Fotos, Bewertungen und Sternzeichen. Suche, sortiere und filtere, um organisiert zu bleiben.",
+    "slide3_title": "Vergleiche & Entscheide",
+    "slide3_desc": "Vergleiche deine Flirts direkt miteinander. Vergleiche Scores, Eigenschaften und erste Eindrücke, um zu sehen, wer wirklich heraussticht.",
+    "slide4_title": "Plane & Erinnere dich",
+    "slide4_desc": "Trage jedes Date in deinen Kalender ein, sieh dir an, wen du wo getroffen hast, und vergiss nie wieder einen besonderen Moment.",
+    "almost_there": "Fast fertig!",
+    "age_confirm": "Du musst mindestens 18 Jahre alt sein, um diese App zu nutzen. Bitte gib dein Geburtsdatum ein, um fortzufahren.",
+    "select_birth": "Wähle dein Geburtsdatum",
+    "age_error": "Du musst mindestens 18 Jahre alt sein, um LoveLog zu nutzen.",
+    "legal_consent": "Durch Fortfahren stimmst du unseren <terms>Nutzungsbedingungen</terms> und der <privacy>Datenschutzerklärung</privacy> zu.",
+    "get_started": "Loslegen",
+    "done": "Fertig",
+    "ad_personalization": "Werbepersonalisierung",
+    "ad_personalization_desc": "LoveLog zeigt Werbung an. Wenn du das Tracking erlaubst, können personalisierte Anzeigen basierend auf deinen Vorlieben anstelle von allgemeinen Anzeigen geschaltet werden.",
+    "ad_reason1": "Werbung wird auf deine Interessen zugeschnitten",
+    "ad_reason2": "Deine persönlichen Daten werden nicht mit Dritten geteilt",
+    "photo_reason1": "Füge Profilfotos für deine Flirts hinzu",
+    "photo_reason2": "Personalisiere die Karte jedes Flirts",
+    "photo_reason3": "Fotos bleiben ausschließlich auf deinem Gerät",
+    "photo_access_title": "Zugriff auf Fotomediathek",
+    "photo_access_desc": "LoveLog benötigt Zugriff auf deine Fotomediathek, um Profilfotos für deine Flirts hinzuzufügen.",
+    "settings_hint": "Du kannst diese Option später in den Einstellungen deines Geräts ändern."
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "greetings": {
+      "morning": "Guten Morgen, Liebling!",
+      "afternoon": "Guten Tag!",
+      "evening": "Guten Abend!",
+      "night": "Gute Nacht, Schlafmütze!"
+    },
+    "subtitle": "Deine Dating-Geschichte, wunderschön dokumentiert.",
+    "aura_score": "Love Aura Score",
+    "undecided": "Unentschieden",
+    "stats": {
+      "flirts": "Flirts",
+      "dates": "Dates",
+      "avg_rating": "Ø Puan"
+    },
+    "actions": {
+      "add_flirt": "Flirt add",
+      "log_date": "Date loggen",
+      "compare": "Vergleichen"
+    },
+    "sections": {
+      "rate_dates": "Bewerte deine Dates",
+      "insights": "Dating Insights",
+      "upcoming_dates": "Kommende Dates",
+      "top_sparks": "Bestbewertete Sparks"
+    },
+    "unrated_card": {
+      "met_on": "Getroffen am {{date}}",
+      "rate_now": "Jetzt bewerten"
+    },
+    "widgets": {
+      "zodiac_title": "Sternzeichen-Vibe",
+      "zodiac_connections_one": "{{count}} Verbindung",
+      "zodiac_connections_other": "{{count}} Verbindungen",
+      "zodiac_empty": "Noch keine Sternzeichendaten",
+      "last_spark_title": "Letzter Funke",
+      "last_spark_empty": "Zeit für ein Date!",
+      "last_spark_since": "Seit deinem letzten Date",
+      "last_spark_days": {
+        "today": "Heute",
+        "yesterday": "Gestern",
+        "ago": "Vor {{count}} Tagen"
+      },
+      "favorite_spark_title": "Häufigster Funke",
+      "favorite_spark_dates_one": "{{count}} Date eingetragen",
+      "favorite_spark_dates_other": "{{count}} Dates eingetragen",
+      "spectrum_title": "Love Rating Spektrum",
+      "spectrum": {
+        "amazing": "Großartig (8-10)",
+        "good": "Gut (6-8)",
+        "average": "Mittel (4-6)",
+        "not_great": "Nicht so gut (0-4)"
+      }
+    },
+    "upcoming": {
+      "soon": "Bald"
+    },
+    "top_rated": {
+      "no_zodiac": "Kein Sternzeichen"
+    },
+    "empty": {
+      "title": "Deine Geschichte beginnt hier",
+      "desc": "Erfasse deine Bekanntschaften, Dates und Eindrücke, um deine Dating-Analysen zu berechnen.",
+      "btn": "Füge deinen ersten Flirt hinzu"
+    }
+  },
+  "flirts": {
+    "title": "Flirts",
+    "search_placeholder": "Flirts suchen...",
+    "sort": {
+      "recent": "Neueste",
+      "name": "Name",
+      "score": "Score"
+    },
+    "card": {
+      "met": "Kennengelernt am {{date}}"
+    },
+    "empty": {
+      "no_results": "Keine Flirts gefunden",
+      "no_archived": "Keine archivierten Flirts",
+      "no_flirts": "Noch keine Flirts eingetragen"
+    }
+  },
+  "compare": {
+    "title": "Vergleichen",
+    "select_title": "Flirt auswählen",
+    "vs": "VS",
+    "empty_slots": "Wähle zwei Flirts zum Vergleichen aus",
+    "select_flirt": "Flirt wählen",
+    "no_flirts": "Keine Flirts verfügbar",
+    "traits_pros": "Vorteile",
+    "traits_cons": "Nachteile",
+    "first_impressions": "Erste Eindrücke",
+    "skipped": "Übersprungen",
+    "metrics": {
+      "dates": "Dates",
+      "age": "Alter",
+      "zodiac": "Sternzeichen",
+      "height": "Größe",
+      "from": "Herkunft",
+      "lives_in": "Wohnort",
+      "job": "Beruf"
+    },
+    "age_value": "{{age}} Jahre"
+  },
+  "calendar": {
+    "title": "Kalender",
+    "no_dates": "Keine Dates an diesem Tag",
+    "plan_date": "Date planen",
+    "tap_hint": "Tippe auf einen Tag, um Dates zu sehen",
+    "rate": "Bewerten"
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "sections": {
+      "language": "Sprache",
+      "data_management": "Datenverwaltung",
+      "danger_zone": "Gefahrenzone",
+      "legal": "Rechtliches"
+    },
+    "language_options": {
+      "system": "Systemsprache ({{lang}})",
+      "system_label": "Systemsprache"
+    },
+    "backup": {
+      "title": "Daten sichern",
+      "desc": "Exportiere deine Daten als verschlüsselte Datei",
+      "note": "Profilfotos sind im Backup nicht enthalten.",
+      "pin_placeholder": "PIN eingeben (min. 4 Zeichen)",
+      "btn": "Backup erstellen",
+      "success": "Backup erfolgreich erstellt!",
+      "error_pin": "Die PIN muss mindestens 4 Zeichen lang sein.",
+      "error_failed": "Backup konnte nicht erstellt werden."
+    },
+    "restore": {
+      "title": "Daten wiederherstellen",
+      "desc": "Aus einer Backup-Datei importieren",
+      "pin_placeholder": "Gib deine Backup-PIN ein",
+      "btn": "Datei wählen & wiederherstellen",
+      "success": "Daten erfolgreich wiederhergestellt! Die App wird neu geladen.",
+      "error_failed": "Wiederherstellung fehlgeschlagen."
+    },
+    "clear_data": {
+      "title": "Alle Daten löschen",
+      "desc": "Alles löschen und neu starten",
+      "confirm_title": "Alle Daten löschen",
+      "confirm_desc": "Dadurch werden alle Ihre Flirts, Dates und Bewertungen dauerhaft gelöscht. Dies kann nicht rückgängig gemacht werden.",
+      "btn_delete": "Alles Löschen",
+      "error": "Löschen der Daten fehlgeschlagen."
+    },
+    "legal": {
+      "terms": "Nutzungsbedingungen",
+      "privacy": "Datenschutzerklärung",
+      "last_updated": "Zuletzt aktualisiert:"
+    },
+    "branding": {
+      "version": "Version {{version}}",
+      "creator": "Erstellt von Furkan Çömez"
+    }
+  },
+  "flirt_detail": {
+    "loading": "Wird geladen...",
+    "years_old": "{{count}} Jahre alt",
+    "hair_text": "{{color}}es Haar",
+    "eye_text": "{{color}}e Augen",
+    "skin_text": "{{color}}e Haut",
+    "from_text": "Aus {{hometown}}",
+    "lives_text": "Wohnt in {{city}}",
+    "met_at": "Kennengelernt in {{place}}",
+    "met_date": "Kennengelernt am {{date}}",
+    "social": "Social Media",
+    "pros_cons": "Vorteile & Nachteile",
+    "pros": "Vorteile",
+    "cons": "Nachteile",
+    "first_impressions": "Erste Eindrücke",
+    "notes": "Notizen",
+    "dates_title": "Dates ({{count}})",
+    "add_date": "Date hinzufügen",
+    "no_dates": "Noch keine Dates. Plane eins!",
+    "add_first_impressions": "Erste Eindrücke hinzufügen",
+    "rate": "Bewerten",
+    "archive_alert": {
+      "title_archive": "Archivieren",
+      "title_unarchive": "Dearchivieren",
+      "msg_archive": "Bist du sicher, dass du {{name}} archivieren möchtest?",
+      "msg_unarchive": "Bist du sicher, dass du {{name}} aus dem Archiv holen möchtest?"
+    },
+    "delete_alert": {
+      "title": "Flirt löschen",
+      "msg": "Bist du sicher, dass du {{name}} löschen möchtest? Dadurch werden auch alle Dates und Bewertungen gelöscht."
+    }
+  },
+  "flirt_form": {
+    "add_title": "Flirt hinzufügen",
+    "edit_title": "Flirt bearbeiten",
+    "add_photo": "Foto hinzufügen",
+    "sections": {
+      "basics": "Allgemein",
+      "details": "Details",
+      "personal": "Persönliches",
+      "social": "Social Media",
+      "notes": "Notizen"
+    },
+    "fields": {
+      "name": "Name *",
+      "name_placeholder": "Sein/Ihr Name",
+      "when_met": "Wann habt ihr euch kennengelernt?",
+      "select_date": "Datum wählen",
+      "where_met": "Wo habt ihr euch kennengelernt?",
+      "where_placeholder": "Café, Tinder, etc.",
+      "birth_date": "Geburtsdatum",
+      "select_birth": "Geburtsdatum wählen",
+      "birth_val": "{{date}} ({{age}} Jahre alt)",
+      "height": "Größe",
+      "height_placeholder": "175cm",
+      "body_type": "Körpertyp",
+      "hair_color": "Haarfarbe",
+      "eye_color": "Augenfarbe",
+      "skin_tone": "Hautfarbe",
+      "hometown": "Herkunft",
+      "hometown_placeholder": "Woher kommt er/sie?",
+      "lives_in": "Wohnort",
+      "city_placeholder": "Aktuelle Stadt",
+      "occupation": "Beruf",
+      "occupation_placeholder": "Was macht er/sie beruflich?",
+      "notes_placeholder": "Erste Eindrücke, wichtige Details...",
+      "notes_placeholder_edit": "Persönliche Notizen...",
+      "instagram": "Instagram",
+      "tiktok": "TikTok",
+      "snapchat": "Snapchat",
+      "x": "X",
+      "phone": "Telefon"
+    },
+    "errors": {
+      "name_required": "Bitte gib einen Namen ein.",
+      "name_required_edit": "Name ist erforderlich.",
+      "save_failed": "Flirt konnte nicht gespeichert werden.",
+      "update_failed": "Flirt konnte nicht aktualisiert werden."
+    }
+  },
+  "date_detail": {
+    "title": "Date-Details",
+    "not_rated": "Noch nicht bewertet",
+    "rating_details": "Bewertungsdetails",
+    "rate_btn": "Dieses Date bewerten"
+  },
+  "date_form": {
+    "add_title": "Date hinzufügen",
+    "who_met": "Mit wem hast du dich getroffen?",
+    "no_flirts": "Du musst zuerst einen Flirt hinzufügen, bevor du ein Date planst.",
+    "no_flirts_btn": "Flirt hinzufügen",
+    "when": "Wann?",
+    "where": "Wo?",
+    "where_placeholder": "Restaurant, Park, Kino...",
+    "notes_placeholder": "Was anziehen, wichtige Details...",
+    "save_date": "Date speichern",
+    "errors": {
+      "select_flirt": "Bitte wähle einen Flirt aus.",
+      "save_failed": "Date konnte nicht gespeichert werden."
+    }
+  },
+  "rate_date": {
+    "title": "Date bewerten",
+    "first_impressions": "Erste Eindrücke",
+    "loading": "Fragen werden geladen...",
+    "question_header": "Frage {{current}} von {{total}}",
+    "sentiment_question": "Ist „{{option}}“ gut oder schlecht für dich?",
+    "sentiment_question_general": "Wie fühlst du dich dabei?",
+    "sentiment": {
+      "good": "Gut",
+      "neutral": "Neutral",
+      "bad": "Schlecht"
+    },
+    "previous": "Zurück",
+    "skip": "Überspringen",
+    "skip_submit": "Überspringen & Senden",
+    "submit": "Bewertung senden",
+    "saving": "Wird gespeichert...",
+    "errors": {
+      "save_failed": "Bewertung konnte nicht gespeichert werden.",
+      "save_failed_eval": "Erster Eindruck konnte nicht gespeichert werden."
+    }
+  },
+  "permissions": {
+    "photo_library": {
+      "alert_title": "Fotozugriff nicht verfügbar",
+      "alert_desc": "Diese Funktion nutzt deine Fotomediathek. Du kannst den Zugriff jederzeit in den Einstellungen aktivieren.",
+      "not_now": "Nicht jetzt",
+      "settings": "Einstellungen"
+    }
+  }
+}

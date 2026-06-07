@@ -7,15 +7,17 @@ import { Calendar } from 'react-native-calendars';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { Image } from 'expo-image';
 import { BannerAd, BannerAdSize } from 'react-native-google-mobile-ads';
+import { useTranslation } from 'react-i18next';
 
 import { Colors, Spacing, BorderRadius, FontSize, FontWeight, Shadow, ScoreColor } from '@/constants/theme';
 import { getDateMarkers, getDatesForDay, DateWithFlirt } from '@/database/dates';
-import { formatDate, getInitials } from '@/utils/helpers';
+import { formatDate, getInitials, isFuture } from '@/utils/helpers';
 import { BANNER_ID } from '@/services/adService';
 
 export default function CalendarScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const { t, i18n } = useTranslation();
   const [markedDates, setMarkedDates] = useState<Record<string, any>>({});
   const [selectedDay, setSelectedDay] = useState<string>('');
   const [dayDates, setDayDates] = useState<DateWithFlirt[]>([]);
@@ -42,7 +44,7 @@ export default function CalendarScreen() {
 
   return (
     <View style={[styles.container, { paddingTop: insets.top + Spacing.lg }]}>
-      <Text style={styles.title}>Calendar</Text>
+      <Text style={styles.title}>{t('calendar.title')}</Text>
 
       <ScrollView
         contentContainerStyle={{ paddingBottom: insets.bottom + 100 }}
@@ -54,6 +56,7 @@ export default function CalendarScreen() {
         </View>
 
         <Calendar
+          key={i18n.language}
           onDayPress={handleDayPress}
           markedDates={{
             ...markedDates,
@@ -111,30 +114,30 @@ export default function CalendarScreen() {
                       <View style={[styles.scoreBadge, { backgroundColor: ScoreColor.getColor(d.score) + '20' }]}>
                         <Text style={[styles.scoreText, { color: ScoreColor.getColor(d.score) }]}>{d.score.toFixed(1)}</Text>
                       </View>
-                    ) : (
+                    ) : (!isFuture(d.date) ? (
                       <View style={styles.unratedBadge}>
-                        <Text style={styles.unratedText}>Rate</Text>
+                        <Text style={styles.unratedText}>{t('calendar.rate')}</Text>
                       </View>
-                    )}
+                    ) : null)}
                   </Pressable>
                 </Animated.View>
               ))
             ) : (
               <View style={styles.noDates}>
-                <Text style={styles.noDatesText}>No dates on this day</Text>
+                <Text style={styles.noDatesText}>{t('calendar.no_dates')}</Text>
                 <Pressable
                   style={({ pressed }) => [styles.planButton, pressed && { opacity: 0.8 }]}
                   onPress={() => router.push({ pathname: '/date/add', params: { selectedDate: selectedDay } })}
                 >
                   <Ionicons name="add-circle-outline" size={18} color={Colors.primary} />
-                  <Text style={styles.planButtonText}>Plan a date</Text>
+                  <Text style={styles.planButtonText}>{t('calendar.plan_date')}</Text>
                 </Pressable>
               </View>
             )
           ) : (
             <View style={styles.selectDay}>
               <Ionicons name="calendar-outline" size={32} color={Colors.textTertiary} />
-              <Text style={styles.selectDayText}>Tap a day to see dates</Text>
+              <Text style={styles.selectDayText}>{t('calendar.tap_hint')}</Text>
             </View>
           )}
         </View>

@@ -7,10 +7,11 @@ import * as Haptics from 'expo-haptics';
 import * as ImagePicker from 'expo-image-picker';
 import { Image } from 'expo-image';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { useTranslation } from 'react-i18next';
 
 import { Colors, Spacing, BorderRadius, FontSize, FontWeight, Shadow } from '@/constants/theme';
 import { createFlirt } from '@/database/flirts';
-import { getZodiacSign } from '@/utils/helpers';
+import { getZodiacSign, formatDate } from '@/utils/helpers';
 import { useStore } from '@/store/useStore';
 import { showInterstitialAd } from '@/services/adService';
 import { usePermission } from '@/hooks/usePermission';
@@ -21,6 +22,7 @@ export default function AddFlirtScreen() {
   const insets = useSafeAreaInsets();
   const { refreshAll } = useStore();
   const { modalVisible, requestPermission, handleContinue } = usePermission('photoLibrary');
+  const { t } = useTranslation();
 
   const [name, setName] = useState('');
   const [photoUri, setPhotoUri] = useState<string | null>(null);
@@ -61,7 +63,7 @@ export default function AddFlirtScreen() {
 
   const handleSave = async () => {
     if (!name.trim()) {
-      Alert.alert('Error', 'Please enter a name.');
+      Alert.alert(t('common.error'), t('flirt_form.errors.name_required'));
       return;
     }
     if (saving) return;
@@ -102,7 +104,7 @@ export default function AddFlirtScreen() {
       await showInterstitialAd();
       router.replace(`/evaluate/${id}`);
     } catch (error) {
-      Alert.alert('Error', 'Failed to save flirt.');
+      Alert.alert(t('common.error'), t('flirt_form.errors.save_failed'));
     } finally {
       setSaving(false);
     }
@@ -116,13 +118,13 @@ export default function AddFlirtScreen() {
           <Pressable onPress={() => router.back()}>
             <Ionicons name="close" size={28} color={Colors.textPrimary} />
           </Pressable>
-          <Text style={styles.headerTitle}>Add Flirt</Text>
+          <Text style={styles.headerTitle}>{t('flirt_form.add_title')}</Text>
           <Pressable
             style={({ pressed }) => [styles.saveButton, pressed && { opacity: 0.7 }]}
             onPress={handleSave}
             disabled={saving}
           >
-            <Text style={styles.saveButtonText}>{saving ? 'Saving...' : 'Next'}</Text>
+            <Text style={styles.saveButtonText}>{saving ? t('common.saving') : t('common.next')}</Text>
           </Pressable>
         </View>
 
@@ -134,14 +136,21 @@ export default function AddFlirtScreen() {
             ) : (
               <>
                 <Ionicons name="camera" size={32} color={Colors.primary} />
-                <Text style={styles.photoLabel}>Add Photo</Text>
+                <Text style={styles.photoLabel}>{t('flirt_form.add_photo')}</Text>
               </>
             )}
           </Pressable>
 
           {/* Name */}
-          <SectionTitle title="Basics" />
-          <InputField label="Name" value={name} onChangeText={setName} placeholder="Their name" required maxLength={30} />
+          <SectionTitle title={t('flirt_form.sections.basics')} />
+          <InputField
+            label={t('flirt_form.fields.name')}
+            value={name}
+            onChangeText={setName}
+            placeholder={t('flirt_form.fields.name_placeholder')}
+            required
+            maxLength={30}
+          />
 
           <Pressable
             style={styles.dateField}
@@ -150,9 +159,9 @@ export default function AddFlirtScreen() {
               setShowDatePicker(true);
             }}
           >
-            <Text style={styles.inputLabel}>When did you meet?</Text>
+            <Text style={styles.inputLabel}>{t('flirt_form.fields.when_met')}</Text>
             <Text style={[styles.dateFieldText, !metDate && { color: Colors.textTertiary }]}>
-              {metDate ? metDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 'Select date'}
+              {metDate ? formatDate(metDate.toISOString()) : t('flirt_form.fields.select_date')}
             </Text>
           </Pressable>
 
@@ -160,7 +169,7 @@ export default function AddFlirtScreen() {
             <View>
               {Platform.OS === 'ios' && (
                 <Pressable style={{ alignSelf: 'flex-end', paddingVertical: Spacing.sm }} onPress={() => setShowDatePicker(false)}>
-                  <Text style={{ fontSize: FontSize.md, fontWeight: FontWeight.semibold, color: Colors.primary }}>Done</Text>
+                  <Text style={{ fontSize: FontSize.md, fontWeight: FontWeight.semibold, color: Colors.primary }}>{t('common.done')}</Text>
                 </Pressable>
               )}
               <DateTimePicker
@@ -176,7 +185,13 @@ export default function AddFlirtScreen() {
             </View>
           )}
 
-          <InputField label="Where did you meet?" value={metPlace} onChangeText={setMetPlace} placeholder="Coffee shop, Tinder, etc." maxLength={50} />
+          <InputField
+            label={t('flirt_form.fields.where_met')}
+            value={metPlace}
+            onChangeText={setMetPlace}
+            placeholder={t('flirt_form.fields.where_placeholder')}
+            maxLength={50}
+          />
 
           {/* Birth Date */}
           <Pressable
@@ -186,11 +201,14 @@ export default function AddFlirtScreen() {
               setShowBirthPicker(true);
             }}
           >
-            <Text style={styles.inputLabel}>Birth Date</Text>
+            <Text style={styles.inputLabel}>{t('flirt_form.fields.birth_date')}</Text>
             <Text style={[styles.dateFieldText, !birthDate && { color: Colors.textTertiary }]}>
               {birthDate
-                ? `${birthDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })} (${Math.floor((Date.now() - birthDate.getTime()) / 31557600000)} y/o)`
-                : 'Select birth date'}
+                ? t('flirt_form.fields.birth_val', {
+                    date: formatDate(birthDate.toISOString()),
+                    age: Math.floor((Date.now() - birthDate.getTime()) / 31557600000),
+                  })
+                : t('flirt_form.fields.select_birth')}
             </Text>
           </Pressable>
 
@@ -198,7 +216,7 @@ export default function AddFlirtScreen() {
             <View>
               {Platform.OS === 'ios' && (
                 <Pressable style={{ alignSelf: 'flex-end', paddingVertical: Spacing.sm }} onPress={() => setShowBirthPicker(false)}>
-                  <Text style={{ fontSize: FontSize.md, fontWeight: FontWeight.semibold, color: Colors.primary }}>Done</Text>
+                  <Text style={{ fontSize: FontSize.md, fontWeight: FontWeight.semibold, color: Colors.primary }}>{t('common.done')}</Text>
                 </Pressable>
               )}
               <DateTimePicker
@@ -216,56 +234,87 @@ export default function AddFlirtScreen() {
           )}
 
           {/* Details */}
-          <SectionTitle title="Details" />
-          <InputField label="Height" value={height} onChangeText={setHeight} placeholder="175cm" maxLength={10} />
+          <SectionTitle title={t('flirt_form.sections.details')} />
+          <InputField
+            label={t('flirt_form.fields.height')}
+            value={height}
+            onChangeText={setHeight}
+            placeholder={t('flirt_form.fields.height_placeholder')}
+            maxLength={10}
+          />
 
           <ChipSelector
-            label="Body Type"
+            label={t('flirt_form.fields.body_type')}
             options={['Slim', 'Athletic', 'Average', 'Curvy', 'Plus Size']}
             selected={bodyType}
             onSelect={setBodyType}
+            translationPrefix="body_type"
           />
           <ChipSelector
-            label="Hair Color"
+            label={t('flirt_form.fields.hair_color')}
             options={['Black', 'Brown', 'Blonde', 'Red', 'Other']}
             selected={hairColor}
             onSelect={setHairColor}
+            translationPrefix="hair_color"
           />
           <ChipSelector
-            label="Eye Color"
+            label={t('flirt_form.fields.eye_color')}
             options={['Brown', 'Blue', 'Green', 'Hazel', 'Other']}
             selected={eyeColor}
             onSelect={setEyeColor}
+            translationPrefix="eye_color"
           />
           <ChipSelector
-            label="Skin Tone"
-            options={['Fair', 'Light', 'Medium', 'Olive', 'Tan', 'Brown', 'Dark']}
+            label={t('flirt_form.fields.skin_tone')}
+            options={['Fair', 'Light', 'Medium', 'Olive', 'Tan', 'Dark']}
             selected={skinTone}
             onSelect={setSkinTone}
+            translationPrefix="skin_tone"
           />
 
           {/* Personal */}
-          <SectionTitle title="Personal" />
-          <InputField label="Hometown" value={hometown} onChangeText={setHometown} placeholder="Where are they from?" icon="location-outline" maxLength={40} />
-          <InputField label="Lives in" value={city} onChangeText={setCity} placeholder="Current city" icon="navigate-outline" maxLength={40} />
-          <InputField label="Occupation" value={occupation} onChangeText={setOccupation} placeholder="What do they do?" icon="briefcase-outline" maxLength={40} />
+          <SectionTitle title={t('flirt_form.sections.personal')} />
+          <InputField
+            label={t('flirt_form.fields.hometown')}
+            value={hometown}
+            onChangeText={setHometown}
+            placeholder={t('flirt_form.fields.hometown_placeholder')}
+            icon="location-outline"
+            maxLength={40}
+          />
+          <InputField
+            label={t('flirt_form.fields.lives_in')}
+            value={city}
+            onChangeText={setCity}
+            placeholder={t('flirt_form.fields.city_placeholder')}
+            icon="navigate-outline"
+            maxLength={40}
+          />
+          <InputField
+            label={t('flirt_form.fields.occupation')}
+            value={occupation}
+            onChangeText={setOccupation}
+            placeholder={t('flirt_form.fields.occupation_placeholder')}
+            icon="briefcase-outline"
+            maxLength={40}
+          />
 
           {/* Social Media */}
-          <SectionTitle title="Social Media" />
-          <InputField label="Instagram" value={instagram} onChangeText={setInstagram} placeholder="@username" icon="logo-instagram" maxLength={30} />
-          <InputField label="TikTok" value={tiktok} onChangeText={setTiktok} placeholder="@username" icon="logo-tiktok" maxLength={30} />
-          <InputField label="Snapchat" value={snapchat} onChangeText={setSnapchat} placeholder="@username" icon="logo-snapchat" maxLength={30} />
-          <InputField label="X" value={xHandle} onChangeText={setXHandle} placeholder="@username" iconText="X" maxLength={30} />
-          <InputField label="Phone" value={phone} onChangeText={setPhone} placeholder="+1 234 567 8900" icon="call-outline" keyboardType="phone-pad" maxLength={20} />
+          <SectionTitle title={t('flirt_form.sections.social')} />
+          <InputField label={t('flirt_form.fields.instagram', { defaultValue: 'Instagram' })} value={instagram} onChangeText={setInstagram} placeholder="@username" icon="logo-instagram" maxLength={30} />
+          <InputField label={t('flirt_form.fields.tiktok', { defaultValue: 'TikTok' })} value={tiktok} onChangeText={setTiktok} placeholder="@username" icon="logo-tiktok" maxLength={30} />
+          <InputField label={t('flirt_form.fields.snapchat', { defaultValue: 'Snapchat' })} value={snapchat} onChangeText={setSnapchat} placeholder="@username" icon="logo-snapchat" maxLength={30} />
+          <InputField label={t('flirt_form.fields.x', { defaultValue: 'X' })} value={xHandle} onChangeText={setXHandle} placeholder="@username" iconText="X" maxLength={30} />
+          <InputField label={t('flirt_form.fields.phone', { defaultValue: 'Phone' })} value={phone} onChangeText={setPhone} placeholder="+1 234 567 8900" icon="call-outline" keyboardType="phone-pad" maxLength={20} />
 
           {/* Notes */}
-          <SectionTitle title="Notes" />
+          <SectionTitle title={t('flirt_form.sections.notes')} />
           <View>
             <TextInput
               style={styles.notesInput}
               value={notes}
               onChangeText={setNotes}
-              placeholder="First impressions, things to remember..."
+              placeholder={t('flirt_form.fields.notes_placeholder')}
               placeholderTextColor={Colors.textTertiary}
               multiline
               textAlignVertical="top"
@@ -279,8 +328,8 @@ export default function AddFlirtScreen() {
 
         <PermissionModal
           visible={modalVisible}
-          title="Photo Library Access"
-          description="LoveLog needs access to your photo library to add profile photos for your flirts."
+          title={t('onboarding.photo_access_title')}
+          description={t('onboarding.photo_access_desc')}
           onContinue={handleContinue}
         />
       </View>
@@ -298,10 +347,11 @@ function InputField({
   label: string; value: string; onChangeText: (t: string) => void; placeholder?: string;
   icon?: keyof typeof Ionicons.glyphMap; iconText?: string; keyboardType?: any; required?: boolean; half?: boolean; multiline?: boolean; maxLength?: number;
 }) {
+  const cleanLabel = label.endsWith(' *') ? label.replace(' *', '') : label;
   return (
     <View style={[sStyles.inputContainer, half && sStyles.halfInput]}>
       <Text style={sStyles.inputLabel}>
-        {label} {required && <Text style={{ color: Colors.primary }}>*</Text>}
+        {cleanLabel} {required && <Text style={{ color: Colors.primary }}>*</Text>}
       </Text>
       <View style={sStyles.inputWrapper}>
         {icon && <Ionicons name={icon} size={18} color={Colors.textTertiary} />}
@@ -322,10 +372,11 @@ function InputField({
 }
 
 function ChipSelector({
-  label, options, selected, onSelect,
+  label, options, selected, onSelect, translationPrefix,
 }: {
-  label: string; options: string[]; selected: string; onSelect: (v: string) => void;
+  label: string; options: string[]; selected: string; onSelect: (v: string) => void; translationPrefix?: string;
 }) {
+  const { t } = useTranslation();
   return (
     <View style={sStyles.chipContainer}>
       <Text style={sStyles.inputLabel}>{label}</Text>
@@ -336,7 +387,9 @@ function ChipSelector({
             style={[sStyles.chip, selected === opt && sStyles.chipActive]}
             onPress={() => onSelect(selected === opt ? '' : opt)}
           >
-            <Text style={[sStyles.chipText, selected === opt && sStyles.chipTextActive]}>{opt}</Text>
+            <Text style={[sStyles.chipText, selected === opt && sStyles.chipTextActive]}>
+              {translationPrefix ? t(`${translationPrefix}.${opt}`, { defaultValue: opt }) : opt}
+            </Text>
           </Pressable>
         ))}
       </View>

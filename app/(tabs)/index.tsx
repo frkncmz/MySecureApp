@@ -5,6 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import Animated, { FadeInDown, FadeInRight } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Image } from 'expo-image';
+import { useTranslation } from 'react-i18next';
 
 import { Colors, Spacing, BorderRadius, FontSize, FontWeight, Shadow, ScoreColor } from '@/constants/theme';
 import { useStore } from '@/store/useStore';
@@ -14,6 +15,7 @@ export default function DashboardScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const [refreshing, setRefreshing] = useState(false);
+  const { t } = useTranslation();
 
   const {
     flirts,
@@ -50,13 +52,13 @@ export default function DashboardScreen() {
   const getGreetingData = () => {
     const hour = new Date().getHours();
     if (hour >= 5 && hour < 12) {
-      return { text: 'Good morning, Lover!', icon: 'sunny-outline' as const, color: '#FBBF24' };
+      return { text: t('dashboard.greetings.morning'), icon: 'sunny-outline' as const, color: '#FBBF24' };
     } else if (hour >= 12 && hour < 17) {
-      return { text: 'Good afternoon!', icon: 'cafe-outline' as const, color: '#FF8A94' };
+      return { text: t('dashboard.greetings.afternoon'), icon: 'cafe-outline' as const, color: '#FF8A94' };
     } else if (hour >= 17 && hour < 22) {
-      return { text: 'Good evening!', icon: 'moon-outline' as const, color: '#8A4FFF' };
+      return { text: t('dashboard.greetings.evening'), icon: 'moon-outline' as const, color: '#8A4FFF' };
     } else {
-      return { text: 'Good night, Sleepyhead!', icon: 'sparkles-outline' as const, color: '#B794FF' };
+      return { text: t('dashboard.greetings.night'), icon: 'sparkles-outline' as const, color: '#B794FF' };
     }
   };
 
@@ -96,9 +98,9 @@ export default function DashboardScreen() {
     const diffTime = Math.abs(now.getTime() - pastDates[0].getTime());
     const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
 
-    if (diffDays === 0) return 'Today';
-    if (diffDays === 1) return 'Yesterday';
-    return `${diffDays} days ago`;
+    if (diffDays === 0) return t('dashboard.widgets.last_spark_days.today');
+    if (diffDays === 1) return t('dashboard.widgets.last_spark_days.yesterday');
+    return t('dashboard.widgets.last_spark_days.ago', { count: diffDays });
   };
 
   const datingStreak = getDatingStreak();
@@ -180,7 +182,7 @@ export default function DashboardScreen() {
             <Text style={styles.greeting}>{greeting.text}</Text>
             <Ionicons name={greeting.icon} size={24} color={greeting.color} style={styles.greetingIcon} />
           </View>
-          <Text style={styles.subtitle}>Your dating story, beautifully logged.</Text>
+          <Text style={styles.subtitle}>{t('dashboard.subtitle')}</Text>
         </View>
         <Image
           source={require('@/assets/icon.png')}
@@ -198,9 +200,9 @@ export default function DashboardScreen() {
 
           <View style={styles.heroMain}>
             <View>
-              <Text style={styles.heroAuraTitle}>Love Aura Score</Text>
+              <Text style={styles.heroAuraTitle}>{t('dashboard.aura_score')}</Text>
               <Text style={styles.heroAuraLabel}>
-                {averageScore > 0 ? ScoreColor.getLabel(averageScore) : 'Undecided'}
+                {averageScore > 0 ? ScoreColor.getLabel(averageScore, t) : t('dashboard.undecided')}
               </Text>
             </View>
             <View style={[styles.heroScoreContainer, { backgroundColor: (averageScore > 0 ? ScoreColor.getColor(averageScore) : Colors.textTertiary) + '20' }]}>
@@ -218,7 +220,7 @@ export default function DashboardScreen() {
               <Ionicons name="heart" size={18} color={Colors.primary} />
               <View style={styles.heroStatTexts}>
                 <Text style={styles.heroStatVal}>{totalFlirts}</Text>
-                <Text style={styles.heroStatLbl}>Flirts</Text>
+                <Text style={styles.heroStatLbl}>{t('dashboard.stats.flirts')}</Text>
               </View>
             </View>
             <View style={styles.heroStatDivider} />
@@ -226,7 +228,7 @@ export default function DashboardScreen() {
               <Ionicons name="calendar" size={18} color={Colors.secondary} />
               <View style={styles.heroStatTexts}>
                 <Text style={styles.heroStatVal}>{totalDates}</Text>
-                <Text style={styles.heroStatLbl}>Dates</Text>
+                <Text style={styles.heroStatLbl}>{t('dashboard.stats.dates')}</Text>
               </View>
             </View>
             <View style={styles.heroStatDivider} />
@@ -234,7 +236,7 @@ export default function DashboardScreen() {
               <Ionicons name="sparkles" size={18} color={Colors.warning} />
               <View style={styles.heroStatTexts}>
                 <Text style={styles.heroStatVal}>{averageScore > 0 ? averageScore.toFixed(1) : '—'}</Text>
-                <Text style={styles.heroStatLbl}>Avg Rating</Text>
+                <Text style={styles.heroStatLbl}>{t('dashboard.stats.avg_rating')}</Text>
               </View>
             </View>
           </View>
@@ -250,7 +252,7 @@ export default function DashboardScreen() {
           <View style={[styles.actionIconBg, { backgroundColor: Colors.primary }]}>
             <Ionicons name="person-add-outline" size={20} color={Colors.white} />
           </View>
-          <Text style={styles.actionBtnText}>Add Flirt</Text>
+          <Text style={styles.actionBtnText}>{t('dashboard.actions.add_flirt')}</Text>
         </Pressable>
 
         <Pressable
@@ -260,7 +262,7 @@ export default function DashboardScreen() {
           <View style={[styles.actionIconBg, { backgroundColor: Colors.secondary }]}>
             <Ionicons name="calendar-outline" size={20} color={Colors.white} />
           </View>
-          <Text style={styles.actionBtnText}>Log Date</Text>
+          <Text style={styles.actionBtnText}>{t('dashboard.actions.log_date')}</Text>
         </Pressable>
 
         <Pressable
@@ -270,7 +272,7 @@ export default function DashboardScreen() {
           <View style={[styles.actionIconBg, { backgroundColor: Colors.warning }]}>
             <Ionicons name="git-compare-outline" size={20} color={Colors.white} />
           </View>
-          <Text style={styles.actionBtnText}>Compare</Text>
+          <Text style={styles.actionBtnText}>{t('dashboard.actions.compare')}</Text>
         </Pressable>
       </Animated.View>
 
@@ -279,7 +281,7 @@ export default function DashboardScreen() {
         <Animated.View entering={FadeInDown.duration(400).delay(200)} style={styles.section}>
           <View style={styles.sectionTitleRow}>
             <Ionicons name="alert-circle" size={20} color={Colors.primary} />
-            <Text style={styles.sectionTitle}>Rate Your Dates</Text>
+            <Text style={styles.sectionTitle}>{t('dashboard.sections.rate_dates')}</Text>
             <View style={styles.glowDot} />
           </View>
           {unratedDates.map((d) => (
@@ -298,11 +300,11 @@ export default function DashboardScreen() {
                 )}
                 <View style={styles.unratedInfo}>
                   <Text style={styles.unratedName}>{d.flirt_name}</Text>
-                  <Text style={styles.unratedDate}>Met on {formatDate(d.date)}</Text>
+                  <Text style={styles.unratedDate}>{t('dashboard.unrated_card.met_on', { date: formatDate(d.date) })}</Text>
                 </View>
               </View>
               <View style={styles.rateActionBadge}>
-                <Text style={styles.rateActionBadgeText}>Rate Now</Text>
+                <Text style={styles.rateActionBadgeText}>{t('dashboard.unrated_card.rate_now')}</Text>
                 <Ionicons name="chevron-forward" size={14} color={Colors.white} />
               </View>
             </Pressable>
@@ -315,7 +317,7 @@ export default function DashboardScreen() {
         <Animated.View entering={FadeInDown.duration(400).delay(250)} style={styles.section}>
           <View style={styles.sectionTitleRow}>
             <Ionicons name="analytics" size={20} color={Colors.secondary} />
-            <Text style={styles.sectionTitle}>Dating Insights</Text>
+            <Text style={styles.sectionTitle}>{t('dashboard.sections.insights')}</Text>
           </View>
 
           <View style={styles.insightsGrid}>
@@ -323,17 +325,21 @@ export default function DashboardScreen() {
             <View style={styles.insightCard}>
               <View style={styles.insightHeader}>
                 <Ionicons name="sparkles-outline" size={16} color={Colors.secondary} />
-                <Text style={styles.insightCardTitle}>Zodiac Vibe</Text>
+                <Text style={styles.insightCardTitle}>{t('dashboard.widgets.zodiac_title')}</Text>
               </View>
               {zodiacInsight ? (
                 <View style={styles.insightContent}>
                   <Ionicons name={getZodiacIcon(zodiacInsight.name) as any} size={28} color={Colors.secondary} style={styles.insightIcon} />
-                  <Text style={styles.insightValue}>{zodiacInsight.name}</Text>
-                  <Text style={styles.insightSub}>{zodiacInsight.count} connection{zodiacInsight.count > 1 ? 's' : ''}</Text>
+                  <Text style={styles.insightValue}>{t('zodiac.' + zodiacInsight.name)}</Text>
+                  <Text style={styles.insightSub}>
+                    {zodiacInsight.count === 1
+                      ? t('dashboard.widgets.zodiac_connections_one', { count: 1 })
+                      : t('dashboard.widgets.zodiac_connections_other', { count: zodiacInsight.count })}
+                  </Text>
                 </View>
               ) : (
                 <View style={styles.insightContentEmpty}>
-                  <Text style={styles.insightEmptyText}>No zodiac data yet</Text>
+                  <Text style={styles.insightEmptyText}>{t('dashboard.widgets.zodiac_empty')}</Text>
                 </View>
               )}
             </View>
@@ -342,17 +348,17 @@ export default function DashboardScreen() {
             <View style={styles.insightCard}>
               <View style={styles.insightHeader}>
                 <Ionicons name="calendar-outline" size={16} color={Colors.primary} />
-                <Text style={styles.insightCardTitle}>Last Spark</Text>
+                <Text style={styles.insightCardTitle}>{t('dashboard.widgets.last_spark_title')}</Text>
               </View>
               {datingStreak ? (
                 <View style={styles.insightContent}>
                   <Ionicons name="heart-circle-outline" size={32} color={Colors.primary} style={styles.insightIcon} />
                   <Text style={styles.insightValue}>{datingStreak}</Text>
-                  <Text style={styles.insightSub}>Since your last date</Text>
+                  <Text style={styles.insightSub}>{t('dashboard.widgets.last_spark_since')}</Text>
                 </View>
               ) : (
                 <View style={styles.insightContentEmpty}>
-                  <Text style={styles.insightEmptyText}>Time to plan a date!</Text>
+                  <Text style={styles.insightEmptyText}>{t('dashboard.widgets.last_spark_empty')}</Text>
                 </View>
               )}
             </View>
@@ -363,7 +369,7 @@ export default function DashboardScreen() {
             <View style={styles.favoriteHighlightCard}>
               <View style={styles.favHeader}>
                 <Ionicons name="star" size={16} color={Colors.warning} />
-                <Text style={styles.favTitle}>Most Frequent Spark</Text>
+                <Text style={styles.favTitle}>{t('dashboard.widgets.favorite_spark_title')}</Text>
               </View>
               <View style={styles.favMain}>
                 {mostDated.flirt.photo_uri ? (
@@ -375,7 +381,11 @@ export default function DashboardScreen() {
                 )}
                 <View style={styles.favInfo}>
                   <Text style={styles.favName}>{mostDated.flirt.name}</Text>
-                  <Text style={styles.favSub}>{mostDated.count} romantic date{mostDated.count > 1 ? 's' : ''} logged</Text>
+                  <Text style={styles.favSub}>
+                    {mostDated.count === 1
+                      ? t('dashboard.widgets.favorite_spark_dates_one', { count: 1 })
+                      : t('dashboard.widgets.favorite_spark_dates_other', { count: mostDated.count })}
+                  </Text>
                 </View>
                 <View style={[styles.favScoreBadge, { backgroundColor: ScoreColor.getColor(mostDated.flirt.score) + '20' }]}>
                   <Text style={[styles.favScoreText, { color: ScoreColor.getColor(mostDated.flirt.score) }]}>
@@ -391,14 +401,14 @@ export default function DashboardScreen() {
             <View style={styles.spectrumCard}>
               <View style={styles.spectrumHeader}>
                 <Ionicons name="podium-outline" size={16} color={Colors.textSecondary} />
-                <Text style={styles.spectrumTitle}>Love Rating Spectrum</Text>
+                <Text style={styles.spectrumTitle}>{t('dashboard.widgets.spectrum_title')}</Text>
               </View>
 
               <View style={styles.spectrumBars}>
                 {/* Amazing */}
                 <View style={styles.spectrumItem}>
                   <View style={styles.spectrumLabelRow}>
-                    <Text style={[styles.spectrumName, { color: Colors.secondary }]}>Amazing (8-10)</Text>
+                    <Text style={[styles.spectrumName, { color: Colors.secondary }]}>{t('dashboard.widgets.spectrum.amazing')}</Text>
                     <Text style={styles.spectrumVal}>{scoreSpectrum.distribution.amazing} ({scoreSpectrum.percentages.amazing}%)</Text>
                   </View>
                   <View style={styles.progressBarBg}>
@@ -409,7 +419,7 @@ export default function DashboardScreen() {
                 {/* Good */}
                 <View style={styles.spectrumItem}>
                   <View style={styles.spectrumLabelRow}>
-                    <Text style={[styles.spectrumName, { color: Colors.success }]}>Good (6-8)</Text>
+                    <Text style={[styles.spectrumName, { color: Colors.success }]}>{t('dashboard.widgets.spectrum.good')}</Text>
                     <Text style={styles.spectrumVal}>{scoreSpectrum.distribution.good} ({scoreSpectrum.percentages.good}%)</Text>
                   </View>
                   <View style={styles.progressBarBg}>
@@ -420,7 +430,7 @@ export default function DashboardScreen() {
                 {/* Average */}
                 <View style={styles.spectrumItem}>
                   <View style={styles.spectrumLabelRow}>
-                    <Text style={[styles.spectrumName, { color: Colors.warning }]}>Average (4-6)</Text>
+                    <Text style={[styles.spectrumName, { color: Colors.warning }]}>{t('dashboard.widgets.spectrum.average')}</Text>
                     <Text style={styles.spectrumVal}>{scoreSpectrum.distribution.average} ({scoreSpectrum.percentages.average}%)</Text>
                   </View>
                   <View style={styles.progressBarBg}>
@@ -431,7 +441,7 @@ export default function DashboardScreen() {
                 {/* Not Great */}
                 <View style={styles.spectrumItem}>
                   <View style={styles.spectrumLabelRow}>
-                    <Text style={[styles.spectrumName, { color: Colors.danger }]}>Not Great (0-4)</Text>
+                    <Text style={[styles.spectrumName, { color: Colors.danger }]}>{t('dashboard.widgets.spectrum.not_great')}</Text>
                     <Text style={styles.spectrumVal}>{scoreSpectrum.distribution.notGreat} ({scoreSpectrum.percentages.notGreat}%)</Text>
                   </View>
                   <View style={styles.progressBarBg}>
@@ -449,7 +459,7 @@ export default function DashboardScreen() {
         <Animated.View entering={FadeInDown.duration(400).delay(300)} style={styles.section}>
           <View style={styles.sectionTitleRow}>
             <Ionicons name="calendar" size={20} color={Colors.secondary} />
-            <Text style={styles.sectionTitle}>Upcoming Dates</Text>
+            <Text style={styles.sectionTitle}>{t('dashboard.sections.upcoming_dates')}</Text>
           </View>
           {upcomingDates.map((d) => (
             <View key={d.id} style={styles.upcomingCard}>
@@ -472,7 +482,7 @@ export default function DashboardScreen() {
               </View>
               <View style={styles.upcomingTimerBadge}>
                 <Ionicons name="time-outline" size={12} color={Colors.secondary} />
-                <Text style={styles.upcomingTimerText}>Soon</Text>
+                <Text style={styles.upcomingTimerText}>{t('dashboard.upcoming.soon')}</Text>
               </View>
             </View>
           ))}
@@ -484,7 +494,7 @@ export default function DashboardScreen() {
         <Animated.View entering={FadeInDown.duration(400).delay(350)} style={styles.section}>
           <View style={styles.sectionTitleRow}>
             <Ionicons name="trophy" size={20} color={Colors.warning} />
-            <Text style={styles.sectionTitle}>Top Rated Sparks</Text>
+            <Text style={styles.sectionTitle}>{t('dashboard.sections.top_sparks')}</Text>
           </View>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.topRatedRow}>
             {topRatedFlirts.map((f, index) => (
@@ -510,7 +520,7 @@ export default function DashboardScreen() {
                         style={{ marginRight: 2 }}
                       />
                     )}
-                    <Text style={styles.topRatedZodiacText}>{f.zodiac || 'No Zodiac'}</Text>
+                    <Text style={styles.topRatedZodiacText}>{f.zodiac ? t('zodiac.' + f.zodiac) : t('dashboard.top_rated.no_zodiac')}</Text>
                   </View>
                   <View style={[styles.topRatedScoreBadge, { backgroundColor: ScoreColor.getColor(f.score) + '20' }]}>
                     <Text style={[styles.topRatedScore, { color: ScoreColor.getColor(f.score) }]}>
@@ -528,14 +538,14 @@ export default function DashboardScreen() {
       {totalFlirts === 0 && totalDates === 0 && (
         <Animated.View entering={FadeInDown.duration(400).delay(200)} style={styles.emptyState}>
           <Ionicons name="heart-circle-outline" size={80} color={Colors.primaryLight} />
-          <Text style={styles.emptyTitle}>Your Story Begins Here</Text>
-          <Text style={styles.emptySubtitle}>Log your connections, dates, and impressions to calculate your unique dating analytics.</Text>
+          <Text style={styles.emptyTitle}>{t('dashboard.empty.title')}</Text>
+          <Text style={styles.emptySubtitle}>{t('dashboard.empty.desc')}</Text>
           <Pressable
             style={({ pressed }) => [styles.emptyButton, pressed && { backgroundColor: Colors.primaryDark }]}
             onPress={() => router.push('/flirt/add')}
           >
             <Ionicons name="add" size={22} color={Colors.white} />
-            <Text style={styles.emptyButtonText}>Add Your First Flirt</Text>
+            <Text style={styles.emptyButtonText}>{t('dashboard.empty.btn')}</Text>
           </Pressable>
         </Animated.View>
       )}

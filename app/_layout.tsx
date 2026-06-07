@@ -9,6 +9,8 @@ import { getDatabase } from '@/database/db';
 import { initializeAds } from '@/services/adService';
 import { Colors } from '@/constants/theme';
 import { isOnboardingCompleted } from '@/utils/onboarding';
+import { initI18n } from '@/services/i18n';
+import { useTranslation } from 'react-i18next';
 
 export const unstable_settings = {
   anchor: '(tabs)',
@@ -18,11 +20,13 @@ export default function RootLayout() {
   const router = useRouter();
   const [isReady, setIsReady] = useState(false);
   const [needsOnboarding, setNeedsOnboarding] = useState(false);
+  const { t } = useTranslation();
 
   useEffect(() => {
     async function init() {
       try {
         await getDatabase();
+        await initI18n();
         const completed = await isOnboardingCompleted();
         setNeedsOnboarding(!completed);
 
@@ -62,7 +66,7 @@ export default function RootLayout() {
         <Stack.Screen
           name="flirt/add"
           options={{
-            title: 'Add Flirt',
+            title: t('flirt_form.add_title', { defaultValue: 'Add Flirt' }),
             presentation: 'modal',
             animation: 'slide_from_bottom',
             gestureEnabled: false,
@@ -79,7 +83,7 @@ export default function RootLayout() {
         <Stack.Screen
           name="flirt/edit/[id]"
           options={{
-            title: 'Edit Flirt',
+            title: t('flirt_form.edit_title', { defaultValue: 'Edit Flirt' }),
             presentation: 'modal',
             animation: 'slide_from_bottom',
             gestureEnabled: false,
@@ -96,7 +100,7 @@ export default function RootLayout() {
         <Stack.Screen
           name="date/add"
           options={{
-            title: 'Add Date',
+            title: t('date_form.add_title', { defaultValue: 'Add Date' }),
             presentation: 'modal',
             animation: 'slide_from_bottom',
           }}
@@ -104,7 +108,7 @@ export default function RootLayout() {
         <Stack.Screen
           name="date/rate/[dateId]"
           options={{
-            title: 'Rate Date',
+            title: t('rate_date.title', { defaultValue: 'Rate Date' }),
             presentation: 'modal',
             animation: 'slide_from_bottom',
           }}
@@ -112,7 +116,7 @@ export default function RootLayout() {
         <Stack.Screen
           name="evaluate/[flirtId]"
           options={{
-            title: 'First Impression',
+            title: t('rate_date.first_impressions', { defaultValue: 'First Impression' }),
             presentation: 'modal',
             animation: 'slide_from_bottom',
           }}

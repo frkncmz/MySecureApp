@@ -6,6 +6,7 @@ import * as Haptics from 'expo-haptics';
 import Animated, { FadeInDown, FadeIn } from 'react-native-reanimated';
 import { Image } from 'expo-image';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 
 import { Colors, Spacing, BorderRadius, FontSize, FontWeight, Shadow } from '@/constants/theme';
 import { getFlirtById, updateFlirtScore } from '@/database/flirts';
@@ -23,10 +24,11 @@ interface AnswerState {
 }
 
 export default function EvaluateFlirtScreen() {
-  const { flirtId } = useLocalSearchParams<{ flirtId: string }>();
+  const flirtId = useLocalSearchParams<{ flirtId: string }>().flirtId;
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { refreshAll } = useStore();
+  const { t } = useTranslation();
 
   const [flirtName, setFlirtName] = useState('');
   const [flirtPhoto, setFlirtPhoto] = useState<string | null>(null);
@@ -100,7 +102,7 @@ export default function EvaluateFlirtScreen() {
       await refreshAll();
       router.back();
     } catch (error) {
-      Alert.alert('Error', 'Failed to save evaluation.');
+      Alert.alert(t('common.error'), t('rate_date.errors.save_failed_eval'));
     } finally {
       setSaving(false);
     }
@@ -110,7 +112,7 @@ export default function EvaluateFlirtScreen() {
     return (
       <View style={[styles.container, styles.center]}>
         <Ionicons name="hourglass-outline" size={48} color={Colors.textTertiary} />
-        <Text style={styles.loadingText}>Loading questions...</Text>
+        <Text style={styles.loadingText}>{t('rate_date.loading')}</Text>
       </View>
     );
   }
@@ -149,13 +151,13 @@ export default function EvaluateFlirtScreen() {
             </View>
           )}
           <Text style={styles.flirtName}>{flirtName}</Text>
-          <Text style={styles.flirtSubtitle}>First Impressions</Text>
+          <Text style={styles.flirtSubtitle}>{t('rate_date.first_impressions')}</Text>
         </View>
 
         {/* Question */}
         <Animated.View key={`q-${currentIndex}`} entering={FadeInDown.duration(300)}>
-          <Text style={styles.questionNumber}>Question {currentIndex + 1} of {questions.length}</Text>
-          <Text style={styles.questionText}>{current.question_text}</Text>
+          <Text style={styles.questionNumber}>{t('rate_date.question_header', { current: currentIndex + 1, total: questions.length })}</Text>
+          <Text style={styles.questionText}>{t('questions.' + current.id + '.text', { defaultValue: current.question_text })}</Text>
 
           {phase === 'option' && (
             <Animated.View entering={FadeIn.duration(200)} style={styles.optionsContainer}>
@@ -170,7 +172,7 @@ export default function EvaluateFlirtScreen() {
                   onPress={() => handleSelectOption(option)}
                 >
                   <Text style={[styles.optionText, currentAnswer.selectedOption === option && styles.optionTextSelected]}>
-                    {option}
+                    {t('questions.' + current.id + '.options.' + option, { defaultValue: option })}
                   </Text>
                 </Pressable>
               ))}
@@ -179,7 +181,7 @@ export default function EvaluateFlirtScreen() {
 
           {phase === 'sentiment' && currentAnswer.selectedOption && (
             <Animated.View entering={FadeInDown.duration(300)} style={styles.sentimentContainer}>
-              <Text style={styles.sentimentQuestion}>How do you feel about this?</Text>
+              <Text style={styles.sentimentQuestion}>{t('rate_date.sentiment_question_general')}</Text>
               <View style={styles.sentimentRow}>
                 {(['good', 'neutral', 'bad'] as Sentiment[]).map(s => (
                   <Pressable
@@ -201,7 +203,7 @@ export default function EvaluateFlirtScreen() {
                       color={currentAnswer.sentiment === s ? Colors.white : (s === 'good' ? Colors.success : s === 'bad' ? Colors.danger : Colors.warning)}
                     />
                     <Text style={[styles.sentimentLabel, currentAnswer.sentiment === s && { color: Colors.white }]}>
-                      {s.charAt(0).toUpperCase() + s.slice(1)}
+                      {t('rate_date.sentiment.' + s)}
                     </Text>
                   </Pressable>
                 ))}
@@ -222,7 +224,7 @@ export default function EvaluateFlirtScreen() {
             }}
           >
             <Ionicons name="chevron-back" size={20} color={Colors.textSecondary} />
-            <Text style={styles.prevText}>Previous</Text>
+            <Text style={styles.prevText}>{t('rate_date.previous')}</Text>
           </Pressable>
         )}
         <View style={{ flex: 1 }} />
@@ -240,7 +242,7 @@ export default function EvaluateFlirtScreen() {
               }
             }}
           >
-            <Text style={styles.skipText}>{isLastQuestion ? 'Skip & Submit' : 'Skip'}</Text>
+            <Text style={styles.skipText}>{isLastQuestion ? t('rate_date.skip_submit') : t('rate_date.skip')}</Text>
           </Pressable>
         )}
 
@@ -252,7 +254,7 @@ export default function EvaluateFlirtScreen() {
             disabled={saving}
           >
             <Ionicons name="checkmark" size={20} color={Colors.white} />
-            <Text style={styles.submitText}>{saving ? 'Saving...' : 'Submit'}</Text>
+            <Text style={styles.submitText}>{saving ? t('rate_date.saving') : t('rate_date.submit')}</Text>
           </Pressable>
         )}
       </View>

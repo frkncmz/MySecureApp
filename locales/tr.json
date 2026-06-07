@@ -1,0 +1,571 @@
+{
+  "common": {
+    "save": "Kaydet",
+    "saving": "Kaydediliyor...",
+    "cancel": "İptal",
+    "delete": "Sil",
+    "ok": "Tamam",
+    "error": "Hata",
+    "success": "Başarılı",
+    "back": "Geri",
+    "next": "İleri",
+    "done": "Bitti",
+    "change": "Değiştir",
+    "search": "Ara",
+    "date": "Buluşma",
+    "flirt": "Flört",
+    "archived": "Arşivlendi",
+    "score": "Skor",
+    "average": "Ortalama",
+    "notes": "Notlar",
+    "location": "Konum",
+    "loading": "Yükleniyor...",
+    "rate": "Puanla",
+    "edit": "Düzenle",
+    "add": "Ekle",
+    "yes": "Evet",
+    "no": "Hayır",
+    "system": "Sistem"
+  },
+  "zodiac": {
+    "Aries": "Koç",
+    "Taurus": "Boğa",
+    "Gemini": "İkizler",
+    "Cancer": "Yengeç",
+    "Leo": "Aslan",
+    "Virgo": "Başak",
+    "Libra": "Terazi",
+    "Scorpio": "Akrep",
+    "Sagittarius": "Yay",
+    "Capricorn": "Oğlak",
+    "Aquarius": "Kova",
+    "Pisces": "Balık"
+  },
+  "score_labels": {
+    "amazing": "Harika",
+    "good": "İyi",
+    "average": "Ortalama",
+    "not_great": "Pek İyi Değil"
+  },
+  "body_type": {
+    "Slim": "Zayıf",
+    "Athletic": "Atletik",
+    "Average": "Normal",
+    "Curvy": "Kıvrımlı",
+    "Plus Size": "Büyük Beden"
+  },
+  "hair_color": {
+    "Black": "Siyah",
+    "Brown": "Kahverengi",
+    "Blonde": "Sarışın",
+    "Red": "Kızıl",
+    "Other": "Diğer"
+  },
+  "eye_color": {
+    "Brown": "Kahverengi",
+    "Blue": "Mavi",
+    "Green": "Yeşil",
+    "Hazel": "Ela",
+    "Other": "Diğer"
+  },
+  "skin_tone": {
+    "Fair": "Çok Açık",
+    "Light": "Açık",
+    "Medium": "Buğday",
+    "Olive": "Esmer",
+    "Tan": "Bronz",
+    "Dark": "Koyu"
+  },
+  "preset_tags": {
+    "Good listener": "İyi dinleyici",
+    "Funny": "Eğlenceli",
+    "Romantic": "Romantik",
+    "Ambitious": "Hırslı",
+    "Honest": "Dürüst",
+    "Adventurous": "Maceracı",
+    "Caring": "İlgili",
+    "Smart": "Zeki",
+    "Stylish": "Şık",
+    "Confident": "Özgüvenli",
+    "Kind": "Nazik",
+    "Supportive": "Destekleyici",
+    "Creative": "Yaratıcı",
+    "Spontaneous": "Spontane",
+    "Great cook": "Yemekte usta",
+    "Late": "Geciken",
+    "Jealous": "Kıskanç",
+    "Distant": "Mesafeli",
+    "Boring": "Sıkıcı",
+    "Selfish": "Bencil",
+    "Messy": "Dağınık",
+    "Rude": "Kaba",
+    "Flaky": "Güvenilmez",
+    "Clingy": "Yapışkan",
+    "Dishonest": "Yalancı",
+    "Stubborn": "İnatçı",
+    "Immature": "Çocuksu",
+    "Lazy": "Üşengeç",
+    "Arrogant": "Kibirli",
+    "Bad texter": "Mesajlaşması kötü"
+  },
+  "questions": {
+    "date_q0": {
+      "text": "Hesabı kim ödedi?",
+      "options": {
+        "They paid": "O ödedi",
+        "I paid": "Ben ödedim",
+        "We split": "Bölüştük",
+        "No bill": "Hesap yok"
+      }
+    },
+    "date_q1": {
+      "text": "Zamanında geldi mi?",
+      "options": {
+        "Early": "Erken geldi",
+        "On time": "Zamanında geldi",
+        "A little late": "Biraz gecikti",
+        "Very late": "Çok gecikti"
+      }
+    },
+    "date_q2": {
+      "text": "Telefona ne kadar baktı?",
+      "options": {
+        "Never": "Hiç bakmadı",
+        "A few times": "Birkaç kez baktı",
+        "A lot": "Çok baktı",
+        "Constantly": "Sürekli telefondaydı"
+      }
+    },
+    "date_q3": {
+      "text": "Sohbet akışı nasıldı?",
+      "options": {
+        "Amazing": "Harikaydı",
+        "Good": "İyiydi",
+        "Okay": "Normaldi",
+        "Awkward": "Tıkanıp kaldı"
+      }
+    },
+    "date_q4": {
+      "text": "Göz teması kurdu mu?",
+      "options": {
+        "Yes, a lot": "Evet, çokça",
+        "Normal": "Normal düzeyde",
+        "Not really": "Pek değil",
+        "Avoided it": "Gözünü kaçırdı"
+      }
+    },
+    "date_q5": {
+      "text": "Beden dili nasıldı?",
+      "options": {
+        "Very open & warm": "Çok sıcak ve açık",
+        "Normal": "Normal",
+        "Distant": "Mesafeli",
+        "Closed off": "Kapalı ve isteksiz"
+      }
+    },
+    "date_q6": {
+      "text": "Sizin hakkınızda sorular sordu mu?",
+      "options": {
+        "Very interested": "Çok ilgiliydi",
+        "Some questions": "Birkaç soru sordu",
+        "Not much": "Pek sormadı",
+        "All about them": "Sadece kendinden bahsetti"
+      }
+    },
+    "date_q7": {
+      "text": "Buluşma nasıl bitti?",
+      "options": {
+        "Kiss": "Öpüşerek",
+        "Hug": "Sarılılarak",
+        "Handshake": "Tokalaşarak",
+        "Just goodbye": "Sadece vedalaşarak"
+      }
+    },
+    "date_q8": {
+      "text": "Tekrar görüşmekten bahsetti mi?",
+      "options": {
+        "Yes, eagerly": "Evet, hevesle",
+        "Casually": "Laf arasında",
+        "Vaguely": "Belirsizce",
+        "Not at all": "Hiç bahsetmedi"
+      }
+    },
+    "date_q9": {
+      "text": "Tekrar buluşur musunuz?",
+      "options": {
+        "Definitely": "Kesinlikle",
+        "Probably": "Büyük ihtimalle",
+        "Maybe": "Belki",
+        "No way": "Asla"
+      }
+    },
+    "flirt_q0": {
+      "text": "Nerede tanıştınız?",
+      "options": {
+        "Dating app": "Arkadaşlık uygulamasında",
+        "Social media": "Sosyal medyada",
+        "Through friends": "Arkadaşlar vasıtasıyla",
+        "School/Work": "Okulda / İşte",
+        "Bar/Club": "Bar / Kulüpte",
+        "Random": "Rastgele bir yerde"
+      }
+    },
+    "flirt_q1": {
+      "text": "Sohbeti kim başlattı?",
+      "options": {
+        "I did": "Ben başlattım",
+        "They did": "O başlattı",
+        "Mutual": "Ortak / Karşılıklı"
+      }
+    },
+    "flirt_q2": {
+      "text": "İlk izleniminiz?",
+      "options": {
+        "Love at first sight": "İlk görüşte aşk",
+        "Very attractive": "Çok çekici",
+        "Nice": "Hoş",
+        "Average": "Normal",
+        "Not my type": "Tarzım değil"
+      }
+    },
+    "flirt_q3": {
+      "text": "Mesajlara ne hızda dönüyor?",
+      "options": {
+        "Instantly": "Anında",
+        "Fast": "Hızlı",
+        "Normal": "Normal",
+        "Slow": "Yavaş",
+        "Very slow": "Çok yavaş"
+      }
+    },
+    "flirt_q4": {
+      "text": "Sohbeti ne kadar çekici?",
+      "options": {
+        "Super engaging": "Çok sürükleyici",
+        "Good": "Güzel",
+        "Average": "Sıradan",
+        "Boring": "Sıkıcı",
+        "Dry": "Çok tatsız"
+      }
+    }
+  },
+  "onboarding": {
+    "slide1_title": "LoveLog'a Hoş Geldiniz",
+    "slide1_desc": "Kişisel flört paneliniz. Love Aura skorunuzu, buluşma analizlerinizi, burç uyumlarınızı ve daha fazlasını tek bir yerden takip edin.",
+    "slide2_title": "Flörtlerinizi Takip Edin",
+    "slide2_desc": "Fotoğraflı, skorlu ve burç detaylı flört profilleri oluşturun. Aramalar yapın, sıralayın ve filtreleyin.",
+    "slide3_title": "Kıyaslayın ve Karar Verin",
+    "slide3_desc": "Flörtlerinizi yan yana getirin. Kimin gerçekten öne çıktığını görmek için skorlarını, özelliklerini ve ilk izlenimlerini karşılaştırın.",
+    "slide4_title": "Planlayın ve Hatırlayın",
+    "slide4_desc": "Her buluşmayı takviminize kaydedin, kiminle nerede buluştuğunuzu görün ve özel anları asla unutmayın.",
+    "almost_there": "Neredeyse Hazır!",
+    "age_confirm": "Uygulamayı kullanabilmek için en az 18 yaşında olmalısınız. Onaylamak için lütfen doğum tarihinizi girin.",
+    "select_birth": "Doğum tarihinizi seçin",
+    "age_error": "LoveLog'u kullanabilmek için en az 18 yaşında olmalısınız.",
+    "legal_consent": "Devam ederek, <terms>Kullanım Koşulları</terms> ve <privacy>Gizlilik Politikası</privacy>'nı kabul etmiş olursunuz.",
+    "get_started": "Başlayalım",
+    "done": "Tamam",
+    "ad_personalization": "Reklam Kişiselleştirme",
+    "ad_personalization_desc": "LoveLog reklam göstermektedir. İzleme izni vererek, genel reklamlar yerine ilgi alanlarınıza özel kişiselleştirilmiş reklamlar görmenizi sağlarsınız.",
+    "ad_reason1": "Reklamlar ilgi alanlarınıza göre şekillenir",
+    "ad_reason2": "Kişisel verileriniz üçüncü şahıslarla asla paylaşılmaz",
+    "photo_reason1": "Flörtleriniz için profil fotoğrafları ekleyin",
+    "photo_reason2": "Her flörtün kartını kişiselleştirin",
+    "photo_reason3": "Fotoğraflar sadece cihazınızda kalır",
+    "photo_access_title": "Fotoğraf Kütüphanesi Erişimi",
+    "photo_access_desc": "LoveLog, flörtlerinize profil fotoğrafı ekleyebilmeniz için fotoğraf kütüphanenize erişim izni gerektirir.",
+    "settings_hint": "Bu seçeneği daha sonra Ayarlar uygulamasından değiştirebilirsiniz."
+  },
+  "dashboard": {
+    "title": "Pano",
+    "greetings": {
+      "morning": "Günaydın, Aşık!",
+      "afternoon": "İyi günler!",
+      "evening": "İyi akşamlar!",
+      "night": "İyi geceler, Uykucu!"
+    },
+    "subtitle": "Flört hikayeniz, harika bir şekilde kayıt altında.",
+    "aura_score": "Love Aura Skoru",
+    "undecided": "Kararsız",
+    "stats": {
+      "flirts": "Flörtler",
+      "dates": "Buluşmalar",
+      "avg_rating": "Ort. Puan"
+    },
+    "actions": {
+      "add_flirt": "Flört Ekle",
+      "log_date": "Buluşma Ekle",
+      "compare": "Karşılaştır"
+    },
+    "sections": {
+      "rate_dates": "Buluşmalarını Puanla",
+      "insights": "Flört Analizleri",
+      "upcoming_dates": "Gelecek Buluşmalar",
+      "top_sparks": "En Yüksek Puanlılar"
+    },
+    "unrated_card": {
+      "met_on": "Buluşma tarihi: {{date}}",
+      "rate_now": "Puanla"
+    },
+    "widgets": {
+      "zodiac_title": "Burç Çekimi",
+      "zodiac_connections_one": "{{count}} bağlantı",
+      "zodiac_connections_other": "{{count}} bağlantı",
+      "zodiac_empty": "Henüz burç verisi yok",
+      "last_spark_title": "Son Kıvılcım",
+      "last_spark_empty": "Buluşma planlama zamanı!",
+      "last_spark_since": "Son buluşmanızdan beri",
+      "last_spark_days": {
+        "today": "Bugün",
+        "yesterday": "Dün",
+        "ago": "{{count}} gün önce"
+      },
+      "favorite_spark_title": "En Sık Görüşülen",
+      "favorite_spark_dates_one": "{{count}} romantik buluşma",
+      "favorite_spark_dates_other": "{{count}} romantik buluşma",
+      "spectrum_title": "Aşk Puanı Dağılımı",
+      "spectrum": {
+        "amazing": "Harika (8-10)",
+        "good": "İyi (6-8)",
+        "average": "Ortalama (4-6)",
+        "not_great": "Pek İyi Değil (0-4)"
+      }
+    },
+    "upcoming": {
+      "soon": "Yakında"
+    },
+    "top_rated": {
+      "no_zodiac": "Burç Yok"
+    },
+    "empty": {
+      "title": "Hikayeniz Burada Başlıyor",
+      "desc": "Kendi flört analizinizi görmek için bağlantılarınızı, buluşmalarınızı ve izlenimlerinizi kaydetmeye başlayın.",
+      "btn": "İlk Flörtünüzü Ekleyin"
+    }
+  },
+  "flirts": {
+    "title": "Flörtler",
+    "search_placeholder": "Flört ara...",
+    "sort": {
+      "recent": "En Yeni",
+      "name": "İsim",
+      "score": "Skor"
+    },
+    "card": {
+      "met": "Tanışma: {{date}}"
+    },
+    "empty": {
+      "no_results": "Flört bulunamadı",
+      "no_archived": "Arşivlenmiş flört yok",
+      "no_flirts": "Henüz flört eklenmemiş"
+    }
+  },
+  "compare": {
+    "title": "Karşılaştır",
+    "select_title": "Flört Seç",
+    "vs": "VS",
+    "empty_slots": "Karşılaştırmak için iki flört seçin",
+    "select_flirt": "Flört seçin",
+    "no_flirts": "Uygun flört yok",
+    "traits_pros": "Artılar",
+    "traits_cons": "Eksiler",
+    "first_impressions": "İlk İzlenimler",
+    "skipped": "Geçildi",
+    "metrics": {
+      "dates": "Buluşmalar",
+      "age": "Yaş",
+      "zodiac": "Burç",
+      "height": "Boy",
+      "from": "Memleket",
+      "lives_in": "Yaşadığı Yer",
+      "job": "Meslek"
+    },
+    "age_value": "{{age}} yaşında"
+  },
+  "calendar": {
+    "title": "Takvim",
+    "no_dates": "Bu günde buluşma yok",
+    "plan_date": "Buluşma planla",
+    "tap_hint": "Buluşmaları görmek için bir güne dokunun",
+    "rate": "Puanla"
+  },
+  "settings": {
+    "title": "Ayarlar",
+    "sections": {
+      "language": "Dil Seçimi",
+      "data_management": "Veri Yönetimi",
+      "danger_zone": "Tehlikeli Bölge",
+      "legal": "Yasal"
+    },
+    "language_options": {
+      "system": "Sistem Dili ({{lang}})",
+      "system_label": "Sistem Dili"
+    },
+    "backup": {
+      "title": "Verileri Yedekle",
+      "desc": "Verilerinizi şifreli bir dosya olarak dışa aktarın",
+      "note": "Profil fotoğrafları yedeklere dahil edilmez.",
+      "pin_placeholder": "Bir PIN girin (en az 4 kar.)",
+      "btn": "Yedek Oluştur",
+      "success": "Yedek başarıyla oluşturuldu!",
+      "error_pin": "PIN en az 4 karakter olmalıdır.",
+      "error_failed": "Yedek oluşturulamadı."
+    },
+    "restore": {
+      "title": "Verileri Geri Yükle",
+      "desc": "Bir yedekleme dosyasından içe aktarın",
+      "pin_placeholder": "Yedekleme PIN kodunuzu girin",
+      "btn": "Dosya Seç ve Yükle",
+      "success": "Veriler başarıyla yüklendi! Uygulama yenilenecek.",
+      "error_failed": "Yedek yüklenemedi."
+    },
+    "clear_data": {
+      "title": "Tüm Verileri Temizle",
+      "desc": "Her şeyi sil ve sıfırdan başla",
+      "confirm_title": "Tüm Verileri Sil",
+      "confirm_desc": "Bu işlem tüm flörtlerinizi, buluşmalarınızı ve değerlendirmelerinizi kalıcı olarak silecektir. Bu işlem geri alınamaz.",
+      "btn_delete": "Her Şeyi Sil",
+      "error": "Veriler temizlenemedi."
+    },
+    "legal": {
+      "terms": "Kullanım Koşulları",
+      "privacy": "Gizlilik Politikası",
+      "last_updated": "Son güncelleme:"
+    },
+    "branding": {
+      "version": "Sürüm {{version}}",
+      "creator": "Furkan Çömez tarafından yapıldı"
+    }
+  },
+  "flirt_detail": {
+    "loading": "Yükleniyor...",
+    "years_old": "{{count}} yaşında",
+    "hair_text": "{{color}} saçlı",
+    "eye_text": "{{color}} gözlü",
+    "skin_text": "{{color}} tenli",
+    "from_text": "Memleketi: {{hometown}}",
+    "lives_text": "Yaşadığı yer: {{city}}",
+    "met_at": "Tanışma yeri: {{place}}",
+    "met_date": "Tanışma tarihi: {{date}}",
+    "social": "Sosyal Medya",
+    "pros_cons": "Artılar & Eksiler",
+    "pros": "Artılar",
+    "cons": "Eksiler",
+    "first_impressions": "İlk İzlenimler",
+    "notes": "Notlar",
+    "dates_title": "Buluşmalar ({{count}})",
+    "add_date": "Buluşma Ekle",
+    "no_dates": "Henüz buluşma yok. Planla!",
+    "add_first_impressions": "İlk İzlenim Ekle",
+    "rate": "Puanla",
+    "archive_alert": {
+      "title_archive": "Arşivle",
+      "title_unarchive": "Arşivden Çıkar",
+      "msg_archive": "{{name}} kişisini arşivlemek istediğinize emin misiniz?",
+      "msg_unarchive": "{{name}} kişisini arşivden çıkarmak istediğinize emin misiniz?"
+    },
+    "delete_alert": {
+      "title": "Flörtü Sil",
+      "msg": "{{name}} flörtünü silmek istediğinize emin misiniz? Bu işlem ilişkili tüm buluşmaları ve değerlendirmeleri de kaldıracaktır."
+    }
+  },
+  "flirt_form": {
+    "add_title": "Flört Ekle",
+    "edit_title": "Flörtü Düzenle",
+    "add_photo": "Fotoğraf Ekle",
+    "sections": {
+      "basics": "Temel Bilgiler",
+      "details": "Özellikler",
+      "personal": "Kişisel",
+      "social": "Sosyal Medya",
+      "notes": "Notlar"
+    },
+    "fields": {
+      "name": "İsim *",
+      "name_placeholder": "Onun ismi",
+      "when_met": "Ne zaman tanıştınız?",
+      "select_date": "Tarih seçin",
+      "where_met": "Nerede tanıştınız?",
+      "where_placeholder": "Kafe, Tinder, vb.",
+      "birth_date": "Doğum Tarihi",
+      "select_birth": "Doğum tarihini seçin",
+      "birth_val": "{{date}} ({{age}} yaşında)",
+      "height": "Boy",
+      "height_placeholder": "175cm",
+      "body_type": "Vücut Tipi",
+      "hair_color": "Saç Rengi",
+      "eye_color": "Göz Rengi",
+      "skin_tone": "Ten Rengi",
+      "hometown": "Memleket",
+      "hometown_placeholder": "Nereli?",
+      "lives_in": "Yaşadığı Yer",
+      "city_placeholder": "Şu an yaşadığı şehir",
+      "occupation": "Meslek",
+      "occupation_placeholder": "Ne iş yapıyor?",
+      "notes_placeholder": "İlk izlenimler, hatırlanacak şeyler...",
+      "notes_placeholder_edit": "Kişisel notlar...",
+      "instagram": "Instagram",
+      "tiktok": "TikTok",
+      "snapchat": "Snapchat",
+      "x": "X",
+      "phone": "Telefon"
+    },
+    "errors": {
+      "name_required": "Lütfen bir isim girin.",
+      "name_required_edit": "İsim zorunludur.",
+      "save_failed": "Flört kaydedilemedi.",
+      "update_failed": "Flört güncellenemedi."
+    }
+  },
+  "date_detail": {
+    "title": "Buluşma Detayları",
+    "not_rated": "Henüz puanlanmadı",
+    "rating_details": "Değerlendirme Detayları",
+    "rate_btn": "Bu Buluşmayı Puanla"
+  },
+  "date_form": {
+    "add_title": "Buluşma Ekle",
+    "who_met": "Kiminle buluştunuz?",
+    "no_flirts": "Buluşma planlayabilmek için önce bir flört eklemelisiniz.",
+    "no_flirts_btn": "Flört Ekle",
+    "when": "Ne zaman?",
+    "where": "Nerede?",
+    "where_placeholder": "Restoran, park, sinema...",
+    "notes_placeholder": "Ne giyilmeli, hatırlanacak detaylar...",
+    "save_date": "Buluşmayı Kaydet",
+    "errors": {
+      "select_flirt": "Lütfen bir flört seçin.",
+      "save_failed": "Buluşma kaydedilemedi."
+    }
+  },
+  "rate_date": {
+    "title": "Buluşmayı Puanla",
+    "first_impressions": "İlk İzlenimler",
+    "loading": "Sorular yükleniyor...",
+    "question_header": "Soru {{current}} / {{total}}",
+    "sentiment_question": "\"{{option}}\" seçimi sizin için iyi mi kötü mü?",
+    "sentiment_question_general": "Bu konuda nasıl hissettiniz?",
+    "sentiment": {
+      "good": "İyi",
+      "neutral": "Nötr",
+      "bad": "Kötü"
+    },
+    "previous": "Geri",
+    "skip": "Geç",
+    "skip_submit": "Geç ve Gönder",
+    "submit": "Değerlendirmeyi Gönder",
+    "saving": "Kaydediliyor...",
+    "errors": {
+      "save_failed": "Değerlendirme kaydedilemedi.",
+      "save_failed_eval": "İlk izlenim kaydedilemedi."
+    }
+  },
+  "permissions": {
+    "photo_library": {
+      "alert_title": "Fotoğraf Erişimi Kullanılamıyor",
+      "alert_desc": "Bu özellik fotoğraf kitaplığınızı kullanır. İstediğiniz zaman Ayarlar'dan erişim izni verebilirsiniz.",
+      "not_now": "Şimdi Değil",
+      "settings": "Ayarlar"
+    }
+  }
+}

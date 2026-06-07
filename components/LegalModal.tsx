@@ -3,6 +3,7 @@ import Animated, { FadeIn, SlideInDown } from 'react-native-reanimated';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Colors, Spacing, BorderRadius, FontSize, FontWeight, Shadow } from '@/constants/theme';
+import { useTranslation } from 'react-i18next';
 
 interface Section {
   heading: string;
@@ -23,6 +24,7 @@ interface LegalModalProps {
 
 export default function LegalModal({ visible, data, onClose }: LegalModalProps) {
   const insets = useSafeAreaInsets();
+  const { t } = useTranslation();
 
   return (
     <Modal visible={visible} transparent animationType="none" statusBarTranslucent>
@@ -35,7 +37,7 @@ export default function LegalModal({ visible, data, onClose }: LegalModalProps) 
           <View style={styles.header}>
             <View style={styles.headerText}>
               <Text style={styles.title}>{data.title}</Text>
-              <Text style={styles.lastUpdated}>Last updated: {data.lastUpdated}</Text>
+              <Text style={styles.lastUpdated}>{t('settings.legal.last_updated', { defaultValue: 'Last updated:' })} {data.lastUpdated}</Text>
             </View>
             <Pressable style={styles.closeBtn} onPress={onClose} hitSlop={12}>
               <Ionicons name="close" size={22} color={Colors.textSecondary} />
@@ -64,7 +66,7 @@ export default function LegalModal({ visible, data, onClose }: LegalModalProps) 
             style={({ pressed }) => [styles.doneBtn, pressed && styles.doneBtnPressed]}
             onPress={onClose}
           >
-            <Text style={styles.doneBtnText}>Done</Text>
+            <Text style={styles.doneBtnText}>{t('common.done')}</Text>
           </Pressable>
         </Animated.View>
       </Animated.View>

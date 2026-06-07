@@ -1,6 +1,6 @@
 {
   "name": "lovelog--frontend",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "main": "expo-router/entry",
   "dependencies": {
     "@expo/vector-icons": "^15.1.1",
@@ -17,6 +17,7 @@
     "expo-image": "^56.0.9",
     "expo-image-picker": "^56.0.13",
     "expo-linking": "^56.0.11",
+    "expo-localization": "~56.0.6",
     "expo-router": "^56.2.6",
     "expo-sharing": "^56.0.13",
     "expo-splash-screen": "^56.0.10",
@@ -26,7 +27,9 @@
     "expo-system-ui": "^56.0.5",
     "expo-tracking-transparency": "^56.0.5",
     "expo-web-browser": "^56.0.5",
+    "i18next": "^26.3.1",
     "react": "19.2.3",
+    "react-i18next": "^17.0.8",
     "react-native": "0.85.3",
     "react-native-calendars": "^1.1314.0",
     "react-native-gesture-handler": "^2.31.2",

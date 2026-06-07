@@ -6,6 +6,7 @@ import * as Haptics from 'expo-haptics';
 import Animated, { FadeInDown, FadeIn } from 'react-native-reanimated';
 import { Image } from 'expo-image';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 
 import { Colors, Spacing, BorderRadius, FontSize, FontWeight, Shadow } from '@/constants/theme';
 import { getDateById } from '@/database/dates';
@@ -30,6 +31,7 @@ export default function RateDateScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { refreshAll } = useStore();
+  const { t } = useTranslation();
 
   const [flirtName, setFlirtName] = useState('');
   const [flirtPhoto, setFlirtPhoto] = useState<string | null>(null);
@@ -122,7 +124,7 @@ export default function RateDateScreen() {
       await showInterstitialAd();
       router.back();
     } catch (error) {
-      Alert.alert('Error', 'Failed to save ratings.');
+      Alert.alert(t('common.error'), t('rate_date.errors.save_failed'));
     } finally {
       setSaving(false);
     }
@@ -132,7 +134,7 @@ export default function RateDateScreen() {
     return (
       <View style={[styles.container, styles.center]}>
         <Ionicons name="hourglass-outline" size={48} color={Colors.textTertiary} />
-        <Text style={styles.loadingText}>Loading questions...</Text>
+        <Text style={styles.loadingText}>{t('rate_date.loading')}</Text>
       </View>
     );
   }
@@ -187,8 +189,12 @@ export default function RateDateScreen() {
 
         {/* Question */}
         <Animated.View key={`q-${currentIndex}`} entering={FadeInDown.duration(300)}>
-          <Text style={styles.questionNumber}>Question {currentIndex + 1} of {questions.length}</Text>
-          <Text style={styles.questionText}>{current.question_text}</Text>
+          <Text style={styles.questionNumber}>
+            {t('rate_date.question_header', { current: currentIndex + 1, total: questions.length })}
+          </Text>
+          <Text style={styles.questionText}>
+            {t('questions.' + current.id + '.text', { defaultValue: current.question_text })}
+          </Text>
 
           {/* Options */}
           {phase === 'option' && (
@@ -207,7 +213,7 @@ export default function RateDateScreen() {
                     styles.optionText,
                     currentAnswer.selectedOption === option && styles.optionTextSelected,
                   ]}>
-                    {option}
+                    {t('questions.' + current.id + '.options.' + option, { defaultValue: option })}
                   </Text>
                 </Pressable>
               ))}
@@ -217,7 +223,11 @@ export default function RateDateScreen() {
           {/* Sentiment */}
           {phase === 'sentiment' && currentAnswer.selectedOption && (
             <Animated.View entering={FadeInDown.duration(300)} style={styles.sentimentContainer}>
-              <Text style={styles.sentimentQuestion}>Is "{currentAnswer.selectedOption}" good or bad for you?</Text>
+              <Text style={styles.sentimentQuestion}>
+                {t('rate_date.sentiment_question', {
+                  option: t('questions.' + current.id + '.options.' + currentAnswer.selectedOption, { defaultValue: currentAnswer.selectedOption }),
+                })}
+              </Text>
               <View style={styles.sentimentRow}>
                 <Pressable
                   style={({ pressed }) => [
@@ -229,7 +239,9 @@ export default function RateDateScreen() {
                   onPress={() => handleSelectSentiment('good')}
                 >
                   <Ionicons name="thumbs-up" size={28} color={currentAnswer.sentiment === 'good' ? Colors.white : Colors.success} />
-                  <Text style={[styles.sentimentLabel, currentAnswer.sentiment === 'good' && { color: Colors.white }]}>Good</Text>
+                  <Text style={[styles.sentimentLabel, currentAnswer.sentiment === 'good' && { color: Colors.white }]}>
+                    {t('rate_date.sentiment.good')}
+                  </Text>
                 </Pressable>
 
                 <Pressable
@@ -242,7 +254,9 @@ export default function RateDateScreen() {
                   onPress={() => handleSelectSentiment('neutral')}
                 >
                   <Ionicons name="remove-circle-outline" size={28} color={currentAnswer.sentiment === 'neutral' ? Colors.white : Colors.warning} />
-                  <Text style={[styles.sentimentLabel, currentAnswer.sentiment === 'neutral' && { color: Colors.white }]}>Neutral</Text>
+                  <Text style={[styles.sentimentLabel, currentAnswer.sentiment === 'neutral' && { color: Colors.white }]}>
+                    {t('rate_date.sentiment.neutral')}
+                  </Text>
                 </Pressable>
 
                 <Pressable
@@ -255,7 +269,9 @@ export default function RateDateScreen() {
                   onPress={() => handleSelectSentiment('bad')}
                 >
                   <Ionicons name="thumbs-down" size={28} color={currentAnswer.sentiment === 'bad' ? Colors.white : Colors.danger} />
-                  <Text style={[styles.sentimentLabel, currentAnswer.sentiment === 'bad' && { color: Colors.white }]}>Bad</Text>
+                  <Text style={[styles.sentimentLabel, currentAnswer.sentiment === 'bad' && { color: Colors.white }]}>
+                    {t('rate_date.sentiment.bad')}
+                  </Text>
                 </Pressable>
               </View>
             </Animated.View>
@@ -274,7 +290,7 @@ export default function RateDateScreen() {
             }}
           >
             <Ionicons name="chevron-back" size={20} color={Colors.textSecondary} />
-            <Text style={styles.prevButtonText}>Previous</Text>
+            <Text style={styles.prevButtonText}>{t('rate_date.previous')}</Text>
           </Pressable>
         )}
         <View style={{ flex: 1 }} />
@@ -292,7 +308,7 @@ export default function RateDateScreen() {
               }
             }}
           >
-            <Text style={styles.skipText}>{isLastQuestion ? 'Skip & Submit' : 'Skip'}</Text>
+            <Text style={styles.skipText}>{isLastQuestion ? t('rate_date.skip_submit') : t('rate_date.skip')}</Text>
           </Pressable>
         )}
 
@@ -304,7 +320,7 @@ export default function RateDateScreen() {
           >
             <Ionicons name="checkmark" size={20} color={Colors.textOnPrimary} />
             <Text style={styles.submitButtonText}>
-              {saving ? 'Saving...' : 'Submit Rating'}
+              {saving ? t('rate_date.saving') : t('rate_date.submit')}
             </Text>
           </Pressable>
         )}

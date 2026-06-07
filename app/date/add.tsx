@@ -6,6 +6,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Image } from 'expo-image';
+import { useTranslation } from 'react-i18next';
+import i18n from '@/services/i18n';
 
 import { Colors, Spacing, BorderRadius, FontSize, FontWeight, Shadow } from '@/constants/theme';
 import { createDate } from '@/database/dates';
@@ -14,11 +16,20 @@ import { getInitials } from '@/utils/helpers';
 import { useStore } from '@/store/useStore';
 import { showInterstitialAd } from '@/services/adService';
 
+const LOCALE_MAP: Record<string, string> = {
+  tr: 'tr-TR',
+  es: 'es-ES',
+  de: 'de-DE',
+  ru: 'ru-RU',
+  en: 'en-US',
+};
+
 export default function AddDateScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const params = useLocalSearchParams<{ flirtId?: string; flirtName?: string; selectedDate?: string }>();
   const { refreshAll } = useStore();
+  const { t } = useTranslation();
 
   const [flirts, setFlirts] = useState<Flirt[]>([]);
   const [selectedFlirtId, setSelectedFlirtId] = useState<string | null>(params.flirtId || null);
@@ -37,6 +48,8 @@ export default function AddDateScreen() {
   const [saving, setSaving] = useState(false);
   const [showFlirtPicker, setShowFlirtPicker] = useState(!params.flirtId);
 
+  const activeLocale = LOCALE_MAP[i18n.language || 'en'] || 'en-US';
+
   useEffect(() => {
     const loadFlirts = async () => {
       const all = await getAllFlirts();
@@ -47,7 +60,7 @@ export default function AddDateScreen() {
 
   const handleSave = async () => {
     if (!selectedFlirtId) {
-      Alert.alert('Error', 'Please select a flirt.');
+      Alert.alert(t('common.error'), t('date_form.errors.select_flirt'));
       return;
     }
     if (saving) return;
@@ -65,16 +78,17 @@ export default function AddDateScreen() {
       await refreshAll();
       await showInterstitialAd();
 
-      // If date is in the past or today, go to rating; otherwise just go back
-      const now = new Date();
-      const isPassedDate = date <= now;
-      if (isPassedDate) {
+      // If date is strictly in the past (yesterday or older), go to rating; otherwise just go back
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const isPastDate = date < today;
+      if (isPastDate) {
         router.replace(`/date/rate/${dateId}`);
       } else {
         router.back();
       }
     } catch (error) {
-      Alert.alert('Error', 'Failed to save date.');
+      Alert.alert(t('common.error'), t('date_form.errors.save_failed'));
     } finally {
       setSaving(false);
     }
@@ -87,12 +101,12 @@ export default function AddDateScreen() {
         contentContainerStyle={{ padding: Spacing.xl, paddingBottom: 100 }}
         showsVerticalScrollIndicator={false}
       >
-        <Text style={styles.title}>Plan a Date</Text>
+        <Text style={styles.title}>{t('date_form.add_title')}</Text>
 
         {/* Flirt Selector */}
         {showFlirtPicker ? (
           <View style={styles.flirtPicker}>
-            <Text style={styles.label}>Who's the date with?</Text>
+            <Text style={styles.label}>{t('date_form.who_met')}</Text>
             {flirts.length > 0 ? (
               flirts.map(f => (
                 <Pressable
@@ -117,12 +131,12 @@ export default function AddDateScreen() {
                 </Pressable>
               ))
             ) : (
-              <Text style={styles.noFlirts}>No flirts yet. Add one first!</Text>
+              <Text style={styles.noFlirts}>{t('date_form.no_flirts')}</Text>
             )}
           </View>
         ) : (
           <View style={styles.selectedFlirt}>
-            <Text style={styles.label}>Date with</Text>
+            <Text style={styles.label}>{t('date_form.who_met')}</Text>
             <View style={styles.selectedFlirtCard}>
               <Ionicons name="heart" size={18} color={Colors.primary} />
               <Text style={styles.selectedFlirtName}>{selectedFlirtName}</Text>
@@ -131,12 +145,12 @@ export default function AddDateScreen() {
         )}
 
         {/* Date Picker */}
-        <Text style={styles.label}>When?</Text>
+        <Text style={styles.label}>{t('date_form.when')}</Text>
         {hasPreselectedDate ? (
           <View style={styles.dateButton}>
             <Ionicons name="calendar-outline" size={20} color={Colors.primary} />
             <Text style={styles.dateButtonText}>
-              {date.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+              {date.toLocaleDateString(activeLocale, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
             </Text>
           </View>
         ) : (
@@ -147,7 +161,7 @@ export default function AddDateScreen() {
             >
               <Ionicons name="calendar-outline" size={20} color={Colors.primary} />
               <Text style={styles.dateButtonText}>
-                {date.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                {date.toLocaleDateString(activeLocale, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
               </Text>
             </Pressable>
 
@@ -155,7 +169,7 @@ export default function AddDateScreen() {
               <View>
                 {Platform.OS === 'ios' && (
                   <Pressable style={{ alignSelf: 'flex-end', paddingVertical: Spacing.sm }} onPress={() => setShowDatePicker(false)}>
-                    <Text style={{ fontSize: FontSize.md, fontWeight: FontWeight.semibold, color: Colors.primary }}>Done</Text>
+                    <Text style={{ fontSize: FontSize.md, fontWeight: FontWeight.semibold, color: Colors.primary }}>{t('common.done')}</Text>
                   </Pressable>
                 )}
                 <DateTimePicker
@@ -173,22 +187,22 @@ export default function AddDateScreen() {
         )}
 
         {/* Location */}
-        <Text style={styles.label}>Where?</Text>
+        <Text style={styles.label}>{t('date_form.where')}</Text>
         <TextInput
           style={styles.input}
           value={location}
           onChangeText={setLocation}
-          placeholder="Restaurant, park, cinema..."
+          placeholder={t('date_form.where_placeholder')}
           placeholderTextColor={Colors.textTertiary}
         />
 
         {/* Notes */}
-        <Text style={styles.label}>Notes (optional)</Text>
+        <Text style={styles.label}>{t('common.notes')}</Text>
         <TextInput
           style={[styles.input, { minHeight: 80 }]}
           value={notes}
           onChangeText={setNotes}
-          placeholder="What to wear, things to remember..."
+          placeholder={t('date_form.notes_placeholder')}
           placeholderTextColor={Colors.textTertiary}
           multiline
           textAlignVertical="top"
@@ -201,7 +215,7 @@ export default function AddDateScreen() {
           disabled={saving}
         >
           <Ionicons name="checkmark" size={20} color={Colors.white} />
-          <Text style={styles.saveButtonText}>{saving ? 'Saving...' : 'Save Date'}</Text>
+          <Text style={styles.saveButtonText}>{saving ? t('common.saving') : t('date_form.save_date')}</Text>
         </Pressable>
       </ScrollView>
     </KeyboardAvoidingView>

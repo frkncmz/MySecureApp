@@ -7,10 +7,11 @@ import * as Haptics from 'expo-haptics';
 import * as ImagePicker from 'expo-image-picker';
 import { Image } from 'expo-image';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { useTranslation } from 'react-i18next';
 
 import { Colors, Spacing, BorderRadius, FontSize, FontWeight } from '@/constants/theme';
 import { getFlirtById, updateFlirt, getTraits, addTrait, deleteTrait, getPresetTags, Flirt, PresetTag } from '@/database/flirts';
-import { getZodiacSign } from '@/utils/helpers';
+import { getZodiacSign, formatDate } from '@/utils/helpers';
 import { useStore } from '@/store/useStore';
 import { usePermission } from '@/hooks/usePermission';
 import PermissionModal from '@/components/PermissionModal';
@@ -21,6 +22,7 @@ export default function EditFlirtScreen() {
   const insets = useSafeAreaInsets();
   const { refreshAll } = useStore();
   const { modalVisible, requestPermission, handleContinue } = usePermission('photoLibrary');
+  const { t } = useTranslation();
 
   const [name, setName] = useState('');
   const [photoUri, setPhotoUri] = useState<string | null>(null);
@@ -117,7 +119,7 @@ export default function EditFlirtScreen() {
 
   const handleSave = async () => {
     if (!name.trim()) {
-      Alert.alert('Error', 'Name is required.');
+      Alert.alert(t('common.error'), t('flirt_form.errors.name_required_edit'));
       return;
     }
     if (saving) return;
@@ -156,7 +158,7 @@ export default function EditFlirtScreen() {
       await refreshAll();
       router.back();
     } catch (error) {
-      Alert.alert('Error', 'Failed to update flirt.');
+      Alert.alert(t('common.error'), t('flirt_form.errors.update_failed'));
     } finally {
       setSaving(false);
     }
@@ -170,13 +172,13 @@ export default function EditFlirtScreen() {
           <Pressable onPress={() => router.back()}>
             <Ionicons name="close" size={28} color={Colors.textPrimary} />
           </Pressable>
-          <Text style={styles.headerTitle}>Edit Flirt</Text>
+          <Text style={styles.headerTitle}>{t('flirt_form.edit_title')}</Text>
           <Pressable
             style={({ pressed }) => [styles.saveButton, pressed && { opacity: 0.7 }]}
             onPress={handleSave}
             disabled={saving}
           >
-            <Text style={styles.saveButtonText}>{saving ? 'Saving...' : 'Save'}</Text>
+            <Text style={styles.saveButtonText}>{saving ? t('common.saving') : t('common.save')}</Text>
           </Pressable>
         </View>
 
@@ -188,17 +190,24 @@ export default function EditFlirtScreen() {
             ) : (
               <>
                 <Ionicons name="camera" size={32} color={Colors.primary} />
-                <Text style={styles.photoLabel}>Add Photo</Text>
+                <Text style={styles.photoLabel}>{t('flirt_form.add_photo')}</Text>
               </>
             )}
           </Pressable>
 
           {/* Name */}
-          <Text style={styles.label}>Name *</Text>
-          <TextInput style={styles.input} value={name} onChangeText={setName} placeholder="Their name" placeholderTextColor={Colors.textTertiary} maxLength={30} />
+          <Text style={styles.label}>{t('flirt_form.fields.name')}</Text>
+          <TextInput
+            style={styles.input}
+            value={name}
+            onChangeText={setName}
+            placeholder={t('flirt_form.fields.name_placeholder')}
+            placeholderTextColor={Colors.textTertiary}
+            maxLength={30}
+          />
 
           {/* Date */}
-          <Text style={styles.label}>When did you meet?</Text>
+          <Text style={styles.label}>{t('flirt_form.fields.when_met')}</Text>
           <Pressable
             style={styles.input}
             onPress={() => {
@@ -207,7 +216,7 @@ export default function EditFlirtScreen() {
             }}
           >
             <Text style={[{ fontSize: FontSize.md }, !metDate ? { color: Colors.textTertiary } : { color: Colors.textPrimary }]}>
-              {metDate ? metDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 'Select date'}
+              {metDate ? formatDate(metDate.toISOString()) : t('flirt_form.fields.select_date')}
             </Text>
           </Pressable>
 
@@ -215,7 +224,7 @@ export default function EditFlirtScreen() {
             <View>
               {Platform.OS === 'ios' && (
                 <Pressable style={{ alignSelf: 'flex-end', paddingVertical: Spacing.sm }} onPress={() => setShowDatePicker(false)}>
-                  <Text style={{ fontSize: FontSize.md, fontWeight: FontWeight.semibold, color: Colors.primary }}>Done</Text>
+                  <Text style={{ fontSize: FontSize.md, fontWeight: FontWeight.semibold, color: Colors.primary }}>{t('common.done')}</Text>
                 </Pressable>
               )}
               <DateTimePicker
@@ -231,11 +240,18 @@ export default function EditFlirtScreen() {
             </View>
           )}
 
-          <Text style={styles.label}>Where?</Text>
-          <TextInput style={styles.input} value={metPlace} onChangeText={setMetPlace} placeholder="Coffee shop, Tinder, etc." placeholderTextColor={Colors.textTertiary} maxLength={50} />
+          <Text style={styles.label}>{t('flirt_form.fields.where_met')}</Text>
+          <TextInput
+            style={styles.input}
+            value={metPlace}
+            onChangeText={setMetPlace}
+            placeholder={t('flirt_form.fields.where_placeholder')}
+            placeholderTextColor={Colors.textTertiary}
+            maxLength={50}
+          />
 
           {/* Birth Date */}
-          <Text style={styles.label}>Birth Date</Text>
+          <Text style={styles.label}>{t('flirt_form.fields.birth_date')}</Text>
           <Pressable
             style={styles.input}
             onPress={() => {
@@ -245,8 +261,11 @@ export default function EditFlirtScreen() {
           >
             <Text style={[{ fontSize: FontSize.md }, !birthDate ? { color: Colors.textTertiary } : { color: Colors.textPrimary }]}>
               {birthDate
-                ? `${birthDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })} (${Math.floor((Date.now() - birthDate.getTime()) / 31557600000)} y/o)`
-                : 'Select birth date'}
+                ? t('flirt_form.fields.birth_val', {
+                    date: formatDate(birthDate.toISOString()),
+                    age: Math.floor((Date.now() - birthDate.getTime()) / 31557600000),
+                  })
+                : t('flirt_form.fields.select_birth')}
             </Text>
           </Pressable>
 
@@ -254,7 +273,7 @@ export default function EditFlirtScreen() {
             <View>
               {Platform.OS === 'ios' && (
                 <Pressable style={{ alignSelf: 'flex-end', paddingVertical: Spacing.sm }} onPress={() => setShowBirthPicker(false)}>
-                  <Text style={{ fontSize: FontSize.md, fontWeight: FontWeight.semibold, color: Colors.primary }}>Done</Text>
+                  <Text style={{ fontSize: FontSize.md, fontWeight: FontWeight.semibold, color: Colors.primary }}>{t('common.done')}</Text>
                 </Pressable>
               )}
               <DateTimePicker
@@ -272,40 +291,75 @@ export default function EditFlirtScreen() {
           )}
 
           {/* Details */}
-          <Text style={styles.label}>Height</Text>
-          <TextInput style={styles.input} value={height} onChangeText={setHeight} placeholder="175cm" placeholderTextColor={Colors.textTertiary} maxLength={10} />
+          <Text style={styles.label}>{t('flirt_form.fields.height')}</Text>
+          <TextInput
+            style={styles.input}
+            value={height}
+            onChangeText={setHeight}
+            placeholder={t('flirt_form.fields.height_placeholder')}
+            placeholderTextColor={Colors.textTertiary}
+            maxLength={10}
+          />
 
-          <Text style={styles.label}>Skin Tone</Text>
-          <TextInput style={styles.input} value={skinTone} onChangeText={setSkinTone} placeholder="Fair, Medium, etc." placeholderTextColor={Colors.textTertiary} maxLength={20} />
+          <Text style={styles.label}>{t('flirt_form.fields.skin_tone')}</Text>
+          <TextInput
+            style={styles.input}
+            value={skinTone}
+            onChangeText={setSkinTone}
+            placeholder={`${t('skin_tone.Fair')}, ${t('skin_tone.Medium')}, ...`}
+            placeholderTextColor={Colors.textTertiary}
+            maxLength={20}
+          />
 
-          <Text style={styles.label}>Hometown</Text>
-          <TextInput style={styles.input} value={hometown} onChangeText={setHometown} placeholder="Where are they from?" placeholderTextColor={Colors.textTertiary} maxLength={40} />
+          <Text style={styles.label}>{t('flirt_form.fields.hometown')}</Text>
+          <TextInput
+            style={styles.input}
+            value={hometown}
+            onChangeText={setHometown}
+            placeholder={t('flirt_form.fields.hometown_placeholder')}
+            placeholderTextColor={Colors.textTertiary}
+            maxLength={40}
+          />
 
-          <Text style={styles.label}>Lives in</Text>
-          <TextInput style={styles.input} value={city} onChangeText={setCity} placeholder="Current city" placeholderTextColor={Colors.textTertiary} maxLength={40} />
+          <Text style={styles.label}>{t('flirt_form.fields.lives_in')}</Text>
+          <TextInput
+            style={styles.input}
+            value={city}
+            onChangeText={setCity}
+            placeholder={t('flirt_form.fields.city_placeholder')}
+            placeholderTextColor={Colors.textTertiary}
+            maxLength={40}
+          />
 
-          <Text style={styles.label}>Occupation</Text>
-          <TextInput style={styles.input} value={occupation} onChangeText={setOccupation} placeholder="What do they do?" placeholderTextColor={Colors.textTertiary} maxLength={40} />
+          <Text style={styles.label}>{t('flirt_form.fields.occupation')}</Text>
+          <TextInput
+            style={styles.input}
+            value={occupation}
+            onChangeText={setOccupation}
+            placeholder={t('flirt_form.fields.occupation_placeholder')}
+            placeholderTextColor={Colors.textTertiary}
+            maxLength={40}
+          />
 
           {/* Social */}
-          <Text style={styles.label}>Instagram</Text>
+          <Text style={styles.label}>{t('flirt_form.fields.instagram', { defaultValue: 'Instagram' })}</Text>
           <TextInput style={styles.input} value={instagram} onChangeText={setInstagram} placeholder="@username" placeholderTextColor={Colors.textTertiary} maxLength={30} />
-          <Text style={styles.label}>TikTok</Text>
+          <Text style={styles.label}>{t('flirt_form.fields.tiktok', { defaultValue: 'TikTok' })}</Text>
           <TextInput style={styles.input} value={tiktok} onChangeText={setTiktok} placeholder="@username" placeholderTextColor={Colors.textTertiary} maxLength={30} />
-          <Text style={styles.label}>Snapchat</Text>
+          <Text style={styles.label}>{t('flirt_form.fields.snapchat', { defaultValue: 'Snapchat' })}</Text>
           <TextInput style={styles.input} value={snapchat} onChangeText={setSnapchat} placeholder="username" placeholderTextColor={Colors.textTertiary} maxLength={30} />
-          <Text style={styles.label}>X</Text>
+          <Text style={styles.label}>{t('flirt_form.fields.x', { defaultValue: 'X' })}</Text>
           <TextInput style={styles.input} value={xHandle} onChangeText={setXHandle} placeholder="@username" placeholderTextColor={Colors.textTertiary} maxLength={30} />
-          <Text style={styles.label}>Phone</Text>
+          <Text style={styles.label}>{t('flirt_form.fields.phone', { defaultValue: 'Phone' })}</Text>
           <TextInput style={styles.input} value={phone} onChangeText={setPhone} placeholder="+1 234 567 8900" placeholderTextColor={Colors.textTertiary} keyboardType="phone-pad" maxLength={20} />
 
           {/* Notes */}
-          <Text style={styles.label}>Notes</Text>
+          <Text style={styles.label}>{t('flirt_form.sections.notes')}</Text>
           <TextInput
             style={[styles.input, { minHeight: 80 }]}
             value={notes}
             onChangeText={setNotes}
-            placeholder="Personal notes..."
+            placeholder={t('flirt_form.fields.notes_placeholder_edit')}
             placeholderTextColor={Colors.textTertiary}
             multiline
             textAlignVertical="top"
@@ -318,8 +372,8 @@ export default function EditFlirtScreen() {
 
         <PermissionModal
           visible={modalVisible}
-          title="Photo Library Access"
-          description="LoveLog needs access to your photo library to add profile photos for your flirts."
+          title={t('onboarding.photo_access_title')}
+          description={t('onboarding.photo_access_desc')}
           onContinue={handleContinue}
         />
       </View>

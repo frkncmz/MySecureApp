@@ -5,12 +5,13 @@ import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Image } from 'expo-image';
 import Animated, { FadeInDown } from 'react-native-reanimated';
+import { useTranslation } from 'react-i18next';
 
 import { Colors, Spacing, BorderRadius, FontSize, FontWeight, Shadow, ScoreColor } from '@/constants/theme';
 import { getDateById, DateEntry } from '@/database/dates';
 import { getFlirtById } from '@/database/flirts';
 import { getAnswersForReference, Answer } from '@/database/questions';
-import { formatDate, getInitials } from '@/utils/helpers';
+import { formatDate, getInitials, isFuture } from '@/utils/helpers';
 
 type AnswerWithQuestion = Answer & { question_text: string };
 
@@ -18,6 +19,7 @@ export default function DateDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const { t } = useTranslation();
 
   const [dateEntry, setDateEntry] = useState<DateEntry | null>(null);
   const [flirtName, setFlirtName] = useState('');
@@ -50,7 +52,7 @@ export default function DateDetailScreen() {
     return (
       <View style={[styles.container, styles.center]}>
         <Ionicons name="hourglass-outline" size={48} color={Colors.textTertiary} />
-        <Text style={styles.loadingText}>Loading...</Text>
+        <Text style={styles.loadingText}>{t('common.loading')}</Text>
       </View>
     );
   }
@@ -74,7 +76,7 @@ export default function DateDetailScreen() {
         <Pressable onPress={() => router.back()}>
           <Ionicons name="chevron-back" size={28} color={Colors.textPrimary} />
         </Pressable>
-        <Text style={styles.headerTitle}>Date Details</Text>
+        <Text style={styles.headerTitle}>{t('date_detail.title')}</Text>
         <View style={{ width: 28 }} />
       </View>
 
@@ -119,7 +121,7 @@ export default function DateDetailScreen() {
           ) : (
             <View style={styles.infoRow}>
               <Ionicons name="star-outline" size={18} color={Colors.textTertiary} />
-              <Text style={[styles.infoText, { color: Colors.textTertiary }]}>Not rated yet</Text>
+              <Text style={[styles.infoText, { color: Colors.textTertiary }]}>{t('date_detail.not_rated')}</Text>
             </View>
           )}
         </Animated.View>
@@ -127,16 +129,20 @@ export default function DateDetailScreen() {
         {/* Rating answers */}
         {answers.length > 0 && (
           <Animated.View entering={FadeInDown.duration(300).delay(100)}>
-            <Text style={styles.sectionTitle}>Rating Details</Text>
+            <Text style={styles.sectionTitle}>{t('date_detail.rating_details')}</Text>
             {answers.map((a, i) => (
               <Animated.View key={a.id} entering={FadeInDown.duration(300).delay(i * 60)} style={styles.answerCard}>
-                <Text style={styles.questionText}>{a.question_text}</Text>
+                <Text style={styles.questionText}>
+                  {t('questions.' + a.question_id + '.text', { defaultValue: a.question_text })}
+                </Text>
                 <View style={styles.answerRow}>
-                  <Text style={styles.answerOption}>{a.selected_option}</Text>
+                  <Text style={styles.answerOption}>
+                    {t('questions.' + a.question_id + '.options.' + a.selected_option, { defaultValue: a.selected_option })}
+                  </Text>
                   <View style={[styles.sentimentBadge, { backgroundColor: sentimentColor(a.sentiment) + '15' }]}>
                     <Ionicons name={sentimentIcon(a.sentiment) as any} size={14} color={sentimentColor(a.sentiment)} />
                     <Text style={[styles.sentimentText, { color: sentimentColor(a.sentiment) }]}>
-                      {a.sentiment.charAt(0).toUpperCase() + a.sentiment.slice(1)}
+                      {t('rate_date.sentiment.' + a.sentiment, { defaultValue: a.sentiment })}
                     </Text>
                   </View>
                 </View>
@@ -145,8 +151,19 @@ export default function DateDetailScreen() {
           </Animated.View>
         )}
 
-        <View style={{ height: 40 }} />
       </ScrollView>
+
+      {!dateEntry.is_rated && !isFuture(dateEntry.date) && (
+        <Animated.View entering={FadeInDown.duration(300).delay(200)} style={[styles.buttonContainer, { paddingBottom: Math.max(insets.bottom, Spacing.lg) }]}>
+          <Pressable
+            style={({ pressed }) => [styles.rateButton, pressed && { opacity: 0.9 }]}
+            onPress={() => router.replace(`/date/rate/${dateEntry.id}`)}
+          >
+            <Ionicons name="star" size={20} color={Colors.white} />
+            <Text style={styles.rateButtonText}>{t('date_detail.rate_btn')}</Text>
+          </Pressable>
+        </Animated.View>
+      )}
     </View>
   );
 }
@@ -179,4 +196,26 @@ const styles = StyleSheet.create({
   answerOption: { fontSize: FontSize.md, fontWeight: FontWeight.semibold, color: Colors.textPrimary, flex: 1 },
   sentimentBadge: { flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: Spacing.md, paddingVertical: Spacing.xs, borderRadius: BorderRadius.full },
   sentimentText: { fontSize: FontSize.xs, fontWeight: FontWeight.bold },
+  buttonContainer: {
+    paddingHorizontal: Spacing.xl,
+    paddingTop: Spacing.lg,
+    backgroundColor: Colors.background,
+    borderTopWidth: 1,
+    borderTopColor: Colors.border,
+  },
+  rateButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: Spacing.sm,
+    backgroundColor: Colors.primary,
+    borderRadius: BorderRadius.lg,
+    paddingVertical: Spacing.lg,
+    ...Shadow.md,
+  },
+  rateButtonText: {
+    fontSize: FontSize.md,
+    fontWeight: FontWeight.bold,
+    color: Colors.white,
+  },
 });

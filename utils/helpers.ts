@@ -1,10 +1,25 @@
+import i18n from '@/services/i18n';
+
+const LOCALE_MAP: Record<string, string> = {
+  tr: 'tr-TR',
+  es: 'es-ES',
+  de: 'de-DE',
+  ru: 'ru-RU',
+  en: 'en-US',
+};
+
+function getActiveLocale(): string {
+  const lang = i18n.language || 'en';
+  return LOCALE_MAP[lang] || 'en-US';
+}
+
 /**
  * Format a date string to a human-readable format.
  */
 export function formatDate(dateStr: string): string {
   try {
     const date = new Date(dateStr);
-    return date.toLocaleDateString('en-US', {
+    return date.toLocaleDateString(getActiveLocale(), {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
@@ -20,7 +35,7 @@ export function formatDate(dateStr: string): string {
 export function formatDateShort(dateStr: string): string {
   try {
     const date = new Date(dateStr);
-    return date.toLocaleDateString('en-US', {
+    return date.toLocaleDateString(getActiveLocale(), {
       month: 'short',
       day: 'numeric',
     });

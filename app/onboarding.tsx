@@ -9,6 +9,7 @@ import * as Haptics from 'expo-haptics';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import * as WebBrowser from 'expo-web-browser';
 import { getTrackingPermissionsAsync } from 'expo-tracking-transparency';
+import { useTranslation } from 'react-i18next';
 
 import { Colors, Spacing, BorderRadius, FontSize, FontWeight, Shadow } from '@/constants/theme';
 import { completeOnboarding } from '@/utils/onboarding';
@@ -55,6 +56,7 @@ export default function OnboardingScreen() {
   const [currentStep, setCurrentStep] = useState(0);
   const [birthDate, setBirthDate] = useState<Date | null>(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const { t, i18n } = useTranslation();
 
   const totalSteps = slides.length + 1; // slides + birth date step
   const isBirthStep = currentStep === slides.length;
@@ -139,11 +141,68 @@ export default function OnboardingScreen() {
   };
 
   const formatBirthDate = (date: Date) => {
-    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+    const localeStr = i18n.language === 'tr' ? 'tr-TR' : i18n.language === 'de' ? 'de-DE' : i18n.language === 'es' ? 'es-ES' : i18n.language === 'ru' ? 'ru-RU' : 'en-US';
+    return date.toLocaleDateString(localeStr, { year: 'numeric', month: 'long', day: 'numeric' });
   };
 
   const openLegal = (type: 'privacy' | 'terms') => {
     setLegalModal(type);
+  };
+
+  const renderLegalText = () => {
+    if (i18n.language === 'tr') {
+      return (
+        <Text style={styles.legalText}>
+          Devam ederek,{' '}
+          <Text style={styles.legalLink} onPress={() => openLegal('terms')}>Kullanım Koşulları</Text>
+          {' '}ve{' '}
+          <Text style={styles.legalLink} onPress={() => openLegal('privacy')}>Gizlilik Politikası</Text>
+          'nı kabul etmiş olursunuz.
+        </Text>
+      );
+    }
+    if (i18n.language === 'de') {
+      return (
+        <Text style={styles.legalText}>
+          Durch Fortfahren stimmst du unseren{' '}
+          <Text style={styles.legalLink} onPress={() => openLegal('terms')}>Nutzungsbedingungen</Text>
+          {' '}und der{' '}
+          <Text style={styles.legalLink} onPress={() => openLegal('privacy')}>Datenschutzerklärung</Text>
+          {' '}zu.
+        </Text>
+      );
+    }
+    if (i18n.language === 'es') {
+      return (
+        <Text style={styles.legalText}>
+          Al continuar, aceptas nuestras{' '}
+          <Text style={styles.legalLink} onPress={() => openLegal('terms')}>Condiciones de Servicio</Text>
+          {' '}y{' '}
+          <Text style={styles.legalLink} onPress={() => openLegal('privacy')}>Política de Privacidad</Text>
+          .
+        </Text>
+      );
+    }
+    if (i18n.language === 'ru') {
+      return (
+        <Text style={styles.legalText}>
+          Продолжая, вы соглашаетесь с нашими{' '}
+          <Text style={styles.legalLink} onPress={() => openLegal('terms')}>Условиями использования</Text>
+          {' '}и{' '}
+          <Text style={styles.legalLink} onPress={() => openLegal('privacy')}>Политикой конфиденциальности</Text>
+          .
+        </Text>
+      );
+    }
+    return (
+      <Text style={styles.legalText}>
+        By continuing, you agree to our{' '}
+        <Text style={styles.legalLink} onPress={() => openLegal('terms')}>Terms of Service</Text>
+        {' '}and{' '}
+        <Text style={styles.legalLink} onPress={() => openLegal('privacy')}>Privacy Policy</Text>
+        .
+      </Text>
+    );
   };
 
   // Render a feature slide
@@ -165,8 +224,8 @@ export default function OnboardingScreen() {
       </View>
 
       <Animated.View entering={FadeIn.duration(500).delay(200)} style={styles.textContainer}>
-        <Text style={styles.slideTitle}>{slide.title}</Text>
-        <Text style={styles.slideDescription}>{slide.description}</Text>
+        <Text style={styles.slideTitle}>{t(`onboarding.slide${currentStep + 1}_title`)}</Text>
+        <Text style={styles.slideDescription}>{t(`onboarding.slide${currentStep + 1}_desc`)}</Text>
       </Animated.View>
     </Animated.View>
   );
@@ -181,9 +240,9 @@ export default function OnboardingScreen() {
           contentFit="contain"
         />
 
-        <Text style={styles.slideTitle}>Almost There!</Text>
+        <Text style={styles.slideTitle}>{t('onboarding.almost_there')}</Text>
         <Text style={styles.slideDescription}>
-          You must be at least 18 years old to use this app. Please enter your birth date to confirm.
+          {t('onboarding.age_confirm')}
         </Text>
 
         {/* Date picker button */}
@@ -196,19 +255,19 @@ export default function OnboardingScreen() {
         >
           <Ionicons name="calendar-outline" size={20} color={Colors.primary} />
           <Text style={[styles.dateButtonText, !birthDate && { color: Colors.textTertiary }]}>
-            {birthDate ? formatBirthDate(birthDate) : 'Select your birth date'}
+            {birthDate ? formatBirthDate(birthDate) : t('onboarding.select_birth')}
           </Text>
         </Pressable>
 
         {birthDate && !isOldEnough && (
-          <Text style={styles.ageError}>You must be at least 18 years old to use LoveLog.</Text>
+          <Text style={styles.ageError}>{t('onboarding.age_error')}</Text>
         )}
 
         {showDatePicker && (
           <View>
             {Platform.OS === 'ios' && (
               <Pressable style={{ alignSelf: 'flex-end', paddingVertical: Spacing.sm, paddingHorizontal: Spacing.xl }} onPress={() => setShowDatePicker(false)}>
-                <Text style={{ fontSize: FontSize.md, fontWeight: FontWeight.semibold, color: Colors.primary }}>Done</Text>
+                <Text style={{ fontSize: FontSize.md, fontWeight: FontWeight.semibold, color: Colors.primary }}>{t('common.done')}</Text>
               </Pressable>
             )}
             <DateTimePicker
@@ -219,23 +278,14 @@ export default function OnboardingScreen() {
               maximumDate={new Date()}
               minimumDate={new Date(1950, 0, 1)}
               style={styles.datePicker}
+              locale={i18n.language === 'tr' ? 'tr-TR' : i18n.language === 'de' ? 'de-DE' : i18n.language === 'es' ? 'es-ES' : i18n.language === 'ru' ? 'ru-RU' : 'en-US'}
             />
           </View>
         )}
 
         {/* Legal text */}
         <View style={styles.legalContainer}>
-          <Text style={styles.legalText}>
-            By continuing, you agree to our{' '}
-            <Text style={styles.legalLink} onPress={() => openLegal('terms')}>
-              Terms of Service
-            </Text>
-            {' '}and{' '}
-            <Text style={styles.legalLink} onPress={() => openLegal('privacy')}>
-              Privacy Policy
-            </Text>
-            .
-          </Text>
+          {renderLegalText()}
         </View>
       </View>
     </Animated.View>
@@ -270,7 +320,7 @@ export default function OnboardingScreen() {
             onPress={handleBack}
           >
             <Ionicons name="arrow-back" size={20} color={Colors.textSecondary} />
-            <Text style={styles.backButtonText}>Back</Text>
+            <Text style={styles.backButtonText}>{t('common.back')}</Text>
           </Pressable>
         ) : (
           <View style={{ width: 80 }} />
@@ -286,7 +336,7 @@ export default function OnboardingScreen() {
             onPress={handleComplete}
             disabled={!isOldEnough}
           >
-            <Text style={styles.startButtonText}>Get Started</Text>
+            <Text style={styles.startButtonText}>{t('onboarding.get_started')}</Text>
             <Ionicons name="checkmark-circle" size={20} color={Colors.white} />
           </Pressable>
         ) : (
@@ -294,7 +344,7 @@ export default function OnboardingScreen() {
             style={({ pressed }) => [styles.nextButton, pressed && styles.nextButtonPressed]}
             onPress={handleNext}
           >
-            <Text style={styles.nextButtonText}>Next</Text>
+            <Text style={styles.nextButtonText}>{t('common.next')}</Text>
             <Ionicons name="arrow-forward" size={18} color={Colors.white} />
           </Pressable>
         )}
@@ -303,11 +353,11 @@ export default function OnboardingScreen() {
       {/* Apple ATT Pre-Prompt Explainer Modal */}
       <PermissionModal
         visible={showAttModal}
-        title="Ad Personalization"
-        description="LoveLog displays advertisements. Allowing tracking enables personalized ads based on your preferences instead of generic ones."
+        title={t('onboarding.ad_personalization')}
+        description={t('onboarding.ad_personalization_desc')}
         reasons={[
-          { icon: 'analytics-outline', text: 'Ads are tailored to your interests' },
-          { icon: 'shield-checkmark-outline', text: 'Your personal data is not shared with third parties' },
+          { icon: 'analytics-outline', text: t('onboarding.ad_reason1') },
+          { icon: 'shield-checkmark-outline', text: t('onboarding.ad_reason2') },
         ]}
         onContinue={handleAttContinue}
       />

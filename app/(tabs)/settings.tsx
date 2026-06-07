@@ -1,10 +1,11 @@
 import { View, Text, StyleSheet, ScrollView, Pressable, Alert, TextInput } from 'react-native';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 import { Image } from 'expo-image';
+import { useTranslation } from 'react-i18next';
 
 import { Colors, Spacing, BorderRadius, FontSize, FontWeight, Shadow } from '@/constants/theme';
 import { exportData, importData } from '@/database/backup';
@@ -12,57 +13,72 @@ import { resetDatabase } from '@/database/db';
 import LegalModal from '@/components/LegalModal';
 import privacyPolicy from '@/constants/privacyPolicy.json';
 import termsOfService from '@/constants/termsOfService.json';
+import {
+  changeLanguagePreference,
+  getLanguagePreference,
+  LanguageCode,
+  getSystemLanguage
+} from '@/services/i18n';
 
 export default function SettingsScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const { t, i18n } = useTranslation();
+
   const [backupPin, setBackupPin] = useState('');
   const [restorePin, setRestorePin] = useState('');
   const [showBackup, setShowBackup] = useState(false);
   const [showRestore, setShowRestore] = useState(false);
+  const [showLanguage, setShowLanguage] = useState(false);
+  const [langPreference, setLangPreference] = useState<'system' | LanguageCode>('system');
   const [legalModal, setLegalModal] = useState<'none' | 'terms' | 'privacy'>('none');
+
+  useEffect(() => {
+    getLanguagePreference().then(setLangPreference);
+  }, []);
 
   const handleBackup = async () => {
     if (backupPin.length < 4) {
-      Alert.alert('Error', 'PIN must be at least 4 characters.');
+      Alert.alert(t('common.error'), t('settings.backup.error_pin'));
       return;
     }
     try {
       await exportData(backupPin);
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      Alert.alert(t('common.success'), t('settings.backup.success'));
       setBackupPin('');
       setShowBackup(false);
     } catch (error) {
-      Alert.alert('Error', 'Failed to create backup.');
+      Alert.alert(t('common.error'), t('settings.backup.error_failed'));
     }
   };
 
   const handleRestore = async () => {
     if (restorePin.length < 4) {
-      Alert.alert('Error', 'PIN must be at least 4 characters.');
+      Alert.alert(t('common.error'), t('settings.backup.error_pin'));
       return;
     }
     const result = await importData(restorePin);
     if (result.success) {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-      Alert.alert('Success', 'Data restored successfully! The app will refresh.', [
-        { text: 'OK', onPress: () => router.replace('/(tabs)') },
+      Alert.alert(t('common.success'), t('settings.restore.success'), [
+        { text: t('common.ok'), onPress: () => router.replace('/(tabs)') },
       ]);
       setRestorePin('');
       setShowRestore(false);
     } else {
-      Alert.alert('Error', result.error || 'Failed to restore backup.');
+      Alert.alert(t('common.error'), result.error || t('settings.restore.error_failed'));
     }
   };
 
   const handleClearAll = () => {
     Alert.alert(
-      'Clear All Data',
-      'This will permanently delete all your flirts, dates, and evaluations. This cannot be undone.',
+      t('settings.clear_data.confirm_title'),
+      t('settings.clear_data.confirm_desc'),
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: t('common.cancel'), style: 'cancel' },
         {
-          text: 'Delete Everything',
+          text: t('settings.clear_data.btn_delete'),
           style: 'destructive',
           onPress: async () => {
             try {
@@ -75,12 +91,34 @@ export default function SettingsScreen() {
               router.replace('/onboarding');
             } catch (error) {
               console.error('Failed to clear data:', error);
-              Alert.alert('Error', 'Failed to clear data.');
+              Alert.alert(t('common.error'), t('settings.clear_data.error'));
             }
           },
         },
       ]
     );
+  };
+
+  const handleSelectLanguage = async (pref: 'system' | LanguageCode) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    await changeLanguagePreference(pref);
+    setLangPreference(pref);
+  };
+
+  const getLanguageLabel = (pref: 'system' | LanguageCode) => {
+    if (pref === 'system') {
+      const sysLang = getSystemLanguage();
+      const sysLangName = sysLang === 'tr' ? 'Türkçe' : sysLang === 'de' ? 'Deutsch' : sysLang === 'es' ? 'Español' : sysLang === 'ru' ? 'Русский' : 'English';
+      return t('settings.language_options.system', { lang: sysLangName });
+    }
+    const map: Record<string, string> = {
+      en: 'English',
+      tr: 'Türkçe',
+      de: 'Deutsch',
+      es: 'Español',
+      ru: 'Русский',
+    };
+    return map[pref] || pref;
   };
 
   return (
@@ -90,9 +128,58 @@ export default function SettingsScreen() {
       contentContainerStyle={{ paddingTop: insets.top + Spacing.lg, paddingBottom: 120 }}
       showsVerticalScrollIndicator={false}
     >
+      {/* Language Section */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>{t('settings.sections.language')}</Text>
+
+        <Pressable
+          style={({ pressed }) => [styles.menuItem, pressed && { opacity: 0.8 }]}
+          onPress={() => setShowLanguage(!showLanguage)}
+        >
+          <View style={[styles.menuIcon, { backgroundColor: Colors.primary + '15' }]}>
+            <Ionicons name="language-outline" size={20} color={Colors.primary} />
+          </View>
+          <View style={styles.menuInfo}>
+            <Text style={styles.menuLabel}>{t('settings.sections.language')}</Text>
+            <Text style={styles.menuDesc}>{getLanguageLabel(langPreference)}</Text>
+          </View>
+          <Ionicons name={showLanguage ? 'chevron-up' : 'chevron-down'} size={18} color={Colors.textTertiary} />
+        </Pressable>
+
+        {showLanguage && (
+          <View style={styles.expandedSection}>
+            <Pressable
+              style={styles.langItem}
+              onPress={() => handleSelectLanguage('system')}
+            >
+              <Text style={[styles.langLabel, langPreference === 'system' && styles.langLabelActive]}>
+                {t('settings.language_options.system_label')}
+              </Text>
+              {langPreference === 'system' && <Ionicons name="checkmark" size={16} color={Colors.primary} />}
+            </Pressable>
+
+            {(['en', 'tr', 'de', 'es', 'ru'] as LanguageCode[]).map((code) => {
+              const label = code === 'tr' ? 'Türkçe' : code === 'de' ? 'Deutsch' : code === 'es' ? 'Español' : code === 'ru' ? 'Русский' : 'English';
+              return (
+                <Pressable
+                  key={code}
+                  style={styles.langItem}
+                  onPress={() => handleSelectLanguage(code)}
+                >
+                  <Text style={[styles.langLabel, langPreference === code && styles.langLabelActive]}>
+                    {label}
+                  </Text>
+                  {langPreference === code && <Ionicons name="checkmark" size={16} color={Colors.primary} />}
+                </Pressable>
+              );
+            })}
+          </View>
+        )}
+      </View>
+
       {/* Backup Section */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Data Management</Text>
+        <Text style={styles.sectionTitle}>{t('settings.sections.data_management')}</Text>
 
         <Pressable
           style={({ pressed }) => [styles.menuItem, pressed && { opacity: 0.8 }]}
@@ -102,8 +189,8 @@ export default function SettingsScreen() {
             <Ionicons name="cloud-upload-outline" size={20} color={Colors.success} />
           </View>
           <View style={styles.menuInfo}>
-            <Text style={styles.menuLabel}>Backup Data</Text>
-            <Text style={styles.menuDesc}>Export your data as an encrypted file</Text>
+            <Text style={styles.menuLabel}>{t('settings.backup.title')}</Text>
+            <Text style={styles.menuDesc}>{t('settings.backup.desc')}</Text>
           </View>
           <Ionicons name={showBackup ? 'chevron-up' : 'chevron-down'} size={18} color={Colors.textTertiary} />
         </Pressable>
@@ -113,12 +200,12 @@ export default function SettingsScreen() {
             <View style={styles.warningRow}>
               <Ionicons name="warning-outline" size={14} color={Colors.warning} />
               <Text style={styles.expandedNote}>
-                Profile photos are not included in backups.
+                {t('settings.backup.note')}
               </Text>
             </View>
             <TextInput
               style={styles.pinInput}
-              placeholder="Enter a PIN (min 4 chars)"
+              placeholder={t('settings.backup.pin_placeholder')}
               placeholderTextColor={Colors.textTertiary}
               value={backupPin}
               onChangeText={setBackupPin}
@@ -130,7 +217,7 @@ export default function SettingsScreen() {
               onPress={handleBackup}
             >
               <Ionicons name="download-outline" size={18} color={Colors.white} />
-              <Text style={styles.actionButtonText}>Create Backup</Text>
+              <Text style={styles.actionButtonText}>{t('settings.backup.btn')}</Text>
             </Pressable>
           </View>
         )}
@@ -143,8 +230,8 @@ export default function SettingsScreen() {
             <Ionicons name="cloud-download-outline" size={20} color={Colors.secondary} />
           </View>
           <View style={styles.menuInfo}>
-            <Text style={styles.menuLabel}>Restore Data</Text>
-            <Text style={styles.menuDesc}>Import from a backup file</Text>
+            <Text style={styles.menuLabel}>{t('settings.restore.title')}</Text>
+            <Text style={styles.menuDesc}>{t('settings.restore.desc')}</Text>
           </View>
           <Ionicons name={showRestore ? 'chevron-up' : 'chevron-down'} size={18} color={Colors.textTertiary} />
         </Pressable>
@@ -153,7 +240,7 @@ export default function SettingsScreen() {
           <View style={styles.expandedSection}>
             <TextInput
               style={styles.pinInput}
-              placeholder="Enter your backup PIN"
+              placeholder={t('settings.restore.pin_placeholder')}
               placeholderTextColor={Colors.textTertiary}
               value={restorePin}
               onChangeText={setRestorePin}
@@ -165,7 +252,7 @@ export default function SettingsScreen() {
               onPress={handleRestore}
             >
               <Ionicons name="push-outline" size={18} color={Colors.white} />
-              <Text style={styles.actionButtonText}>Select File & Restore</Text>
+              <Text style={styles.actionButtonText}>{t('settings.restore.btn')}</Text>
             </Pressable>
           </View>
         )}
@@ -173,7 +260,7 @@ export default function SettingsScreen() {
 
       {/* Danger Zone */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Danger Zone</Text>
+        <Text style={styles.sectionTitle}>{t('settings.sections.danger_zone')}</Text>
         <Pressable
           style={({ pressed }) => [styles.menuItem, pressed && { opacity: 0.8 }]}
           onPress={handleClearAll}
@@ -182,15 +269,15 @@ export default function SettingsScreen() {
             <Ionicons name="trash-outline" size={20} color={Colors.danger} />
           </View>
           <View style={styles.menuInfo}>
-            <Text style={[styles.menuLabel, { color: Colors.danger }]}>Clear All Data</Text>
-            <Text style={styles.menuDesc}>Delete everything and start fresh</Text>
+            <Text style={[styles.menuLabel, { color: Colors.danger }]}>{t('settings.clear_data.title')}</Text>
+            <Text style={styles.menuDesc}>{t('settings.clear_data.desc')}</Text>
           </View>
         </Pressable>
       </View>
 
       {/* Legal */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Legal</Text>
+        <Text style={styles.sectionTitle}>{t('settings.sections.legal')}</Text>
         <Pressable
           style={({ pressed }) => [styles.menuItem, pressed && { opacity: 0.8 }]}
           onPress={() => setLegalModal('terms')}
@@ -199,7 +286,7 @@ export default function SettingsScreen() {
             <Ionicons name="document-text-outline" size={20} color={Colors.primary} />
           </View>
           <View style={styles.menuInfo}>
-            <Text style={styles.menuLabel}>Terms of Service</Text>
+            <Text style={styles.menuLabel}>{t('settings.legal.terms')}</Text>
           </View>
           <Ionicons name="chevron-forward" size={18} color={Colors.textTertiary} />
         </Pressable>
@@ -211,7 +298,7 @@ export default function SettingsScreen() {
             <Ionicons name="shield-checkmark-outline" size={20} color={Colors.primary} />
           </View>
           <View style={styles.menuInfo}>
-            <Text style={styles.menuLabel}>Privacy Policy</Text>
+            <Text style={styles.menuLabel}>{t('settings.legal.privacy')}</Text>
           </View>
           <Ionicons name="chevron-forward" size={18} color={Colors.textTertiary} />
         </Pressable>
@@ -221,8 +308,8 @@ export default function SettingsScreen() {
       <View style={styles.header}>
         <Image source={require('@/assets/icon.png')} style={styles.logo} contentFit="contain" />
         <Text style={styles.title}>LoveLog</Text>
-        <Text style={styles.version}>Version 1.0.0</Text>
-        <Text style={styles.creator}>Made by Furkan Çömez</Text>
+        <Text style={styles.version}>{t('settings.branding.version', { version: '1.2.0' })}</Text>
+        <Text style={styles.creator}>{t('settings.branding.creator')}</Text>
       </View>
     </ScrollView>
 
@@ -266,4 +353,8 @@ const styles = StyleSheet.create({
   backupButton: { backgroundColor: Colors.success },
   restoreButton: { backgroundColor: Colors.secondary },
   actionButtonText: { fontSize: FontSize.md, fontWeight: FontWeight.semibold, color: Colors.white },
+
+  langItem: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: Spacing.md, paddingHorizontal: Spacing.sm, borderBottomWidth: 1, borderBottomColor: Colors.border + '30' },
+  langLabel: { fontSize: FontSize.md, color: Colors.textPrimary },
+  langLabelActive: { fontWeight: FontWeight.semibold, color: Colors.primary },
 });

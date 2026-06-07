@@ -6,6 +6,7 @@ import Animated, { FadeInDown } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Image } from 'expo-image';
 import { BannerAd, BannerAdSize } from 'react-native-google-mobile-ads';
+import { useTranslation } from 'react-i18next';
 
 import { Colors, Spacing, BorderRadius, FontSize, FontWeight, Shadow, ScoreColor } from '@/constants/theme';
 import { useStore, SortOption, FilterOption } from '@/store/useStore';
@@ -16,6 +17,7 @@ import { BANNER_ID } from '@/services/adService';
 export default function FlirtsScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const { t } = useTranslation();
   const { flirts, isLoadingFlirts, sortBy, filterBy, searchQuery, loadFlirts, setSortBy, setFilterBy, setSearchQuery } = useStore();
 
   useFocusEffect(
@@ -25,9 +27,9 @@ export default function FlirtsScreen() {
   );
 
   const sortOptions: { key: SortOption; label: string; icon: keyof typeof Ionicons.glyphMap }[] = [
-    { key: 'date', label: 'Recent', icon: 'time-outline' },
-    { key: 'name', label: 'Name', icon: 'text-outline' },
-    { key: 'score', label: 'Score', icon: 'star-outline' },
+    { key: 'date', label: t('flirts.sort.recent'), icon: 'time-outline' },
+    { key: 'name', label: t('flirts.sort.name'), icon: 'text-outline' },
+    { key: 'score', label: t('flirts.sort.score'), icon: 'star-outline' },
   ];
 
   const renderFlirt = ({ item, index }: { item: Flirt; index: number }) => (
@@ -50,11 +52,11 @@ export default function FlirtsScreen() {
             {item.zodiac && <Ionicons name={getZodiacIcon(item.zodiac) as any} size={14} color={Colors.textSecondary} />}
           </View>
           {item.met_date && (
-            <Text style={styles.flirtMeta}>Met {formatDate(item.met_date)}</Text>
+            <Text style={styles.flirtMeta}>{t('flirts.card.met', { date: formatDate(item.met_date) })}</Text>
           )}
           {item.status === 'archived' && (
             <View style={styles.archivedBadge}>
-              <Text style={styles.archivedText}>Archived</Text>
+              <Text style={styles.archivedText}>{t('common.archived')}</Text>
             </View>
           )}
         </View>
@@ -76,7 +78,7 @@ export default function FlirtsScreen() {
     <View style={[styles.container, { paddingTop: insets.top + Spacing.lg }]}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.title}>Flirts</Text>
+        <Text style={styles.title}>{t('flirts.title')}</Text>
         <View style={styles.headerButtons}>
           <Pressable
             style={({ pressed }) => [styles.compareButton, pressed && { opacity: 0.7 }]}
@@ -98,7 +100,7 @@ export default function FlirtsScreen() {
         <Ionicons name="search" size={18} color={Colors.textTertiary} />
         <TextInput
           style={styles.searchInput}
-          placeholder="Search flirts..."
+          placeholder={t('flirts.search_placeholder')}
           placeholderTextColor={Colors.textTertiary}
           value={searchQuery}
           onChangeText={setSearchQuery}
@@ -148,7 +150,7 @@ export default function FlirtsScreen() {
           <View style={styles.emptyState}>
             <Ionicons name="heart-dislike-outline" size={48} color={Colors.textTertiary} />
             <Text style={styles.emptyText}>
-              {searchQuery ? 'No flirts found' : filterBy === 'archived' ? 'No archived flirts' : 'No flirts yet'}
+              {searchQuery ? t('flirts.empty.no_results') : filterBy === 'archived' ? t('flirts.empty.no_archived') : t('flirts.empty.no_flirts')}
             </Text>
           </View>
         }
